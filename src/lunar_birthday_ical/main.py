@@ -12,6 +12,7 @@ import time
 import zoneinfo
 from pathlib import Path
 
+import httpx
 import yaml
 from icalendar import (
     Alarm,
@@ -24,7 +25,7 @@ from icalendar import (
 from lunar_python import Lunar, LunarYear
 
 logging.basicConfig(
-    format="[%(asctime)s][%(name)s][%(levelname)s] %(message)s", level=logging.DEBUG
+    format="[%(asctime)s][%(name)s][%(levelname)s] %(message)s", level=logging.INFO
 )
 logger = logging.getLogger(__name__)
 
@@ -159,6 +160,38 @@ def add_birthday_event_to_calendar(
     calendar.add_component(event)
 
 
+def pastebin_upload(
+    base_url: str,
+    file: Path,
+    expiration: int | str = 0,
+):
+    files = {"c": open(file, "rb")}
+    # 强制使用 private mode
+    data = {"p": True}
+    if expiration:
+        data["e"] = expiration
+
+    response = httpx.post(base_url, data=data, files=files)
+    return response
+
+
+def pastebin_update(
+    base_url: str,
+    name: str,
+    password: str,
+    file: Path,
+    expiration: int | str = 0,
+):
+    url = f"{base_url}/{name}:{password}"
+    files = {"c": open(file, "rb")}
+    data = {}
+    if expiration:
+        data["e"] = expiration
+
+    response = httpx.put(url, data=data, files=files)
+    return response
+
+
 def create_calendar(config: dict, output: Path):
     calendar_name = config.get("global").get("calendar_name")
     timezone_name = config.get("global").get("timezone")
@@ -241,9 +274,31 @@ def create_calendar(config: dict, output: Path):
                     lunar_birthday=lunar_birthday,
                 )
 
+    calendar_data = calendar.to_ical()
     with output.open("wb") as f:
-        f.write(calendar.to_ical())
+        f.write(calendar_data)
     logger.info("iCal file saved to %s", output)
+
+    if config.get("global").get("pastebin"):
+        pastebin_url = config.get("global").get("pastebin_url")
+        pastebin_name = config.get("global").get("pastebin_name")
+        pastebin_password = config.get("global").get("pastebin_password")
+        pastebin_expiration = config.get("global").get("pastebin_expiration")
+        if not pastebin_password:
+            response = pastebin_upload(
+                base_url=pastebin_url,
+                file=output,
+                expiration=pastebin_expiration,
+            )
+        else:
+            response = pastebin_update(
+                base_url=pastebin_url,
+                name=pastebin_name,
+                password=pastebin_password,
+                file=output,
+                expiration=pastebin_expiration,
+            )
+        logger.info(response.json())
 
 
 def main():
