@@ -18,3 +18,7 @@ build-backend = "pdm.backend"
 
 [tool.pdm]
 distribution = true
+
+
+[project.scripts]
+lunar-birthday-ical = "lunar_birthday_ical.main:main"
