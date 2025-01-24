@@ -192,6 +192,28 @@ def pastebin_update(
     return response
 
 
+def pastebin_helper(config: dict, file: Path):
+    pastebin_url = config.get("global").get("pastebin_url")
+    pastebin_name = config.get("global").get("pastebin_name")
+    pastebin_password = config.get("global").get("pastebin_password")
+    pastebin_expiration = config.get("global").get("pastebin_expiration")
+    if not pastebin_password:
+        response = pastebin_upload(
+            base_url=pastebin_url,
+            file=file,
+            expiration=pastebin_expiration,
+        )
+    else:
+        response = pastebin_update(
+            base_url=pastebin_url,
+            name=pastebin_name,
+            password=pastebin_password,
+            file=file,
+            expiration=pastebin_expiration,
+        )
+    logger.info(response.json())
+
+
 def create_calendar(config: dict, output: Path):
     calendar_name = config.get("global").get("calendar_name")
     timezone_name = config.get("global").get("timezone")
@@ -280,25 +302,7 @@ def create_calendar(config: dict, output: Path):
     logger.info("iCal file saved to %s", output)
 
     if config.get("global").get("pastebin"):
-        pastebin_url = config.get("global").get("pastebin_url")
-        pastebin_name = config.get("global").get("pastebin_name")
-        pastebin_password = config.get("global").get("pastebin_password")
-        pastebin_expiration = config.get("global").get("pastebin_expiration")
-        if not pastebin_password:
-            response = pastebin_upload(
-                base_url=pastebin_url,
-                file=output,
-                expiration=pastebin_expiration,
-            )
-        else:
-            response = pastebin_update(
-                base_url=pastebin_url,
-                name=pastebin_name,
-                password=pastebin_password,
-                file=output,
-                expiration=pastebin_expiration,
-            )
-        logger.info(response.json())
+        pastebin_helper(config, output)
 
 
 def main():
