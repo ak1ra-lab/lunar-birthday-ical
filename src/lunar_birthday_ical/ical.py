@@ -43,7 +43,7 @@ def local_datetime_to_utc_datetime(
     return utc_datetime
 
 
-def add_reminders_to_event(event: Event, reminders: list, summary: str):
+def add_reminders_to_event(event: Event, reminders: list, summary: str) -> None:
     # 添加提醒
     for reminder_days in reminders:
         alarm = Alarm()
@@ -54,7 +54,7 @@ def add_reminders_to_event(event: Event, reminders: list, summary: str):
         event.add_component(alarm)
 
 
-def add_attendees_to_event(event: Event, attendees: list):
+def add_attendees_to_event(event: Event, attendees: list) -> None:
     # 添加与会者
     for attendee_email in attendees:
         attendee = vCalAddress(f"mailto:{attendee_email}")
@@ -70,7 +70,7 @@ def add_event_to_calendar(
     summary: str,
     reminders: list[int],
     attendees: list[str],
-):
+) -> None:
     event = Event()
     event.add("dtstart", vDatetime(dtstart))
     event.add("dtend", vDatetime(dtend))
@@ -82,7 +82,7 @@ def add_event_to_calendar(
     calendar.add_component(event)
 
 
-def create_calendar(config: dict, output: Path):
+def create_calendar(config: dict, output: Path) -> None:
     calendar_name = config.get("global").get("calendar_name")
     timezone_name = config.get("global").get("timezone")
     try:

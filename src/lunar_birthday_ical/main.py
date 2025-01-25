@@ -17,7 +17,7 @@ from lunar_birthday_ical.utils import get_logger
 logger = get_logger(__name__)
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         description="Generate iCal events for lunar birthday and cycle days."
     )
