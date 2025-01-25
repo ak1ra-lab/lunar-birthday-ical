@@ -32,6 +32,8 @@ global:
   interval: 1000
   # 跳过开始时间在 skip_days 之前的事件
   skip_days: 180
+  # 最多创建 max_events 个事件
+  max_events: 20
 
   # pastebin
   # https://komj.uk/api

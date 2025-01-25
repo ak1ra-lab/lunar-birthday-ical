@@ -119,6 +119,10 @@ def create_calendar(config: dict, output: Path) -> None:
         reminders = item.get("reminders") or config.get("global").get("reminders")
         attendees = item.get("attendees") or config.get("global").get("attendees")
 
+        # 最多创建 max_events 个事件
+        max_events = item.get("max_events") or config.get("global").get("max_events")
+
+        event_count = 0
         max_days = item.get("max_days") or config.get("global").get("max_days")
         interval = item.get("interval") or config.get("global").get("interval")
         # 添加 cycle days 事件
@@ -128,7 +132,9 @@ def create_calendar(config: dict, output: Path) -> None:
             # 跳过开始时间在 skip_days 之前的事件
             if event_datetime < skip_days_datetime:
                 continue
-
+            # 最多创建 max_events 个事件
+            if event_count > max_events:
+                continue
             # iCal 中的时间都以 UTC 保存
             dtstart = local_datetime_to_utc_datetime(event_datetime)
             dtend = dtstart + event_duration
@@ -142,7 +148,9 @@ def create_calendar(config: dict, output: Path) -> None:
                 reminders=reminders,
                 attendees=attendees,
             )
+            event_count += 1
 
+        event_count_birthday, event_count_lunar_birthday = 0, 0
         max_ages = item.get("max_ages") or config.get("global").get("max_ages")
         for age in range(0, max_ages + 1):
             # 是否添加公历生日事件
@@ -151,6 +159,9 @@ def create_calendar(config: dict, output: Path) -> None:
                 event_datetime = start_datetime.replace(year=start_datetime.year + age)
                 # 跳过开始时间在 skip_days 之前的事件
                 if event_datetime < skip_days_datetime:
+                    continue
+                # 最多创建 max_events 个事件
+                if event_count_birthday > max_events:
                     continue
                 dtstart = local_datetime_to_utc_datetime(event_datetime)
                 dtend = dtstart + event_duration
@@ -163,6 +174,7 @@ def create_calendar(config: dict, output: Path) -> None:
                     reminders=reminders,
                     attendees=attendees,
                 )
+                event_count_birthday += 1
 
             # 是否添加农历生日事件
             if item.get("lunar_birthday") or config.get("global").get("lunar_birthday"):
@@ -170,6 +182,9 @@ def create_calendar(config: dict, output: Path) -> None:
                 event_datetime = get_future_lunar_equivalent_date(start_datetime, age)
                 # 跳过开始时间在 skip_days 之前的事件
                 if event_datetime < skip_days_datetime:
+                    continue
+                # 最多创建 max_events 个事件
+                if event_count_lunar_birthday > max_events:
                     continue
                 dtstart = local_datetime_to_utc_datetime(event_datetime)
                 dtend = dtstart + event_duration
