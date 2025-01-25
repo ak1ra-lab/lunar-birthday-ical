@@ -124,7 +124,7 @@ def create_calendar(config: dict, output: Path) -> None:
             dtstart = local_datetime_to_utc_datetime(event_datetime)
             dtend = dtstart + event_duration
             age = round(days / 365.25, 2)
-            summary = f"{username} 自从 {startdate.isoformat()} 之后已经过去 {days} 天啦! (age: {age})"
+            summary = f"{username} 降临地球🌏已经 {days} 天啦! (age: {age})"
             add_event_to_calendar(
                 calendar=calendar,
                 dtstart=dtstart,
@@ -142,7 +142,7 @@ def create_calendar(config: dict, output: Path) -> None:
                 event_datetime = start_datetime.replace(year=start_datetime.year + age)
                 dtstart = local_datetime_to_utc_datetime(event_datetime)
                 dtend = dtstart + event_duration
-                summary = f"{username} {dtstart.year} 年生日快乐 (age: {age})"
+                summary = f"{username} {dtstart.year} 年生日🎂快乐! (age: {age})"
                 add_event_to_calendar(
                     calendar=calendar,
                     dtstart=dtstart,
@@ -158,7 +158,7 @@ def create_calendar(config: dict, output: Path) -> None:
                 event_datetime = get_future_lunar_equivalent_date(start_datetime, age)
                 dtstart = local_datetime_to_utc_datetime(event_datetime)
                 dtend = dtstart + event_duration
-                summary = f"{username} {dtstart.year} 年农历生日快乐 (age: {age})"
+                summary = f"{username} {dtstart.year} 年农历生日🎂快乐! (age: {age})"
                 add_event_to_calendar(
                     calendar=calendar,
                     dtstart=dtstart,
