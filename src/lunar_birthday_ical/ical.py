@@ -36,8 +36,9 @@ def get_local_datetime(
 def local_datetime_to_utc_datetime(
     local_datetime: datetime.datetime,
 ) -> datetime.datetime:
-    # 将 local_datetime "强制"转换为 UTC 时间
+    # 将 local_datetime "强制"转换为 UTC 时间, 注意 local_datetime 需要携带 tzinfo 信息
     utc = zoneinfo.ZoneInfo("UTC")
+    # 这里宁可让它抛出错误信息, 也不要设置 默认值
     utc_datetime = local_datetime.replace(tzinfo=utc) - local_datetime.utcoffset()
 
     return utc_datetime
@@ -155,9 +156,7 @@ def create_calendar(config: dict, output: Path) -> None:
             if item.get("lunar_birthday") or config.get("global").get("lunar_birthday"):
                 # 将给定 公历日期 转换为农历后计算对应农历月日在当前 age 的 公历日期
                 event_datetime = get_future_lunar_equivalent_date(start_datetime, age)
-                dtstart = local_datetime_to_utc_datetime(
-                    event_datetime.replace(**event_time)
-                )
+                dtstart = local_datetime_to_utc_datetime(event_datetime)
                 dtend = dtstart + event_duration
                 summary = f"{username} {dtstart.year} 年农历生日快乐 (age: {age})"
                 add_event_to_calendar(
