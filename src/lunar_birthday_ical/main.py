@@ -14,7 +14,7 @@ import yaml
 from lunar_birthday_ical.ical import create_calendar
 from lunar_birthday_ical.utils import get_logger
 
-logger = get_logger()
+logger = get_logger(__name__)
 
 
 def main():
