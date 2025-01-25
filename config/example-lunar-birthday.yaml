@@ -35,9 +35,9 @@ global:
 
   # pastebin
   # https://komj.uk/api
-  pastebin: true
+  pastebin: false
   pastebin_url: https://komj.uk
-  pastebin_expiration: 7d
+  pastebin_expiration: ""
   pastebin_name: ""
   pastebin_password: ""
 
