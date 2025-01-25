@@ -307,9 +307,13 @@ def create_calendar(config: dict, output: Path):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Generate iCal events for days since date."
+        description="Generate iCal events for lunar birthday and cycle days."
     )
-    parser.add_argument("input", type=Path, help="input config.yaml")
+    parser.add_argument(
+        "input",
+        type=Path,
+        help="input config.yaml, check config/example-lunar-birthday.yaml for example.",
+    )
     parser.add_argument(
         "-o", "--output", type=Path, help="Path to save the generated iCal file."
     )
