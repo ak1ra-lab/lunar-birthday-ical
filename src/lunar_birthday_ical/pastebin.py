@@ -11,7 +11,7 @@ def pastebin_upload(
     base_url: str,
     file: Path,
     expiration: int | str = 0,
-):
+) -> httpx.Response:
     files = {"c": open(file, "rb")}
     # 强制使用 private mode
     data = {"p": True}
@@ -28,7 +28,7 @@ def pastebin_update(
     password: str,
     file: Path,
     expiration: int | str = 0,
-):
+) -> httpx.Response:
     url = f"{base_url}/{name}:{password}"
     files = {"c": open(file, "rb")}
     data = {}
@@ -39,7 +39,7 @@ def pastebin_update(
     return response
 
 
-def pastebin_helper(config: dict, file: Path):
+def pastebin_helper(config: dict, file: Path) -> None:
     pastebin_url = config.get("global").get("pastebin_url")
     pastebin_name = config.get("global").get("pastebin_name")
     pastebin_password = config.get("global").get("pastebin_password")
