@@ -1,7 +1,7 @@
 [project]
 name = "lunar-birthday-ical"
-version = "0.1.0"
-description = "Default template for PDM package"
+version = "0.1.3"
+description = "A command line tool written in Python 3 for creating lunar birthday events"
 authors = [
     {name = "ak1ra", email = "git@ak1ra.xyz"},
 ]

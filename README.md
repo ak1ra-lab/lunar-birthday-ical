@@ -26,14 +26,11 @@ options:
 
 ## 安装
 
-可以使用 pipx 直接安装本项目,
+推荐使用 [`pipx`](https://github.com/pypa/pipx) 来安装 Python 编写的命令行工具, 包括本项目,
 
 ```ShellSession
-$ git clone https://github.com/ak1ra-lab/lunar-birthday-ical.git
-
-$ cd lunar-birthday-ical/
-$ pipx install .
-  installed package lunar-birthday-ical 0.1.0, installed using Python 3.11.2
+$ pipx install lunar-birthday-ical
+  installed package lunar-birthday-ical {{ version }}, installed using Python 3.11.2
   These apps are now globally available
     - lunar-birthday-ical
 done! ✨ 🌟 ✨
