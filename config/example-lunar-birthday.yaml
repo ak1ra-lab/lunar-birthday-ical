@@ -7,8 +7,6 @@ global:
 
   # bool: true | false
   # 配置 startdate 是否是 出生日期
-  # 如果为 true 则同时创建 农历生日 VEVENT 事件,
-  # 如果为 false 则仅创建 降临日 VEVENT 事件,
   birthday: true
   lunar_birthday: true
 
