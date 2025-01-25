@@ -25,11 +25,13 @@ global:
     - delta.lee@example.com
 
   # 农历生日时间最大年龄
-  max_ages: 100
-  # 降临日 最大天数
-  max_days: 36000
-  # 降临日 事件间隔天数
+  max_ages: 80
+  # cycle_days 最大天数
+  max_days: 30000
+  # cycle_days 事件间隔天数
   interval: 1000
+  # 跳过开始时间在 skip_days 之前的事件
+  skip_days: 180
 
   # pastebin
   # https://komj.uk/api
