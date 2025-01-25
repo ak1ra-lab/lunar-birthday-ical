@@ -36,8 +36,8 @@ def get_future_lunar_equivalent_date(
     # 创建目标年份的农历日期
     future_lunar = Lunar.fromYmd(year, lunar_month.getMonth(), lunar_day)
 
-    # 转换为公历日期
+    # 转换为公历日期, 恢复原本的 timezone 信息
     future_solar_datetime = datetime.datetime.strptime(
         future_lunar.getSolar().toYmd(), "%Y-%m-%d"
-    )
+    ).replace(tzinfo=past_solar_datetime.tzinfo)
     return future_solar_datetime
