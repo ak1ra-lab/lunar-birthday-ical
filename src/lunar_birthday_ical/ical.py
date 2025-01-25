@@ -18,10 +18,24 @@ from lunar_birthday_ical.utils import get_logger
 logger = get_logger(__name__)
 
 
-def local_datetime_to_utc_datetime(
-    local_date: datetime.date, local_time: datetime.time, timezone: zoneinfo.ZoneInfo
+def get_local_datetime(
+    local_date: datetime.date | str,
+    local_time: datetime.time | str,
+    timezone: zoneinfo.ZoneInfo,
 ) -> datetime.datetime:
+    if not isinstance(local_date, datetime.date):
+        local_date = datetime.datetime.strptime(local_date, "%Y-%m-%d").date()
+    if not isinstance(local_time, datetime.time):
+        local_time = datetime.datetime.strptime(local_time, "%H:%M:%S").time()
+
     local_datetime = datetime.datetime.combine(local_date, local_time, timezone)
+
+    return local_datetime
+
+
+def local_datetime_to_utc_datetime(
+    local_datetime: datetime.datetime,
+) -> datetime.datetime:
     # 将 local_datetime "强制"转换为 UTC 时间
     utc = zoneinfo.ZoneInfo("UTC")
     utc_datetime = local_datetime.replace(tzinfo=utc) - local_datetime.utcoffset()
@@ -49,60 +63,19 @@ def add_attendees_to_event(event: Event, attendees: list):
         event.add("attendee", attendee)
 
 
-def add_days_event_to_calendar(
+def add_event_to_calendar(
     calendar: Calendar,
-    startdate: datetime.date,
-    timezone: zoneinfo.ZoneInfo,
-    event_time: datetime.time,
-    event_duration: datetime.timedelta,
+    dtstart: datetime.datetime,
+    dtend: datetime.datetime,
+    summary: str,
     reminders: list[int],
     attendees: list[str],
-    username: str,
-    days: int,
 ):
-    age = round(days / 365.25, 2)
-    startdate_utc = local_datetime_to_utc_datetime(startdate, event_time, timezone)
-    dtstart = startdate_utc + datetime.timedelta(days=days)
-    dtend = dtstart + event_duration
-    summary = f"{username} 来到地球已经 {days} 天啦! (age: {age})"
-
     event = Event()
-    event.add("summary", summary)
     event.add("dtstart", vDatetime(dtstart))
     event.add("dtend", vDatetime(dtend))
-    add_reminders_to_event(event, reminders, summary)
-    add_attendees_to_event(event, attendees)
-
-    calendar.add_component(event)
-
-
-def add_birthday_event_to_calendar(
-    calendar: Calendar,
-    startdate: datetime.date,
-    timezone: zoneinfo.ZoneInfo,
-    event_time: datetime.time,
-    event_duration: datetime.timedelta,
-    reminders: list[int],
-    attendees: list[str],
-    username: str,
-    age: int,
-    lunar_birthday: bool,
-):
-    if lunar_birthday:
-        event_date = get_future_lunar_equivalent_date(startdate, age)
-        summary = f"{username} {event_date.year} 年农历生日快乐 (age: {age})"
-    else:
-        event_date = datetime.date(startdate.year + age, startdate.month, startdate.day)
-        summary = f"{username} {event_date.year} 年生日快乐 (age: {age})"
-
-    # 强制转换为 UTC 时间后保存
-    dtstart = local_datetime_to_utc_datetime(event_date, event_time, timezone)
-    dtend = dtstart + event_duration
-
-    event = Event()
     event.add("summary", summary)
-    event.add("dtstart", vDatetime(dtstart))
-    event.add("dtend", vDatetime(dtend))
+
     add_reminders_to_event(event, reminders, summary)
     add_attendees_to_event(event, attendees)
 
@@ -126,69 +99,74 @@ def create_calendar(config: dict, output: Path):
 
     for item in config.get("startdate_list"):
         username = item.get("username")
+        # YAML 似乎会自动将 YYYY-mm-dd 格式字符串转换成 datetime.date 类型
         startdate = item.get("startdate")
+        event_time = item.get("event_time") or config.get("global").get("event_time")
+        # 开始时间, 类型为 datetime.datetime
+        start_datetime = get_local_datetime(startdate, event_time, timezone)
 
-        birthday = item.get("birthday") or config.get("global").get("birthday")
-        lunar_birthday = item.get("lunar_birthday") or config.get("global").get(
-            "lunar_birthday"
-        )
-        max_ages = item.get("max_ages") or config.get("global").get("max_ages")
-        max_days = item.get("max_days") or config.get("global").get("max_days")
-        interval = item.get("interval") or config.get("global").get("interval")
-        reminders = item.get("reminders") or config.get("global").get("reminders")
-        attendees = item.get("attendees") or config.get("global").get("attendees")
-
-        event_time = datetime.datetime.strptime(
-            item.get("event_time") or config.get("global").get("event_time"), "%H:%M:%S"
-        ).time()
+        # 事件持续时长
         event_duration = datetime.timedelta(
             hours=item.get("event_duration")
             or config.get("global").get("event_duration")
         )
+        reminders = item.get("reminders") or config.get("global").get("reminders")
+        attendees = item.get("attendees") or config.get("global").get("attendees")
 
+        max_days = item.get("max_days") or config.get("global").get("max_days")
+        interval = item.get("interval") or config.get("global").get("interval")
+        # 添加 cycle days 事件
         for days in range(interval, max_days + 1, interval):
-            add_days_event_to_calendar(
+            # 整数日事件 将 start_datetime 加上间隔 days 即可
+            event_datetime = start_datetime + datetime.timedelta(days=days)
+            # iCal 中的时间都以 UTC 保存
+            dtstart = local_datetime_to_utc_datetime(event_datetime)
+            dtend = dtstart + event_duration
+            age = round(days / 365.25, 2)
+            summary = f"{username} 自从 {startdate.isoformat()} 之后已经过去 {days} 天啦! (age: {age})"
+            add_event_to_calendar(
                 calendar=calendar,
-                startdate=startdate,
-                timezone=timezone,
-                event_time=event_time,
-                event_duration=event_duration,
+                dtstart=dtstart,
+                dtend=dtend,
+                summary=summary,
                 reminders=reminders,
                 attendees=attendees,
-                username=username,
-                days=days,
             )
 
-        # 是否添加公历生日事件
-        if birthday:
-            for age in range(0, max_ages + 1):
-                add_birthday_event_to_calendar(
+        max_ages = item.get("max_ages") or config.get("global").get("max_ages")
+        for age in range(0, max_ages + 1):
+            # 是否添加公历生日事件
+            if item.get("birthday") or config.get("global").get("birthday"):
+                # 公历生日直接替换 start_datetime 的 年份 即可
+                event_datetime = start_datetime.replace(year=start_datetime.year + age)
+                dtstart = local_datetime_to_utc_datetime(event_datetime)
+                dtend = dtstart + event_duration
+                summary = f"{username} {dtstart.year} 年生日快乐 (age: {age})"
+                add_event_to_calendar(
                     calendar=calendar,
-                    startdate=startdate,
-                    timezone=timezone,
-                    event_time=event_time,
-                    event_duration=event_duration,
+                    dtstart=dtstart,
+                    dtend=dtend,
+                    summary=summary,
                     reminders=reminders,
                     attendees=attendees,
-                    username=username,
-                    age=age,
-                    lunar_birthday=False,
                 )
 
-        # 是否添加农历生日事件
-        if lunar_birthday:
-            for age in range(0, max_ages + 1):
-                add_birthday_event_to_calendar(
+            # 是否添加农历生日事件
+            if item.get("lunar_birthday") or config.get("global").get("lunar_birthday"):
+                # 将给定 公历日期 转换为农历后计算对应农历月日在当前 age 的 公历日期
+                event_datetime = get_future_lunar_equivalent_date(start_datetime, age)
+                dtstart = local_datetime_to_utc_datetime(
+                    event_datetime.replace(**event_time)
+                )
+                dtend = dtstart + event_duration
+                summary = f"{username} {dtstart.year} 年农历生日快乐 (age: {age})"
+                add_event_to_calendar(
                     calendar=calendar,
-                    startdate=startdate,
-                    timezone=timezone,
-                    event_time=event_time,
-                    event_duration=event_duration,
+                    dtstart=dtstart,
+                    dtend=dtend,
+                    summary=summary,
                     reminders=reminders,
                     attendees=attendees,
-                    username=username,
-                    age=age,
-                    lunar_birthday=lunar_birthday,
                 )
 
     calendar_data = calendar.to_ical()
