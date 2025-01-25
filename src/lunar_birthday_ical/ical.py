@@ -98,6 +98,11 @@ def create_calendar(config: dict, output: Path) -> None:
     calendar.add("X-WR-CALNAME", calendar_name)
     calendar.add("X-WR-TIMEZONE", timezone)
 
+    # 跳过开始时间在 skip_days 之前的事件
+    skip_days = config.get("global").get("skip_days")
+    now = datetime.datetime.now().replace(tzinfo=timezone)
+    skip_days_datetime = now - datetime.timedelta(days=skip_days)
+
     for item in config.get("startdate_list"):
         username = item.get("username")
         # YAML 似乎会自动将 YYYY-mm-dd 格式字符串转换成 datetime.date 类型
@@ -120,6 +125,10 @@ def create_calendar(config: dict, output: Path) -> None:
         for days in range(interval, max_days + 1, interval):
             # 整数日事件 将 start_datetime 加上间隔 days 即可
             event_datetime = start_datetime + datetime.timedelta(days=days)
+            # 跳过开始时间在 skip_days 之前的事件
+            if event_datetime < skip_days_datetime:
+                continue
+
             # iCal 中的时间都以 UTC 保存
             dtstart = local_datetime_to_utc_datetime(event_datetime)
             dtend = dtstart + event_duration
@@ -140,6 +149,9 @@ def create_calendar(config: dict, output: Path) -> None:
             if item.get("birthday") or config.get("global").get("birthday"):
                 # 公历生日直接替换 start_datetime 的 年份 即可
                 event_datetime = start_datetime.replace(year=start_datetime.year + age)
+                # 跳过开始时间在 skip_days 之前的事件
+                if event_datetime < skip_days_datetime:
+                    continue
                 dtstart = local_datetime_to_utc_datetime(event_datetime)
                 dtend = dtstart + event_duration
                 summary = f"{username} {dtstart.year} 年生日🎂快乐! (age: {age})"
@@ -156,6 +168,9 @@ def create_calendar(config: dict, output: Path) -> None:
             if item.get("lunar_birthday") or config.get("global").get("lunar_birthday"):
                 # 将给定 公历日期 转换为农历后计算对应农历月日在当前 age 的 公历日期
                 event_datetime = get_future_lunar_equivalent_date(start_datetime, age)
+                # 跳过开始时间在 skip_days 之前的事件
+                if event_datetime < skip_days_datetime:
+                    continue
                 dtstart = local_datetime_to_utc_datetime(event_datetime)
                 dtend = dtstart + event_duration
                 summary = f"{username} {dtstart.year} 年农历生日🎂快乐! (age: {age})"
