@@ -7,7 +7,8 @@ global:
 
   # bool: true | false
   # 配置 startdate 是否是 出生日期
-  birthday: true
+  # bool 选项不能使用 or 来确定优先级
+  birthday: false
   lunar_birthday: true
 
   # VEVENT 事件的开始时间, 格式为 %H:%M:%S
@@ -47,10 +48,10 @@ global:
 startdate_list:
   - username: 张三
     startdate: 1989-06-03
-    birthday: true
+    birthday: false
     lunar_birthday: true
 
   - username: 李四
     startdate: 2006-02-01
     birthday: true
-    lunar_birthday: true
+    lunar_birthday: false
