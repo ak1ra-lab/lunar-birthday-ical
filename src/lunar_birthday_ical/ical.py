@@ -15,7 +15,7 @@ from lunar_birthday_ical.lunar import get_future_lunar_equivalent_date
 from lunar_birthday_ical.pastebin import pastebin_helper
 from lunar_birthday_ical.utils import get_logger
 
-logger = get_logger()
+logger = get_logger(__name__)
 
 
 def local_datetime_to_utc_datetime(
