@@ -1,4 +1,5 @@
 import datetime
+import uuid
 import zoneinfo
 from pathlib import Path
 
@@ -73,6 +74,9 @@ def add_event_to_calendar(
     attendees: list[str],
 ) -> None:
     event = Event()
+    event.add("uid", uuid.uuid4())
+    now_utc = datetime.datetime.now(datetime.timezone.utc)
+    event.add("dtstamp", vDatetime(now_utc))
     event.add("dtstart", vDatetime(dtstart))
     event.add("dtend", vDatetime(dtend))
     event.add("summary", summary)
