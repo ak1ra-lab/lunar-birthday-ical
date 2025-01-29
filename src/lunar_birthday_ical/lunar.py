@@ -8,14 +8,14 @@ logger = get_logger(__name__)
 
 
 def get_future_lunar_equivalent_date(
-    past_solar_datetime: datetime.datetime, age: int
+    solar_datetime: datetime.datetime, age: int
 ) -> datetime.datetime:
     """
     Calculate the equivalent future solar date for a given past solar date and a target lunar year.
     """
     # 计算给定 公历日期 对应的 农历日期
     # .fromDate 所接受的类型为 datetime.datetime, 实际上处理后会把 time 部分丢弃
-    lunar = Lunar.fromDate(past_solar_datetime)
+    lunar = Lunar.fromDate(solar_datetime)
     year = lunar.getYear() + age
     lunar_year = LunarYear.fromYear(year)
 
@@ -37,14 +37,14 @@ def get_future_lunar_equivalent_date(
     future_lunar = Lunar.fromYmd(year, lunar_month.getMonth(), lunar_day)
 
     # 转换为公历日期, 恢复原本的时间和 timezone
-    past_solar_time = past_solar_datetime.time()
+    solar_time = solar_datetime.time()
     future_solar_datetime = datetime.datetime.strptime(
         future_lunar.getSolar().toYmd(), "%Y-%m-%d"
     ).replace(
-        hour=past_solar_time.hour,
-        minute=past_solar_time.minute,
-        second=past_solar_time.second,
-        tzinfo=past_solar_datetime.tzinfo,
+        hour=solar_time.hour,
+        minute=solar_time.minute,
+        second=solar_time.second,
+        tzinfo=solar_datetime.tzinfo,
     )
 
     return future_solar_datetime

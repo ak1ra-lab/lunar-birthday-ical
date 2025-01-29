@@ -84,7 +84,7 @@ def add_event_to_calendar(
 
 
 def create_calendar(config: dict, output: Path) -> None:
-    calendar_name = config.get("global").get("calendar_name")
+    calendar_name = config.get("global").get("calendar")
     timezone_name = config.get("global").get("timezone")
     try:
         timezone = zoneinfo.ZoneInfo(timezone_name)
@@ -92,7 +92,7 @@ def create_calendar(config: dict, output: Path) -> None:
         logger.error("Invalid timezone: %s", timezone_name)
 
     calendar = Calendar()
-    calendar.add("PRODID", "-//Google Inc//Google Calendar//EN")
+    calendar.add("PRODID", "-//ak1ra-lab//lunar-birthday-ical//EN")
     calendar.add("VERSION", "2.0")
     calendar.add("CALSCALE", "GREGORIAN")
     calendar.add("X-WR-CALNAME", calendar_name)
@@ -103,7 +103,7 @@ def create_calendar(config: dict, output: Path) -> None:
     now = datetime.datetime.now().replace(tzinfo=timezone)
     skip_days_datetime = now - datetime.timedelta(days=skip_days)
 
-    for item in config.get("startdate_list"):
+    for item in config.get("persons"):
         username = item.get("username")
         # YAML 似乎会自动将 YYYY-mm-dd 格式字符串转换成 datetime.date 类型
         startdate = item.get("startdate")
@@ -112,9 +112,9 @@ def create_calendar(config: dict, output: Path) -> None:
         start_datetime = get_local_datetime(startdate, event_time, timezone)
 
         # 事件持续时长
-        event_duration = datetime.timedelta(
-            hours=item.get("event_duration")
-            or config.get("global").get("event_duration")
+        event_hours = datetime.timedelta(
+            hours=item.get("event_hours")
+            or config.get("global").get("event_hours")
         )
         reminders = item.get("reminders") or config.get("global").get("reminders")
         attendees = item.get("attendees") or config.get("global").get("attendees")
@@ -137,7 +137,7 @@ def create_calendar(config: dict, output: Path) -> None:
                 continue
             # iCal 中的时间都以 UTC 保存
             dtstart = local_datetime_to_utc_datetime(event_datetime)
-            dtend = dtstart + event_duration
+            dtend = dtstart + event_hours
             age = round(days / 365.25, 2)
             summary = f"{username} 降临地球🌏已经 {days} 天啦! (age: {age})"
             add_event_to_calendar(
@@ -156,7 +156,7 @@ def create_calendar(config: dict, output: Path) -> None:
         for age in range(0, max_ages + 1):
             # 是否添加公历生日事件
             # bool 选项不能使用 or 来确定优先级
-            if item.get("birthday", config.get("global").get("birthday", False)):
+            if item.get("solar_birthday", config.get("global").get("solar_birthday", False)):
                 # 公历生日直接替换 start_datetime 的 年份 即可
                 event_datetime = start_datetime.replace(year=start_datetime.year + age)
                 # 跳过开始时间在 skip_days 之前的事件
@@ -166,7 +166,7 @@ def create_calendar(config: dict, output: Path) -> None:
                 if event_count_birthday >= max_events:
                     continue
                 dtstart = local_datetime_to_utc_datetime(event_datetime)
-                dtend = dtstart + event_duration
+                dtend = dtstart + event_hours
                 summary = f"{username} {dtstart.year} 年生日🎂快乐! (age: {age})"
                 add_event_to_calendar(
                     calendar=calendar,
@@ -178,7 +178,7 @@ def create_calendar(config: dict, output: Path) -> None:
                 )
                 event_count_birthday += 1
                 logger.debug(
-                    "username %s birthday event_count %d",
+                    "username %s solar_birthday event_count %d",
                     username,
                     event_count_birthday,
                 )
@@ -197,7 +197,7 @@ def create_calendar(config: dict, output: Path) -> None:
                 if event_count_lunar_birthday >= max_events:
                     continue
                 dtstart = local_datetime_to_utc_datetime(event_datetime)
-                dtend = dtstart + event_duration
+                dtend = dtstart + event_hours
                 summary = f"{username} {dtstart.year} 年农历生日🎂快乐! (age: {age})"
                 add_event_to_calendar(
                     calendar=calendar,
@@ -219,5 +219,5 @@ def create_calendar(config: dict, output: Path) -> None:
         f.write(calendar_data)
     logger.info("iCal file saved to %s", output)
 
-    if config.get("global").get("pastebin"):
+    if config.get("pastebin").get("enabled", False):
         pastebin_helper(config, output)
