@@ -1,57 +1,61 @@
 global:
-  # 日历名称
-  calendar_name: example-lunar-birthday
+  # str: 日历名称
+  calendar: example-lunar-birthday
 
-  # timezone 为 iCal 的全局配置
+  # str: timezone 为 iCal 的全局配置
   timezone: Asia/Shanghai
+
+  # int: 跳过开始时间在 skip_days 之前的事件
+  skip_days: 180
+  # int: 最多创建 max_events 个事件
+  max_events: 20
+
+  # int: cycle_days 最大天数
+  max_days: 30000
+  # int: cycle_days 事件间隔天数
+  interval: 1000
+  # int: 生日事件的最大年龄
+  max_ages: 80
 
   # bool: true | false
   # 配置 startdate 是否是 出生日期
   # bool 选项不能使用 or 来确定优先级
-  birthday: false
+  solar_birthday: false
   lunar_birthday: true
 
-  # VEVENT 事件的开始时间, 格式为 %H:%M:%S
+  # str: VEVENT 事件的开始时间, 格式为 %H:%M:%S
   # 时间为当地时间, 写入 iCal 时会转换为 UTC
   # 注意用双引号括起来, 防止 YAML 自动格式转换
   event_time: "10:00:00"
-  # VEVENT 事件时长, 单位小时
-  event_duration: 2
+  # int: VEVENT 事件时长, 单位小时
+  event_hours: 2
 
-  # 分别提前 x 天创建提醒时间
+  # []int: 分别提前 x 天创建提醒时间
   reminders: [1, 3, 7]
-  # VEVENT 事件参会人
+  # []str: VEVENT 事件参会人
   attendees:
     - charlie.zhang@example.com
     - delta.lee@example.com
 
-  # 农历生日时间最大年龄
-  max_ages: 80
-  # cycle_days 最大天数
-  max_days: 30000
-  # cycle_days 事件间隔天数
-  interval: 1000
-  # 跳过开始时间在 skip_days 之前的事件
-  skip_days: 180
-  # 最多创建 max_events 个事件
-  max_events: 20
-
-  # pastebin
-  # https://komj.uk/api
-  pastebin: false
-  pastebin_url: https://komj.uk
-  pastebin_expiration: ""
-  pastebin_name: ""
-  pastebin_password: ""
+# pastebin
+# https://github.com/SharzyL/pastebin-worker
+pastebin:
+  # bool: true | false, 是否启用 pastebin
+  enabled: false
+  baseurl: https://komj.uk
+  # str: Supported units: s (seconds), m (minutes), h (hours), d (days), M (months).
+  expiration: ""
+  name: ""
+  password: ""
 
 # startdate 为过去的某个日期, 格式为 %Y-%m-%d
-startdate_list:
+persons:
   - username: 张三
     startdate: 1989-06-03
-    birthday: false
+    solar_birthday: false
     lunar_birthday: true
 
   - username: 李四
     startdate: 2006-02-01
-    birthday: true
+    solar_birthday: true
     lunar_birthday: false
