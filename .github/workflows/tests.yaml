@@ -1,0 +1,21 @@
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_dispatch: ~
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pdm-project/setup-pdm@v4
+
+      - name: Install dependencies
+        run: pdm install
+
+      - name: Run nox
+        run: pdm run nox
