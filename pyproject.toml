@@ -39,3 +39,19 @@ source = "scm"
 
 [project.scripts]
 lunar-birthday-ical = "lunar_birthday_ical.main:main"
+
+
+# All development dependencies are included as long as --prod is not passed and -G doesn't specify any dev groups.
+[dependency-groups]
+tests = [
+    "pytest>=8.3.4",
+    "pytest-cov>=6.0.0",
+]
+lint = [
+    "ruff>=0.9.4",
+]
+dev = [
+    "nox>=2024.10.9",
+    {include-group = "tests"},
+    {include-group = "lint"}
+]
