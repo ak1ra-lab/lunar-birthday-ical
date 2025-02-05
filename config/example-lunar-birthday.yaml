@@ -41,10 +41,10 @@ global:
 # https://github.com/SharzyL/pastebin-worker
 pastebin:
   # bool: true | false, 是否启用 pastebin
-  enabled: false
+  enabled: true
   baseurl: https://komj.uk
   # str: Supported units: s (seconds), m (minutes), h (hours), d (days), M (months).
-  expiration: ""
+  expiration: "7d"
   name: ""
   password: ""
 
