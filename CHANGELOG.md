@@ -1,3 +1,10 @@
+## v0.2.3 (2025-02-06)
+
+- fix utils.get_logger setLevel
+- ci: add nox, pytest, ruff skeleton
+- add pytest test cases with help of copilot
+- fix example config url on README.md
+
 ## v0.2.2 (2025-01-29)
 
 - ci: use dynamic version from scm tag

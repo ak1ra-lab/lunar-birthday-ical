@@ -5,7 +5,7 @@
 一个使用 Python 3 编写的用于创建农历生日事件的命令行工具.
 
 `lunar-birthday-ical` 读入一个 YAML 配置文件, 生成 iCalendar 格式的 `.ics` 文件, 可选是否将日历上传到 pastebin, 方便直接订阅,
-示例配置文件请参考 [config/example-lunar-birthday.yaml](config/example-lunar-birthday.yaml), 注释应该足够能解释每个选项分别是什么含义.
+示例配置文件请参考 [config/example-lunar-birthday.yaml](https://github.com/ak1ra-lab/lunar-birthday-ical/blob/master/config/example-lunar-birthday.yaml), 注释应该足够能解释每个选项分别是什么含义.
 
 可以使用 `-h` 或者 `--help` 选项查看命令行工具帮助信息,
 
