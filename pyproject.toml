@@ -53,5 +53,5 @@ lint = [
 dev = [
     "nox>=2024.10.9",
     {include-group = "tests"},
-    {include-group = "lint"}
+    {include-group = "lint"},
 ]
