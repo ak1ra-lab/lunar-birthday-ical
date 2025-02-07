@@ -45,18 +45,26 @@ def local_datetime_to_utc_datetime(
     return utc_datetime
 
 
-def add_reminders_to_event(event: Event, reminders: list, summary: str) -> None:
+def add_reminders_to_event(
+    event: Event, reminders: list[int | datetime.datetime], summary: str
+) -> None:
     # 添加提醒
     for reminder_days in reminders:
+        if isinstance(reminder_days, datetime.datetime):
+            trigger_time = reminder_days
+        elif isinstance(reminder_days, int):
+            trigger_time = datetime.timedelta(days=-reminder_days)
+        else:
+            continue
         alarm = Alarm()
-        trigger_time = datetime.timedelta(days=-reminder_days)
+        alarm.add("uid", uuid.uuid4())
         alarm.add("action", "DISPLAY")
         alarm.add("description", f"Reminder: {summary}")
         alarm.add("trigger", trigger_time)
         event.add_component(alarm)
 
 
-def add_attendees_to_event(event: Event, attendees: list) -> None:
+def add_attendees_to_event(event: Event, attendees: list[str]) -> None:
     # 添加与会者
     for attendee_email in attendees:
         attendee = vCalAddress(f"mailto:{attendee_email}")
@@ -70,7 +78,7 @@ def add_event_to_calendar(
     dtstart: datetime.datetime,
     dtend: datetime.datetime,
     summary: str,
-    reminders: list[int],
+    reminders: list[int | datetime.datetime],
     attendees: list[str],
 ) -> None:
     event = Event()
@@ -117,8 +125,7 @@ def create_calendar(config: dict, output: Path) -> None:
 
         # 事件持续时长
         event_hours = datetime.timedelta(
-            hours=item.get("event_hours")
-            or config.get("global").get("event_hours")
+            hours=item.get("event_hours") or config.get("global").get("event_hours")
         )
         reminders = item.get("reminders") or config.get("global").get("reminders")
         attendees = item.get("attendees") or config.get("global").get("attendees")
@@ -144,12 +151,15 @@ def create_calendar(config: dict, output: Path) -> None:
             dtend = dtstart + event_hours
             age = round(days / 365.25, 2)
             summary = f"{username} 降临地球🌏已经 {days} 天啦! (age: {age})"
+            reminders_datetime = [
+                dtstart - datetime.timedelta(days=days) for days in reminders
+            ]
             add_event_to_calendar(
                 calendar=calendar,
                 dtstart=dtstart,
                 dtend=dtend,
                 summary=summary,
-                reminders=reminders,
+                reminders=reminders_datetime,
                 attendees=attendees,
             )
             event_count += 1
@@ -160,7 +170,9 @@ def create_calendar(config: dict, output: Path) -> None:
         for age in range(0, max_ages + 1):
             # 是否添加公历生日事件
             # bool 选项不能使用 or 来确定优先级
-            if item.get("solar_birthday", config.get("global").get("solar_birthday", False)):
+            if item.get(
+                "solar_birthday", config.get("global").get("solar_birthday", False)
+            ):
                 # 公历生日直接替换 start_datetime 的 年份 即可
                 event_datetime = start_datetime.replace(year=start_datetime.year + age)
                 # 跳过开始时间在 skip_days 之前的事件
@@ -172,12 +184,15 @@ def create_calendar(config: dict, output: Path) -> None:
                 dtstart = local_datetime_to_utc_datetime(event_datetime)
                 dtend = dtstart + event_hours
                 summary = f"{username} {dtstart.year} 年生日🎂快乐! (age: {age})"
+                reminders_datetime = [
+                    dtstart - datetime.timedelta(days=days) for days in reminders
+                ]
                 add_event_to_calendar(
                     calendar=calendar,
                     dtstart=dtstart,
                     dtend=dtend,
                     summary=summary,
-                    reminders=reminders,
+                    reminders=reminders_datetime,
                     attendees=attendees,
                 )
                 event_count_birthday += 1
@@ -203,12 +218,15 @@ def create_calendar(config: dict, output: Path) -> None:
                 dtstart = local_datetime_to_utc_datetime(event_datetime)
                 dtend = dtstart + event_hours
                 summary = f"{username} {dtstart.year} 年农历生日🎂快乐! (age: {age})"
+                reminders_datetime = [
+                    dtstart - datetime.timedelta(days=days) for days in reminders
+                ]
                 add_event_to_calendar(
                     calendar=calendar,
                     dtstart=dtstart,
                     dtend=dtend,
                     summary=summary,
-                    reminders=reminders,
+                    reminders=reminders_datetime,
                     attendees=attendees,
                 )
                 event_count_lunar_birthday += 1
