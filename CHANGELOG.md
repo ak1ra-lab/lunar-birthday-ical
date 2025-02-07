@@ -1,3 +1,8 @@
+## v0.2.4 (2025-02-07)
+
+* use absolute datetime for reminders
+* update default reminders on config/example-lunar-birthday.yaml
+
 ## v0.2.3 (2025-02-06)
 
 - fix utils.get_logger setLevel
