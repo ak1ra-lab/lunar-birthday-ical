@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 # author: ak1ra
 # date: 2025-01-24
-# python3 -m pip install PyYAML icalendar lunar_python
-# https://github.com/collective/icalendar
-# https://github.com/6tail/lunar-python
 
 import argparse
 import time
 from pathlib import Path
+
+from lunar_python import Lunar, Solar
 
 from lunar_birthday_ical.ical import create_calendar
 from lunar_birthday_ical.utils import get_logger
@@ -20,16 +19,52 @@ def main() -> None:
         description="Generate iCal events for lunar birthday and cycle days."
     )
     parser.add_argument(
-        "input",
+        "config",
         type=Path,
-        help="input config.yaml, check config/example-lunar-birthday.yaml for example.",
+        nargs="?",
+        help="config file in YAML format, check config/example-lunar-birthday.yaml for example.",
+    )
+
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument(
+        "-L",
+        "--lunar-to-solar",
+        type=int,
+        nargs=3,
+        metavar=("YYYY", "MM", "DD"),
+        help="Convert lunar date to solar date, add minus sign before leap lunar month.",
+    )
+    group.add_argument(
+        "-S",
+        "--solar-to-lunar",
+        type=int,
+        nargs=3,
+        metavar=("YYYY", "MM", "DD"),
+        help="Convert solar date to lunar date.",
     )
     parser.add_argument(
         "-o", "--output", type=Path, help="Path to save the generated iCal file."
     )
 
     args = parser.parse_args()
-    config_file = Path(args.input)
+
+    if args.lunar_to_solar:
+        lunar = Lunar.fromYmd(*args.lunar_to_solar)
+        solar = lunar.getSolar()
+        logger.info("Lunar date %s is Solar %s", lunar.toString(), solar.toString())
+        return
+
+    if args.solar_to_lunar:
+        solar = Solar.fromYmd(*args.solar_to_lunar)
+        lunar = solar.getLunar()
+        logger.info("Solar date %s is Lunar %s", solar.toString(), lunar.toString())
+        return
+
+    if not args.config:
+        parser.print_help()
+        parser.exit()
+
+    config_file = Path(args.config)
     if not args.output:
         output = config_file.with_suffix(".ics")
     else:
