@@ -13,6 +13,7 @@ from icalendar import (
     vText,
 )
 
+from lunar_birthday_ical.config import default_config
 from lunar_birthday_ical.lunar import get_future_lunar_equivalent_date
 from lunar_birthday_ical.pastebin import pastebin_helper
 from lunar_birthday_ical.utils import get_logger
@@ -98,16 +99,21 @@ def add_event_to_calendar(
 
 def create_calendar(config_file: Path) -> None:
     with open(config_file, "r") as f:
-        config = yaml.safe_load(f)
+        # dict union operators requires Python 3.9+
+        # https://peps.python.org/pep-0584/
+        config = default_config | yaml.safe_load(f)
+        logger.debug("default_config => %s", default_config)
+        logger.debug("config => %s", config)
 
-    calendar_name = config_file.stem
-    timezone_name = config.get("global").get("timezone")
+    global_config = config.get("global")
+    timezone_name = global_config.get("timezone")
     try:
         timezone = zoneinfo.ZoneInfo(timezone_name)
     except Exception:
         logger.error("Invalid timezone: %s", timezone_name)
 
     calendar = Calendar()
+    calendar_name = config_file.stem
     calendar.add("PRODID", "-//ak1ra-lab//lunar-birthday-ical//EN")
     calendar.add("VERSION", "2.0")
     calendar.add("CALSCALE", "GREGORIAN")
@@ -115,31 +121,30 @@ def create_calendar(config_file: Path) -> None:
     calendar.add("X-WR-TIMEZONE", timezone)
 
     # 跳过开始时间在 skip_days 之前的事件
-    skip_days = config.get("global").get("skip_days")
+    skip_days = global_config.get("skip_days")
     now = datetime.datetime.now().replace(tzinfo=timezone)
     skip_days_datetime = now - datetime.timedelta(days=skip_days)
 
     for item in config.get("persons"):
-        username = item.get("username")
+        item_config = global_config | item
+        username = item_config.get("username")
         # YAML 似乎会自动将 YYYY-mm-dd 格式字符串转换成 datetime.date 类型
-        startdate = item.get("startdate")
-        event_time = item.get("event_time") or config.get("global").get("event_time")
+        startdate = item_config.get("startdate")
+        event_time = item_config.get("event_time")
         # 开始时间, 类型为 datetime.datetime
         start_datetime = get_local_datetime(startdate, event_time, timezone)
 
         # 事件持续时长
-        event_hours = datetime.timedelta(
-            hours=item.get("event_hours") or config.get("global").get("event_hours")
-        )
-        reminders = item.get("reminders") or config.get("global").get("reminders")
-        attendees = item.get("attendees") or config.get("global").get("attendees")
+        event_hours = datetime.timedelta(hours=item_config.get("event_hours"))
+        reminders = item_config.get("reminders")
+        attendees = item_config.get("attendees")
 
         # 最多创建 max_events 个事件
-        max_events = item.get("max_events") or config.get("global").get("max_events")
+        max_events = item_config.get("max_events")
 
         event_count = 0
-        max_days = item.get("max_days") or config.get("global").get("max_days")
-        interval = item.get("interval") or config.get("global").get("interval")
+        max_days = item_config.get("max_days")
+        interval = item_config.get("interval")
         # 添加 cycle days 事件
         for days in range(interval, max_days + 1, interval):
             # 整数日事件 将 start_datetime 加上间隔 days 即可
@@ -170,13 +175,11 @@ def create_calendar(config_file: Path) -> None:
             logger.debug("username %s cycle_days event_count %d", username, event_count)
 
         event_count_birthday, event_count_lunar_birthday = 0, 0
-        max_ages = item.get("max_ages") or config.get("global").get("max_ages")
+        max_ages = item_config.get("max_ages")
         for age in range(0, max_ages + 1):
             # 是否添加公历生日事件
             # bool 选项不能使用 or 来确定优先级
-            if item.get(
-                "solar_birthday", config.get("global").get("solar_birthday", False)
-            ):
+            if item_config.get("solar_birthday", False):
                 # 公历生日直接替换 start_datetime 的 年份 即可
                 event_datetime = start_datetime.replace(year=start_datetime.year + age)
                 # 跳过开始时间在 skip_days 之前的事件
@@ -208,9 +211,7 @@ def create_calendar(config_file: Path) -> None:
 
             # 是否添加农历生日事件
             # bool 选项不能使用 or 来确定优先级
-            if item.get(
-                "lunar_birthday", config.get("global").get("lunar_birthday", True)
-            ):
+            if item_config.get("lunar_birthday", True):
                 # 将给定 公历日期 转换为农历后计算对应农历月日在当前 age 的 公历日期
                 event_datetime = get_future_lunar_equivalent_date(start_datetime, age)
                 # 跳过开始时间在 skip_days 之前的事件

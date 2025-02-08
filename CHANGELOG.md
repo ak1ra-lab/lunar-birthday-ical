@@ -1,3 +1,8 @@
+## v0.3.2 (2025-02-09)
+
+- use dict Union Operators to overwride default_config
+- update the test case to also use dict Union
+
 ## v0.3.0 (2025-02-08)
 
 - disable pastebin on config/example-lunar-birthday.yaml

@@ -42,7 +42,7 @@ pastebin:
   name: ""
   password: ""
 
-# startdate is a past solar date, format is %Y-%m-%d
+# startdate is a solar date in the past, in the format %Y-%m-%d
 persons:
   - username: 张三
     startdate: 1989-06-03

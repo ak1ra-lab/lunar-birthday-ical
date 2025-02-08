@@ -1,11 +1,11 @@
 import datetime
 import zoneinfo
-
-import yaml
 from pathlib import Path
 
+import yaml
 from icalendar import Calendar, Event, vCalAddress
 
+from lunar_birthday_ical.config import default_config, tests_config
 from lunar_birthday_ical.ical import (
     add_attendees_to_event,
     add_event_to_calendar,
@@ -14,7 +14,6 @@ from lunar_birthday_ical.ical import (
     get_local_datetime,
     local_datetime_to_utc_datetime,
 )
-from tests.__init__ import config
 
 
 def test_get_local_datetime():
@@ -85,6 +84,8 @@ def test_add_event_to_calendar():
 def test_create_calendar(tmp_path: Path):
     calendar_name = "test-calendar"
     config_file = tmp_path / f"{calendar_name}.yaml"
+
+    config = default_config | tests_config
     config_file.write_text(yaml.safe_dump(config))
     expected_output_file = config_file.with_suffix(".ics")
 
