@@ -1,7 +1,4 @@
 global:
-  # str: 日历名称
-  calendar: example-lunar-birthday
-
   # str: timezone 为 iCal 的全局配置
   timezone: Asia/Shanghai
 

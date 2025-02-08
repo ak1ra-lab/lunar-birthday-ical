@@ -1,5 +1,7 @@
 import datetime
 import zoneinfo
+
+import yaml
 from pathlib import Path
 
 from icalendar import Calendar, Event, vCalAddress
@@ -81,11 +83,15 @@ def test_add_event_to_calendar():
 
 
 def test_create_calendar(tmp_path: Path):
-    output = tmp_path / "test.ics"
-    create_calendar(config, output)
+    calendar_name = "test-calendar"
+    config_file = tmp_path / f"{calendar_name}.yaml"
+    output = tmp_path / f"{calendar_name}.ics"
+    with config_file.open("w") as f:
+        f.write(yaml.safe_dump(config))
+    create_calendar(config_file, output)
     assert output.exists()
     with output.open("rb") as f:
         calendar_data = f.read()
     calendar = Calendar.from_ical(calendar_data)
     assert len(calendar.subcomponents) > 0
-    assert calendar.get("X-WR-CALNAME") == "Test Calendar"
+    assert calendar.get("X-WR-CALNAME") == calendar_name
