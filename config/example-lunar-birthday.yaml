@@ -1,35 +1,34 @@
 global:
-  # str: timezone 为 iCal 的全局配置
+  # str: iCal global timezone
   timezone: Asia/Shanghai
 
-  # int: 跳过开始时间在 skip_days 之前的事件
+  # int: Skip events that start before skip_days
   skip_days: 180
-  # int: 最多创建 max_events 个事件
+  # int: Create up to max_events events
   max_events: 20
 
-  # int: cycle_days 最大天数
+  # int: Maximum number of days for cycle_days
   max_days: 30000
-  # int: cycle_days 事件间隔天数
+  # int: Interval days for cycle_days events
   interval: 1000
-  # int: 生日事件的最大年龄
+  # int: Maximum age for birthday events
   max_ages: 80
 
   # bool: true | false
-  # 配置 startdate 是否是 出生日期
-  # bool 选项不能使用 or 来确定优先级
+  # Configure whether startdate is the birth date
   solar_birthday: false
   lunar_birthday: true
 
-  # str: VEVENT 事件的开始时间, 格式为 %H:%M:%S
-  # 时间为当地时间, 写入 iCal 时会转换为 UTC
-  # 注意用双引号括起来, 防止 YAML 自动格式转换
+  # str: Start time of VEVENT event, format is %H:%M:%S
+  # Time is local time, which will be converted to UTC in iCal
+  # Note to enclose the value in double quotes to prevent YAML automatic conversion
   event_time: "10:00:00"
-  # int: VEVENT 事件时长, 单位小时
+  # int: Duration of VEVENT event, in hours
   event_hours: 2
 
-  # []int: 分别提前 x 天创建提醒时间
+  # []int: Create reminders before x days of VEVENT event
   reminders: [1, 3]
-  # []str: VEVENT 事件参会人
+  # []str: VEVENT event attendees
   attendees:
     - charlie.zhang@example.com
     - delta.lee@example.com
@@ -37,7 +36,7 @@ global:
 # pastebin
 # https://github.com/SharzyL/pastebin-worker
 pastebin:
-  # bool: true | false, 是否启用 pastebin
+  # bool: true | false, whether to enable pastebin
   enabled: true
   baseurl: https://komj.uk
   # str: Supported units: s (seconds), m (minutes), h (hours), d (days), M (months).
@@ -45,7 +44,7 @@ pastebin:
   name: ""
   password: ""
 
-# startdate 为过去的某个日期, 格式为 %Y-%m-%d
+# startdate is a past solar date, format is %Y-%m-%d
 persons:
   - username: 张三
     startdate: 1989-06-03
