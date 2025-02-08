@@ -85,12 +85,13 @@ def test_add_event_to_calendar():
 def test_create_calendar(tmp_path: Path):
     calendar_name = "test-calendar"
     config_file = tmp_path / f"{calendar_name}.yaml"
-    output = tmp_path / f"{calendar_name}.ics"
-    with config_file.open("w") as f:
-        f.write(yaml.safe_dump(config))
-    create_calendar(config_file, output)
-    assert output.exists()
-    with output.open("rb") as f:
+    config_file.write_text(yaml.safe_dump(config))
+    expected_output_file = config_file.with_suffix(".ics")
+
+    create_calendar(config_file)
+    assert expected_output_file.exists()
+
+    with expected_output_file.open("rb") as f:
         calendar_data = f.read()
     calendar = Calendar.from_ical(calendar_data)
     assert len(calendar.subcomponents) > 0

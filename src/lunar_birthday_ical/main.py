@@ -16,13 +16,14 @@ logger = get_logger(__name__)
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Generate iCal events for lunar birthday and cycle days."
+        description="Generate iCal events and reminders for lunar birthday and cycle days."
     )
     parser.add_argument(
-        "config",
+        "config_files",
         type=Path,
-        nargs="?",
-        help="config file in YAML format, check config/example-lunar-birthday.yaml for example.",
+        nargs="*",
+        metavar="config.yaml",
+        help="config file for iCal, checkout config/example-lunar-birthday.yaml for example.",
     )
 
     group = parser.add_mutually_exclusive_group()
@@ -42,9 +43,6 @@ def main() -> None:
         metavar=("YYYY", "MM", "DD"),
         help="Convert solar date to lunar date.",
     )
-    parser.add_argument(
-        "-o", "--output", type=Path, help="Path to save the generated iCal file."
-    )
 
     args = parser.parse_args()
 
@@ -60,20 +58,15 @@ def main() -> None:
         logger.info("Solar date %s is Lunar %s", solar.toString(), lunar.toString())
         return
 
-    if not args.config:
+    if len(args.config_files) == 0:
         parser.print_help()
         parser.exit()
 
-    config_file = Path(args.config)
-    if not args.output:
-        output = config_file.with_suffix(".ics")
-    else:
-        output = Path(args.output)
-
-    start = time.perf_counter()
-    create_calendar(config_file, output)
-    elapsed = time.perf_counter() - start
-    logger.debug("iCal generation elapsed at %.6fs", elapsed)
+    for config_file in args.config_files:
+        start = time.perf_counter()
+        create_calendar(Path(config_file))
+        elapsed = time.perf_counter() - start
+        logger.debug("iCal generation elapsed at %.6fs", elapsed)
 
 
 if __name__ == "__main__":

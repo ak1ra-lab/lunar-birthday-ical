@@ -96,7 +96,7 @@ def add_event_to_calendar(
     calendar.add_component(event)
 
 
-def create_calendar(config_file: Path, output: Path) -> None:
+def create_calendar(config_file: Path) -> None:
     with open(config_file, "r") as f:
         config = yaml.safe_load(f)
 
@@ -241,6 +241,7 @@ def create_calendar(config_file: Path, output: Path) -> None:
                 )
 
     calendar_data = calendar.to_ical()
+    output = config_file.with_suffix(".ics")
     with output.open("wb") as f:
         f.write(calendar_data)
     logger.info("iCal file saved to %s", output)

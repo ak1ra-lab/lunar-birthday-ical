@@ -1,3 +1,8 @@
+## v0.3.0 (2025-02-08)
+
+- disable pastebin on config/example-lunar-birthday.yaml
+- multiple config files support
+
 ## v0.2.6 (2025-02-08)
 
 - translate README.md and config/example-lunar-birthday.yaml to English
