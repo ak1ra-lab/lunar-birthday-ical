@@ -1,3 +1,7 @@
+## v0.2.6 (2025-02-08)
+
+- translate README.md and config/example-lunar-birthday.yaml to English
+
 ## v0.2.5 (2025-02-08)
 
 - use Path(config_file).stem as calendar_name

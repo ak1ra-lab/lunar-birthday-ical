@@ -1,32 +1,35 @@
 # lunar-birthday-ical
 
-## 这是什么?
+## What is this?
 
-一个使用 Python 3 编写的用于创建农历生日事件的命令行工具.
+A command line tool written in Python 3 for creating lunar birthday events.
 
-`lunar-birthday-ical` 读入一个 YAML 配置文件, 生成 iCalendar 格式的 `.ics` 文件, 可选是否将日历上传到 pastebin, 方便直接订阅,
-示例配置文件请参考 [config/example-lunar-birthday.yaml](https://github.com/ak1ra-lab/lunar-birthday-ical/blob/master/config/example-lunar-birthday.yaml), 注释应该足够能解释每个选项分别是什么含义.
+`lunar-birthday-ical` reads a YAML configuration file and generates an iCalendar `.ics` file. Optionally, it can upload the calendar to pastebin for easy subscription. For an example configuration file, refer to [config/example-lunar-birthday.yaml](https://github.com/ak1ra-lab/lunar-birthday-ical/blob/master/config/example-lunar-birthday.yaml). The comments should be sufficient to explain the meaning of each option.
 
-可以使用 `-h` 或者 `--help` 选项查看命令行工具帮助信息,
+You can use the `-h` or `--help` option to view the command-line tool's help information.
 
 ```
 $ lunar-birthday-ical -h
-usage: lunar-birthday-ical [-h] [-o OUTPUT] input
+usage: lunar-birthday-ical [-h] [-L YYYY MM DD | -S YYYY MM DD] [-o OUTPUT] [config]
 
 Generate iCal events for lunar birthday and cycle days.
 
 positional arguments:
-  input                 input config.yaml, check config/example-lunar-birthday.yaml for example.
+  config                config file in YAML format, check config/example-lunar-birthday.yaml for example.
 
 options:
   -h, --help            show this help message and exit
+  -L YYYY MM DD, --lunar-to-solar YYYY MM DD
+                        Convert lunar date to solar date, add minus sign before leap lunar month.
+  -S YYYY MM DD, --solar-to-lunar YYYY MM DD
+                        Convert solar date to lunar date.
   -o OUTPUT, --output OUTPUT
                         Path to save the generated iCal file.
 ```
 
-## 安装
+## Installation
 
-推荐使用 [`pipx`](https://github.com/pypa/pipx) 来安装 Python 编写的命令行工具, 包括本项目,
+It is recommended to use [`pipx`](https://github.com/pypa/pipx) to install command-line tools written in Python, including this project.
 
 ```ShellSession
 $ pipx install lunar-birthday-ical
@@ -34,22 +37,16 @@ $ pipx install lunar-birthday-ical
   These apps are now globally available
     - lunar-birthday-ical
 done! ✨ 🌟 ✨
-
-$ lunar-birthday-ical config/example-lunar-birthday.yaml
-[2025-01-25 12:17:05,137][lunar_birthday_ical.ical][INFO] iCal file saved to config/example-lunar-birthday.ics
 ```
 
-## 关于 pastebin
+## About pastebin
 
-在 YAML 配置文件中可选配置是否同时将生成的 `.ics` 文件同时上传 pastebin, 该 pastebin 实例是 repo owner 运行的一个基于 Cloudflare worker 的 pastebin 服务, 实例所使用的代码是 [SharzyL/pastebin-worker](https://github.com/SharzyL/pastebin-worker).
+In the YAML configuration file, you can choose whether to upload the generated `.ics` file to pastebin. This pastebin instance is a Cloudflare worker-based pastebin service ([SharzyL/pastebin-worker](https://github.com/SharzyL/pastebin-worker)) run by the repository owner.
 
-如果选择启用 pastebin (`pastebin.enabled`), 在初次执行时, 可以保持 YAML 配置文件中的 `pastebin.name` 和 `pastebin.password` 为空, 命令执行时会自动上传, 上传成功后可以将标准输出中 `lunar_birthday_ical.pastebin` 日志行的 admin 中由 `:` 分隔的 `{{ pastebin.name }}` 和 `{{ pastebin.password }}` 手动填入配置文件, 这样下次再执行时就只会在原本的 URL 上更新, 而不会重新上传, 保持 URL 不变, 避免需要更新订阅日历的链接.
+If pastebin (`pastebin.enabled`) is enabled, you can leave `pastebin.name` and `pastebin.password` in the YAML configuration file empty on the first run. After executing the command, it will automatically upload, and upon successful upload, retrieve the `pastebin.name` and `pastebin.password` from the `admin` field in the `lunar_birthday_ical.pastebin` log line in the standard output (`pastebin.name` and `pastebin.password` are split with `:`, as shown in the output below with `XXXXXXXXXXXXXXXXXXXXXXXX` and `YYYYYYYYYYYYYYYYYYYYYYYY`). Manually fill these into the configuration file. This way, on subsequent executions, it will only update the existing URL instead of re-uploading, thus keeping the URL unchanged and avoiding the need to update the calendar URL.
 
-下方为启用 `pastebin.enabled` 后的命令行输出,
-
-```ShellSession
+```
 $ lunar-birthday-ical config/example-lunar-birthday.yaml
-[2025-01-25 12:17:05,137][lunar_birthday_ical.ical][INFO] iCal file saved to config/example-lunar-birthday.ics
-[2025-01-25 12:17:07,040][httpx][INFO] HTTP Request: POST https://komj.uk/ "HTTP/1.1 200 OK"
-[2025-01-25 12:17:07,041][lunar_birthday_ical.pastebin][INFO] {'url': 'https://komj.uk/{{ pastebin.name }}', 'suggestUrl': 'https://komj.uk/{{ pastebin.name }}/example-lunar-birthday.ics', 'admin': 'https://komj.uk/{{ pastebin.name }}:{{ pastebin.password }}', 'isPrivate': True, 'expire': None}
+[2025-02-08 15:37:54,747][lunar_birthday_ical.ical][INFO] iCal file saved to config/example-lunar-birthday.ics
+[2025-02-08 15:37:57,097][lunar_birthday_ical.pastebin][INFO] {'url': 'https://komj.uk/XXXXXXXXXXXXXXXXXXXXXXXX', 'suggestUrl': 'https://komj.uk/XXXXXXXXXXXXXXXXXXXXXXXX/example-lunar-birthday.ics', 'admin': 'https://komj.uk/XXXXXXXXXXXXXXXXXXXXXXXX:YYYYYYYYYYYYYYYYYYYYYYYY', 'isPrivate': True, 'expire': 604800}
 ```
