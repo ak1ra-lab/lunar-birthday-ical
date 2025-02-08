@@ -9,8 +9,6 @@ import argparse
 import time
 from pathlib import Path
 
-import yaml
-
 from lunar_birthday_ical.ical import create_calendar
 from lunar_birthday_ical.utils import get_logger
 
@@ -37,11 +35,8 @@ def main() -> None:
     else:
         output = Path(args.output)
 
-    with open(config_file, "r") as f:
-        config = yaml.safe_load(f)
-
     start = time.perf_counter()
-    create_calendar(config, output)
+    create_calendar(config_file, output)
     elapsed = time.perf_counter() - start
     logger.debug("iCal generation elapsed at %.6fs", elapsed)
 

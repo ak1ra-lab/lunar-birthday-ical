@@ -3,6 +3,7 @@ import uuid
 import zoneinfo
 from pathlib import Path
 
+import yaml
 from icalendar import (
     Alarm,
     Calendar,
@@ -95,8 +96,11 @@ def add_event_to_calendar(
     calendar.add_component(event)
 
 
-def create_calendar(config: dict, output: Path) -> None:
-    calendar_name = config.get("global").get("calendar")
+def create_calendar(config_file: Path, output: Path) -> None:
+    with open(config_file, "r") as f:
+        config = yaml.safe_load(f)
+
+    calendar_name = config_file.stem
     timezone_name = config.get("global").get("timezone")
     try:
         timezone = zoneinfo.ZoneInfo(timezone_name)
