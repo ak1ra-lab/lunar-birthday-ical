@@ -29,18 +29,16 @@ global:
   # []int: Create reminders before x days of VEVENT event
   reminders: [1, 3]
   # []str: VEVENT event attendees
-  attendees:
-    - charlie.zhang@example.com
-    - delta.lee@example.com
+  attendees: []
 
 # pastebin
 # https://github.com/SharzyL/pastebin-worker
 pastebin:
   # bool: true | false, whether to enable pastebin
-  enabled: true
+  enabled: false
   baseurl: https://komj.uk
   # str: Supported units: s (seconds), m (minutes), h (hours), d (days), M (months).
-  expiration: "7d"
+  expiration: ""
   name: ""
   password: ""
 
