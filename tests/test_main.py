@@ -4,8 +4,8 @@ from pathlib import Path
 import pytest
 import yaml
 
+from lunar_birthday_ical.config import default_config, tests_config
 from lunar_birthday_ical.main import main
-from tests.__init__ import config
 
 
 def test_main_no_args(monkeypatch: pytest.MonkeyPatch):
@@ -18,6 +18,7 @@ def test_main_no_args(monkeypatch: pytest.MonkeyPatch):
 def test_main_single_config_file(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
     calendar_name = "test-calendar"
     config_file = tmp_path / f"{calendar_name}.yaml"
+    config = default_config | tests_config
     config_file.write_text(yaml.safe_dump(config))
     expected_output_file = config_file.with_suffix(".ics")
 
@@ -30,6 +31,7 @@ def test_main_single_config_file(monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 def test_main_multiple_config_files(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
     calendar_name = "test-calendar"
     config_file = tmp_path / f"{calendar_name}.yaml"
+    config = default_config | tests_config
     config_file.write_text(yaml.safe_dump(config))
     expected_output_file = config_file.with_suffix(".ics")
 
