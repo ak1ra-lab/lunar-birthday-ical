@@ -1,7 +1,12 @@
+## v0.2.5 (2025-02-08)
+
+- use Path(config_file).stem as calendar_name
+- add `--lunar-to-solar` and `--solar-to-lunar` option
+
 ## v0.2.4 (2025-02-07)
 
-* use absolute datetime for reminders
-* update default reminders on config/example-lunar-birthday.yaml
+- use absolute datetime for reminders
+- update default reminders on config/example-lunar-birthday.yaml
 
 ## v0.2.3 (2025-02-06)
 
