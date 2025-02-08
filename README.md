@@ -10,12 +10,12 @@ You can use the `-h` or `--help` option to view the command-line tool's help inf
 
 ```
 $ lunar-birthday-ical -h
-usage: lunar-birthday-ical [-h] [-L YYYY MM DD | -S YYYY MM DD] [-o OUTPUT] [config]
+usage: lunar-birthday-ical [-h] [-L YYYY MM DD | -S YYYY MM DD] [config.yaml ...]
 
-Generate iCal events for lunar birthday and cycle days.
+Generate iCal events and reminders for lunar birthday and cycle days.
 
 positional arguments:
-  config                config file in YAML format, check config/example-lunar-birthday.yaml for example.
+  config.yaml           config file for iCal, checkout config/example-lunar-birthday.yaml for example.
 
 options:
   -h, --help            show this help message and exit
@@ -23,8 +23,6 @@ options:
                         Convert lunar date to solar date, add minus sign before leap lunar month.
   -S YYYY MM DD, --solar-to-lunar YYYY MM DD
                         Convert solar date to lunar date.
-  -o OUTPUT, --output OUTPUT
-                        Path to save the generated iCal file.
 ```
 
 ## Installation
