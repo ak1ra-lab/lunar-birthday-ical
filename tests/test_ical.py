@@ -3,9 +3,13 @@ import zoneinfo
 from pathlib import Path
 
 import yaml
-from icalendar import Calendar, Event, vCalAddress
+from icalendar import Calendar, Event, vCalAddress, vText
 
-from lunar_birthday_ical.config import default_config, tests_config
+from lunar_birthday_ical.config import (
+    default_config,
+    tests_config,
+    tests_config_overwride_global,
+)
 from lunar_birthday_ical.ical import (
     add_attendees_to_event,
     add_event_to_calendar,
@@ -14,6 +18,7 @@ from lunar_birthday_ical.ical import (
     get_local_datetime,
     local_datetime_to_utc_datetime,
 )
+from lunar_birthday_ical.utils import deep_merge_iterative
 
 
 def test_get_local_datetime():
@@ -85,7 +90,7 @@ def test_create_calendar(tmp_path: Path):
     calendar_name = "test-calendar"
     config_file = tmp_path / f"{calendar_name}.yaml"
 
-    config = default_config | tests_config
+    config = deep_merge_iterative(default_config, tests_config)
     config_file.write_text(yaml.safe_dump(config))
     expected_output_file = config_file.with_suffix(".ics")
 
@@ -97,3 +102,23 @@ def test_create_calendar(tmp_path: Path):
     calendar = Calendar.from_ical(calendar_data)
     assert len(calendar.subcomponents) > 0
     assert calendar.get("X-WR-CALNAME") == calendar_name
+
+
+def test_create_calendar_with_override_timezone(tmp_path: Path):
+    calendar_name = "test-calendar-override-global"
+    config_file = tmp_path / f"{calendar_name}.yaml"
+
+    config = deep_merge_iterative(default_config, tests_config_overwride_global)
+    config_file.write_text(yaml.safe_dump(config))
+    expected_output_file = config_file.with_suffix(".ics")
+
+    create_calendar(config_file)
+    assert expected_output_file.exists()
+
+    with expected_output_file.open("rb") as f:
+        calendar_data = f.read()
+    calendar = Calendar.from_ical(calendar_data)
+
+    assert len(calendar.subcomponents) > 0
+    assert calendar.get("X-WR-CALNAME") == calendar_name
+    assert calendar.get("X-WR-TIMEZONE") == vText(b"America/Los_Angeles")
