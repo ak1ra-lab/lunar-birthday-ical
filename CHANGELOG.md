@@ -1,7 +1,7 @@
 ## v0.3.2 (2025-02-09)
 
-- use dict Union Operators to overwride default_config
-- update the test case to also use dict Union
+- use deep_merge_iterative instead of dict union to overwride default_config
+- add argcomplete support for lunar-birthday-ical
 
 ## v0.3.0 (2025-02-08)
 

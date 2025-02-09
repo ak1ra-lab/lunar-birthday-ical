@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
+# PYTHON_ARGCOMPLETE_OK
 # author: ak1ra
 # date: 2025-01-24
 
 import argparse
 import time
-
 from pathlib import Path
 
+import argcomplete
 from lunar_python import Lunar, Solar
 
 from lunar_birthday_ical.ical import create_calendar
@@ -45,6 +46,7 @@ def main() -> None:
         help="Convert solar date to lunar date.",
     )
 
+    argcomplete.autocomplete(parser)
     args = parser.parse_args()
 
     if args.lunar_to_solar:
