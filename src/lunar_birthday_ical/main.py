@@ -4,6 +4,7 @@
 # date: 2025-01-24
 
 import argparse
+import logging
 import time
 from pathlib import Path
 
@@ -12,8 +13,6 @@ from lunar_python import Lunar, Solar
 
 from lunar_birthday_ical.ical import create_calendar
 from lunar_birthday_ical.utils import get_logger
-
-logger = get_logger(__name__)
 
 
 def main() -> None:
@@ -45,9 +44,21 @@ def main() -> None:
         metavar=("YYYY", "MM", "DD"),
         help="Convert solar date to lunar date.",
     )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="Enable debug logging.",
+    )
 
     argcomplete.autocomplete(parser)
     args = parser.parse_args()
+
+    if args.verbose:
+        logging.root.setLevel(logging.DEBUG)
+    else:
+        logging.root.setLevel(logging.INFO)
+    logger = get_logger(__name__)
 
     if args.lunar_to_solar:
         lunar = Lunar.fromYmd(*args.lunar_to_solar)
