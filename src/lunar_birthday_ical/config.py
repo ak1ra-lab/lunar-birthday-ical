@@ -39,3 +39,23 @@ tests_config = {
         },
     ],
 }
+
+tests_config_overwride_global = {
+    "global": {
+        "timezone": "America/Los_Angeles",
+    },
+    "persons": [
+        {
+            "username": "张三",
+            "startdate": "1989-06-03",
+            "solar_birthday": False,
+            "lunar_birthday": True,
+        },
+        {
+            "username": "李四",
+            "startdate": "2006-02-01",
+            "solar_birthday": True,
+            "lunar_birthday": False,
+        },
+    ],
+}

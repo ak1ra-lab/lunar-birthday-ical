@@ -16,7 +16,7 @@ from icalendar import (
 from lunar_birthday_ical.config import default_config
 from lunar_birthday_ical.lunar import get_future_lunar_equivalent_date
 from lunar_birthday_ical.pastebin import pastebin_helper
-from lunar_birthday_ical.utils import get_logger
+from lunar_birthday_ical.utils import get_logger, deep_merge_iterative
 
 logger = get_logger(__name__)
 
@@ -99,9 +99,7 @@ def add_event_to_calendar(
 
 def create_calendar(config_file: Path) -> None:
     with open(config_file, "r") as f:
-        # dict union operators requires Python 3.9+
-        # https://peps.python.org/pep-0584/
-        config = default_config | yaml.safe_load(f)
+        config = deep_merge_iterative(default_config, yaml.safe_load(f))
         logger.debug("default_config => %s", default_config)
         logger.debug("config => %s", config)
 
@@ -126,7 +124,7 @@ def create_calendar(config_file: Path) -> None:
     skip_days_datetime = now - datetime.timedelta(days=skip_days)
 
     for item in config.get("persons"):
-        item_config = global_config | item
+        item_config = deep_merge_iterative(global_config, item)
         username = item_config.get("username")
         # YAML 似乎会自动将 YYYY-mm-dd 格式字符串转换成 datetime.date 类型
         startdate = item_config.get("startdate")
