@@ -209,7 +209,7 @@ def create_calendar(config_file: Path) -> None:
 
             # 是否添加农历生日事件
             # bool 选项不能使用 or 来确定优先级
-            if item_config.get("lunar_birthday", True):
+            if item_config.get("lunar_birthday", False):
                 # 将给定 公历日期 转换为农历后计算对应农历月日在当前 age 的 公历日期
                 event_datetime = get_future_lunar_equivalent_date(start_datetime, age)
                 # 跳过开始时间在 skip_days 之前的事件
