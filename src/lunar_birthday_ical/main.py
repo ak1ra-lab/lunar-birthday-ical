@@ -67,13 +67,13 @@ def main() -> None:
         lunar = Lunar.fromYmd(*args.lunar_to_solar)
         solar = lunar.getSolar()
         logger.info("Lunar date %s is Solar %s", lunar.toString(), solar.toString())
-        return
+        parser.exit()
 
     if args.solar_to_lunar:
         solar = Solar.fromYmd(*args.solar_to_lunar)
         lunar = solar.getLunar()
         logger.info("Solar date %s is Lunar %s", solar.toString(), lunar.toString())
-        return
+        parser.exit()
 
     if len(args.config_files) == 0:
         parser.print_help()
