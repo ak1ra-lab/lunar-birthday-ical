@@ -1,3 +1,11 @@
+## v0.3.3 (2025-02-10)
+
+* set lunar_birthday to False on ical.py
+* logging: enrich get_logger on utils.py
+* logging: use dictConfig instead of get_logger
+* logging: remove unnecessary logs
+* tests: ignore caplog on tests/test_main.py
+
 ## v0.3.2 (2025-02-09)
 
 - use deep_merge_iterative instead of dict union to overwride default_config
