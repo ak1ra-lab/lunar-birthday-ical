@@ -1,3 +1,8 @@
+## v0.3.5 (2025-02-10)
+
+- move skip_days to person item config
+- update and optimize README.md
+
 ## v0.3.4 (2025-02-10)
 
 - bug: fix log_dir not exists
