@@ -13,7 +13,7 @@ def test_main_no_args(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setattr(sys, "argv", ["main.py"])
     with pytest.raises(SystemExit) as excinfo:
         main()
-    assert excinfo.value.code == 0
+        assert excinfo.value.code == 0
 
 
 def test_main_single_config_file(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
@@ -50,7 +50,7 @@ def test_main_lunar_to_solar(monkeypatch: pytest.MonkeyPatch):
 
     with pytest.raises(SystemExit) as excinfo:
         main()
-    assert excinfo.value.code == 0
+        assert excinfo.value.code == 0
 
 
 def test_main_solar_to_lunar(monkeypatch: pytest.MonkeyPatch):
@@ -61,7 +61,7 @@ def test_main_solar_to_lunar(monkeypatch: pytest.MonkeyPatch):
 
     with pytest.raises(SystemExit) as excinfo:
         main()
-    assert excinfo.value.code == 0
+        assert excinfo.value.code == 0
 
 
 def test_main_lunar_leap_month_to_solar(monkeypatch: pytest.MonkeyPatch):
@@ -72,4 +72,4 @@ def test_main_lunar_leap_month_to_solar(monkeypatch: pytest.MonkeyPatch):
 
     with pytest.raises(SystemExit) as excinfo:
         main()
-    assert excinfo.value.code == 0
+        assert excinfo.value.code == 0
