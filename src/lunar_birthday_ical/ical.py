@@ -122,9 +122,7 @@ def create_calendar(config_file: Path) -> None:
     calendar.add("X-WR-TIMEZONE", timezone)
 
     # 跳过开始时间在 skip_days 之前的事件
-    skip_days = global_config.get("skip_days")
     now = datetime.datetime.now().replace(tzinfo=timezone)
-    skip_days_datetime = now - datetime.timedelta(days=skip_days)
 
     for item in config.get("persons"):
         item_config = deep_merge_iterative(global_config, item)
@@ -139,6 +137,10 @@ def create_calendar(config_file: Path) -> None:
         event_hours = datetime.timedelta(hours=item_config.get("event_hours"))
         reminders = item_config.get("reminders")
         attendees = item_config.get("attendees")
+
+        # 跳过开始时间在 skip_days 之前的事件
+        skip_days = item_config.get("skip_days")
+        skip_days_datetime = now - datetime.timedelta(days=skip_days)
 
         # 最多创建 max_events 个事件
         max_events = item_config.get("max_events")
