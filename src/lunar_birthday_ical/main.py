@@ -80,10 +80,11 @@ def main() -> None:
         parser.exit()
 
     for config_file in args.config_files:
+        logger.debug("Loading config file %s", config_file)
         start = time.perf_counter()
         create_calendar(Path(config_file))
         elapsed = time.perf_counter() - start
-        logger.debug("iCal generation elapsed at %.6fs", elapsed)
+        logger.debug("iCal generation elapsed at %.6fs for %s", elapsed, config_file)
 
 
 if __name__ == "__main__":
