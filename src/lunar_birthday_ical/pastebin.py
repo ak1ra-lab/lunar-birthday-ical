@@ -1,10 +1,9 @@
+import logging
 from pathlib import Path
 
 import httpx
 
-from lunar_birthday_ical.utils import get_logger
-
-logger = get_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def pastebin_upload(

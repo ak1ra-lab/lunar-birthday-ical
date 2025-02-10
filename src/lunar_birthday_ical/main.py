@@ -5,14 +5,17 @@
 
 import argparse
 import logging
+import logging.config
 import time
 from pathlib import Path
 
 import argcomplete
 from lunar_python import Lunar, Solar
 
+from lunar_birthday_ical.config import logging_config
 from lunar_birthday_ical.ical import create_calendar
-from lunar_birthday_ical.utils import get_logger
+
+logger = logging.getLogger(__name__)
 
 
 def main() -> None:
@@ -54,11 +57,11 @@ def main() -> None:
     argcomplete.autocomplete(parser)
     args = parser.parse_args()
 
+    logging.config.dictConfig(logging_config)
     if args.verbose:
         logging.root.setLevel(logging.DEBUG)
     else:
         logging.root.setLevel(logging.INFO)
-    logger = get_logger(__name__)
 
     if args.lunar_to_solar:
         lunar = Lunar.fromYmd(*args.lunar_to_solar)

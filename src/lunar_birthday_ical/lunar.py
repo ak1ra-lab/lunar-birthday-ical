@@ -1,10 +1,9 @@
 import datetime
+import logging
 
 from lunar_python import Lunar, LunarYear
 
-from lunar_birthday_ical.utils import get_logger
-
-logger = get_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def get_future_lunar_equivalent_date(
