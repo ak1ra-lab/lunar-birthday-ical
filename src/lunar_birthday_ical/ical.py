@@ -100,8 +100,10 @@ def add_event_to_calendar(
 
 def create_calendar(config_file: Path) -> None:
     with open(config_file, "r") as f:
-        config = deep_merge_iterative(default_config, yaml.safe_load(f))
+        yaml_config = yaml.safe_load(f)
+        config = deep_merge_iterative(default_config, yaml_config)
         logger.debug("default_config => %s", default_config)
+        logger.debug("yaml_config => %s", yaml_config)
         logger.debug("config => %s", config)
 
     global_config = config.get("global")
@@ -171,7 +173,6 @@ def create_calendar(config_file: Path) -> None:
                 attendees=attendees,
             )
             event_count += 1
-            logger.debug("username %s cycle_days event_count %d", username, event_count)
 
         event_count_birthday, event_count_lunar_birthday = 0, 0
         max_ages = item_config.get("max_ages")
@@ -202,11 +203,6 @@ def create_calendar(config_file: Path) -> None:
                     attendees=attendees,
                 )
                 event_count_birthday += 1
-                logger.debug(
-                    "username %s solar_birthday event_count %d",
-                    username,
-                    event_count_birthday,
-                )
 
             # 是否添加农历生日事件
             # bool 选项不能使用 or 来确定优先级
@@ -234,17 +230,12 @@ def create_calendar(config_file: Path) -> None:
                     attendees=attendees,
                 )
                 event_count_lunar_birthday += 1
-                logger.debug(
-                    "username %s lunar_birthday event_count %d",
-                    username,
-                    event_count_lunar_birthday,
-                )
 
     calendar_data = calendar.to_ical()
     output = config_file.with_suffix(".ics")
     with output.open("wb") as f:
         f.write(calendar_data)
-    logger.info("iCal file saved to %s", output)
+    logger.info("iCal saved to %s", output)
 
     if config.get("pastebin").get("enabled", False):
         pastebin_helper(config, output)
