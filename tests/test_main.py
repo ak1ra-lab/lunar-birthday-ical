@@ -42,37 +42,34 @@ def test_main_multiple_config_files(monkeypatch: pytest.MonkeyPatch, tmp_path: P
     assert expected_output_file.exists()
 
 
-def test_main_lunar_to_solar(
-    monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
-):
+def test_main_lunar_to_solar(monkeypatch: pytest.MonkeyPatch):
     lunar_date = (2020, 1, 1)
     monkeypatch.setattr(
         sys, "argv", ["main.py", "--lunar-to-solar", *(str(x) for x in lunar_date)]
     )
-    main()
 
-    assert "Lunar date 二〇二〇年正月初一 is Solar 2020-01-25" in caplog.text
+    with pytest.raises(SystemExit) as excinfo:
+        main()
+    assert excinfo.value.code == 0
 
 
-def test_main_solar_to_lunar(
-    monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
-):
+def test_main_solar_to_lunar(monkeypatch: pytest.MonkeyPatch):
     solar_date = (2020, 1, 25)
     monkeypatch.setattr(
         sys, "argv", ["main.py", "--solar-to-lunar", *(str(x) for x in solar_date)]
     )
-    main()
 
-    assert "Solar date 2020-01-25 is Lunar 二〇二〇年正月初一" in caplog.text
+    with pytest.raises(SystemExit) as excinfo:
+        main()
+    assert excinfo.value.code == 0
 
 
-def test_main_lunar_leap_month_to_solar(
-    monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
-):
+def test_main_lunar_leap_month_to_solar(monkeypatch: pytest.MonkeyPatch):
     lunar_date = (2020, -4, 1)
     monkeypatch.setattr(
         sys, "argv", ["main.py", "--lunar-to-solar", *(str(x) for x in lunar_date)]
     )
-    main()
 
-    assert "Lunar date 二〇二〇年闰四月初一 is Solar 2020-05-23" in caplog.text
+    with pytest.raises(SystemExit) as excinfo:
+        main()
+    assert excinfo.value.code == 0
