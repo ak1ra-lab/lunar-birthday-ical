@@ -12,7 +12,7 @@ from pathlib import Path
 import argcomplete
 from lunar_python import Lunar, Solar
 
-from lunar_birthday_ical.config import logging_config
+from lunar_birthday_ical.config import log_dir, logging_config
 from lunar_birthday_ical.ical import create_calendar
 
 logger = logging.getLogger(__name__)
@@ -56,6 +56,8 @@ def main() -> None:
 
     argcomplete.autocomplete(parser)
     args = parser.parse_args()
+
+    log_dir.mkdir(parents=True, exist_ok=True)
 
     logging.config.dictConfig(logging_config)
     if args.verbose:
