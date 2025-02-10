@@ -1,4 +1,5 @@
 import datetime
+import logging
 import uuid
 import zoneinfo
 from pathlib import Path
@@ -16,9 +17,9 @@ from icalendar import (
 from lunar_birthday_ical.config import default_config
 from lunar_birthday_ical.lunar import get_future_lunar_equivalent_date
 from lunar_birthday_ical.pastebin import pastebin_helper
-from lunar_birthday_ical.utils import get_logger, deep_merge_iterative
+from lunar_birthday_ical.utils import deep_merge_iterative
 
-logger = get_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def get_local_datetime(
