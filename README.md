@@ -76,3 +76,5 @@ The response from the pastebin server looks like this:
 Extract `XXXXXXXXXXXXXXXXXXXXXXXX` as `pastebin.name` and `YYYYYYYYYYYYYYYYYYYYYYYY` as `pastebin.password`.
 
 The `suggestUrl` in the response can be subscribed to by the Calendar App.
+
+**Privacy Statement**: All files uploaded to https://komj.uk can theoretically be viewed by the repository owner, even you are in private mode, although I would not normally view it. If you mind, please do not enable the `pastebin.enabled` option.
