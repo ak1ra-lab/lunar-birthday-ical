@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 
 def pastebin_upload(
-    baseurl: str,
+    base_url: str,
     file: Path,
     expiration: int | str = 0,
 ) -> httpx.Response:
@@ -17,7 +17,7 @@ def pastebin_upload(
     if expiration:
         data["e"] = expiration
 
-    response = httpx.post(f"{baseurl}/", data=data, files=files)
+    response = httpx.post(f"{base_url}/", data=data, files=files)
     return response
 
 
@@ -36,12 +36,12 @@ def pastebin_update(
 
 
 def pastebin_helper(config: dict, file: Path) -> None:
-    baseurl = config.get("pastebin").get("baseurl")
+    base_url = config.get("pastebin").get("base_url")
     admin_url = config.get("pastebin").get("admin_url")
     expiration = config.get("pastebin").get("expiration")
     if not admin_url:
         response = pastebin_upload(
-            baseurl=baseurl,
+            base_url=base_url,
             file=file,
             expiration=expiration,
         )
