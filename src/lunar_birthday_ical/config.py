@@ -60,8 +60,8 @@ default_config = {
         "enabled": False,
         "baseurl": "https://komj.uk",
         "expiration": "",
-        "name": "",
-        "password": "",
+        "admin_url": "",
+        "suggest_url": "",
     },
     "persons": [],
 }

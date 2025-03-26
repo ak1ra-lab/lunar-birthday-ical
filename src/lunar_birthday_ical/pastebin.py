@@ -12,7 +12,7 @@ def pastebin_upload(
     expiration: int | str = 0,
 ) -> httpx.Response:
     files = {"c": open(file, "rb")}
-    # 强制使用 private mode
+    # private mode by default
     data = {"p": True}
     if expiration:
         data["e"] = expiration
@@ -22,39 +22,33 @@ def pastebin_upload(
 
 
 def pastebin_update(
-    baseurl: str,
-    name: str,
-    password: str,
+    admin_url: str,
     file: Path,
     expiration: int | str = 0,
 ) -> httpx.Response:
-    url = f"{baseurl}/{name}:{password}"
     files = {"c": open(file, "rb")}
     data = {}
     if expiration:
         data["e"] = expiration
 
-    response = httpx.put(url, data=data, files=files)
+    response = httpx.put(admin_url, data=data, files=files)
     return response
 
 
 def pastebin_helper(config: dict, file: Path) -> None:
-    pastebin_url = config.get("pastebin").get("baseurl")
-    pastebin_name = config.get("pastebin").get("name")
-    pastebin_password = config.get("pastebin").get("password")
-    pastebin_expiration = config.get("pastebin").get("expiration")
-    if not pastebin_password:
+    baseurl = config.get("pastebin").get("baseurl")
+    admin_url = config.get("pastebin").get("admin_url")
+    expiration = config.get("pastebin").get("expiration")
+    if not admin_url:
         response = pastebin_upload(
-            baseurl=pastebin_url,
+            baseurl=baseurl,
             file=file,
-            expiration=pastebin_expiration,
+            expiration=expiration,
         )
     else:
         response = pastebin_update(
-            baseurl=pastebin_url,
-            name=pastebin_name,
-            password=pastebin_password,
+            admin_url=admin_url,
             file=file,
-            expiration=pastebin_expiration,
+            expiration=expiration,
         )
     logger.info(response.json())

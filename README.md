@@ -6,7 +6,7 @@ A command line tool written in Python 3 for creating lunar birthday events.
 
 `lunar-birthday-ical` reads a YAML configuration file and generates an iCalendar `.ics` file. Optionally, it can upload the calendar to pastebin for easy subscription. For an full example configuration file, refer to [config/example-lunar-birthday.yaml](https://github.com/ak1ra-lab/lunar-birthday-ical/blob/master/config/example-lunar-birthday.yaml), not all fields are required in the `config/example-lunar-birthday.yaml`. The comments should be sufficient to explain the meaning of each option.
 
-The minimal configuration file can only contain the `persons: []` field, with other fields left as default, for example:
+The minimal configuration file can only contain the `[]persons` field, with other fields left as default, for example:
 
 ```yaml
 persons:
@@ -59,7 +59,7 @@ done! ✨ 🌟 ✨
 
 In the YAML configuration file, you can choose whether to upload the generated `.ics` file to pastebin. This pastebin instance is a Cloudflare worker-based pastebin service ([SharzyL/pastebin-worker](https://github.com/SharzyL/pastebin-worker)) run by the repository owner.
 
-When the `pastebin.enabled` option is set to `true`, you can leave `pastebin.name` and `pastebin.password` empty on the first run. After that, extract `pastebin.name` and `pastebin.password` from the admin field in the response from the pastebin server.
+When the `pastebin.enabled` option is set to `true`, you can leave `pastebin.admin_url` empty for the first run. After that, set `pastebin.admin_url` url from the `.admin` field in the response from the pastebin server.
 
 The response from the pastebin server looks like this:
 
@@ -73,6 +73,4 @@ The response from the pastebin server looks like this:
 }
 ```
 
-Extract `XXXXXXXXXXXXXXXXXXXXXXXX` as `pastebin.name` and `YYYYYYYYYYYYYYYYYYYYYYYY` as `pastebin.password`.
-
-The `suggestUrl` in the response can be subscribed to by the Calendar App.
+The `.suggestUrl` can be used by any Calendar App.
