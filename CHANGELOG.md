@@ -1,3 +1,9 @@
+## v0.3.6 (2025-03-26)
+
+- nox: add ruff check --fix and format
+- pastebin: replace name and password with admin_user
+- pastebin: replace baseurl with base_url
+
 ## v0.3.5 (2025-02-10)
 
 - move skip_days to person item config
