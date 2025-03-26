@@ -58,7 +58,7 @@ default_config = {
     },
     "pastebin": {
         "enabled": False,
-        "baseurl": "https://komj.uk",
+        "base_url": "https://komj.uk",
         "expiration": "",
         "admin_url": "",
         "suggest_url": "",
