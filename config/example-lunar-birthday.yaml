@@ -35,8 +35,8 @@ global:
   attendees: []
 
 # All fields under `pastebin` are optional
-# If `pastebin.enabled` are true, the `pastebin.name` and `pastebin.password` are not required for the first run
-# Extract `pastebin.name` and `pastebin.password` from the admin field in the response from the pastebin server
+# When the `pastebin.enabled` option is set to `true`, you can leave `pastebin.admin_url` empty for the first run.
+# After that, set `pastebin.admin_url` url from the `.admin` field in the response from the pastebin server.
 pastebin:
   # bool: true | false, whether to enable pastebin
   enabled: false
@@ -44,9 +44,10 @@ pastebin:
   baseurl: https://komj.uk
   # str: Supported units: s (seconds), m (minutes), h (hours), d (days), M (months).
   expiration: ""
-  # str: name and password are not required for the first run
-  name: ""
-  password: ""
+  # str: admin_url are not required for the first run
+  admin_url: ""
+  # str: suggest_url can be used by any Calendar App
+  suggest_url: ""
 
 # `username` and `startdate` are required for each person, `solar_birthday` and `lunar_birthday` are optional
 persons:
