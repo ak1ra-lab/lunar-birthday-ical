@@ -66,7 +66,7 @@ def main() -> None:
         parser.exit()
 
     for config_file in args.config_files:
-        logger.debug("Loading config file %s", config_file)
+        logger.debug("loading config file %s", config_file)
         start = time.perf_counter()
         create_calendar(Path(config_file))
         elapsed = time.perf_counter() - start

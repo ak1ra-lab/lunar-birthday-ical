@@ -1,3 +1,4 @@
+import json
 import logging
 from pathlib import Path
 
@@ -51,4 +52,4 @@ def pastebin_helper(config: dict, file: Path) -> None:
             file=file,
             expiration=expiration,
         )
-    logger.info(response.json())
+    logger.info(json.dumps(response.json(), ensure_ascii=False))

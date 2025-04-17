@@ -1,4 +1,5 @@
 import datetime
+import json
 import logging
 import uuid
 import zoneinfo
@@ -101,12 +102,13 @@ def add_event_to_calendar(
 def create_calendar(config_file: Path) -> None:
     with open(config_file, "r") as f:
         yaml_config = yaml.safe_load(f)
-        config = deep_merge_iterative(default_config, yaml_config)
-        logger.debug("default_config => %s", default_config)
-        logger.debug("yaml_config => %s", yaml_config)
-        logger.debug("config => %s", config)
+        merged_config = deep_merge_iterative(default_config, yaml_config)
+        logger.debug(
+            "merged_config=%s",
+            json.dumps(merged_config, ensure_ascii=False, default=str),
+        )
 
-    global_config = config.get("global")
+    global_config = merged_config.get("global")
     timezone_name = global_config.get("timezone")
     try:
         timezone = zoneinfo.ZoneInfo(timezone_name)
@@ -124,7 +126,7 @@ def create_calendar(config_file: Path) -> None:
     # 跳过开始时间在 skip_days 之前的事件
     now = datetime.datetime.now().replace(tzinfo=timezone)
 
-    for item in config.get("persons"):
+    for item in merged_config.get("persons"):
         item_config = deep_merge_iterative(global_config, item)
         username = item_config.get("username")
         # YAML 似乎会自动将 YYYY-mm-dd 格式字符串转换成 datetime.date 类型
@@ -239,5 +241,5 @@ def create_calendar(config_file: Path) -> None:
         f.write(calendar_data)
     logger.info("iCal saved to %s", output)
 
-    if config.get("pastebin").get("enabled", False):
-        pastebin_helper(config, output)
+    if merged_config.get("pastebin").get("enabled", False):
+        pastebin_helper(merged_config, output)
