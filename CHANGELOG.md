@@ -1,3 +1,8 @@
+## v0.3.7 (2025-04-25)
+
+- logging: implement setup_logger in logging.py
+- logging: use json.dumps() on json log line
+
 ## v0.3.6 (2025-03-26)
 
 - nox: add ruff check --fix and format
