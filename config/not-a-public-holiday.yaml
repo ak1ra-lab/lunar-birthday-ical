@@ -12,7 +12,7 @@ global:
   # int: year_start
   year_start: 2025
   # int: year_end
-  year_end: 2042
+  year_end: 2030
 
 # All fields under 'pastebin' are optional
 pastebin:

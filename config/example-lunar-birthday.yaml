@@ -9,7 +9,7 @@ global:
   # int: year_start
   year_start: 2025
   # int: year_end
-  year_end: 2042
+  year_end: 2030
 
   # int: Maximum number of days for integer_days
   days_max: 30000

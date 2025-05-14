@@ -3,7 +3,7 @@ default_config = {
         "timezone": "Asia/Shanghai",
         "holiday_keys": [],
         "year_start": 2025,
-        "year_end": 2042,
+        "year_end": 2030,
         "days_max": 30000,
         "days_interval": 1000,
         "event_keys": [],
