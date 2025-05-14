@@ -6,19 +6,20 @@ A command line tool written in Python 3 for creating lunar birthday events.
 
 `lunar-birthday-ical` reads a YAML configuration file and generates an iCalendar `.ics` file. Optionally, it can upload the calendar to pastebin for easy subscription. For an full example configuration file, refer to [config/example-lunar-birthday.yaml](https://github.com/ak1ra-lab/lunar-birthday-ical/blob/master/config/example-lunar-birthday.yaml), not all fields are required in the `config/example-lunar-birthday.yaml`. The comments should be sufficient to explain the meaning of each option.
 
-The minimal configuration file can only contain the `[]persons` field, with other fields left as default, for example:
+The minimal configuration file can only contain the `[]events` field, with other fields left as default, for example:
 
 ```yaml
-persons:
-  - username: 张三
-    startdate: 1989-06-03
-    solar_birthday: false
-    lunar_birthday: true
+events:
+  - name: 张三
+    start_date: 1989-06-03
+    event_keys:
+      - lunar_birthday
 
-  - username: 李四
-    startdate: 2006-02-01
-    solar_birthday: true
-    lunar_birthday: false
+  - name: 李四
+    start_date: 2006-02-01
+    event_keys:
+      - integer_days
+      - solar_birthday
 ```
 
 You can use the `-h` or `--help` option to view the command-line tool's help information.
@@ -65,9 +66,9 @@ The response from the pastebin server looks like this:
 
 ```json
 {
-  "url": "https://komj.uk/XXXXXXXXXXXXXXXXXXXXXXXX",
-  "suggestUrl": "https://komj.uk/XXXXXXXXXXXXXXXXXXXXXXXX/example-lunar-birthday.ics",
-  "admin": "https://komj.uk/XXXXXXXXXXXXXXXXXXXXXXXX:YYYYYYYYYYYYYYYYYYYYYYYY",
+  "url": "https://komj.uk/ABCDABCDABCDABCDABCDABCD",
+  "suggestUrl": "https://komj.uk/ABCDABCDABCDABCDABCDABCD/example-lunar-birthday.ics",
+  "admin": "https://komj.uk/ABCDABCDABCDABCDABCDABCD:WXYZWXYZWXYZWXYZWXYZWXYZ",
   "isPrivate": true,
   "expire": 10800
 }
