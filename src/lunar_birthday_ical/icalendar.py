@@ -5,18 +5,12 @@ import uuid
 import zoneinfo
 from pathlib import Path
 
+import icalendar
 import yaml
-from icalendar import (
-    Alarm,
-    Calendar,
-    Event,
-    vCalAddress,
-    vDatetime,
-    vText,
-)
 
+from lunar_birthday_ical.calendar import holiday_callout
 from lunar_birthday_ical.config import default_config
-from lunar_birthday_ical.lunar import get_future_lunar_equivalent_date
+from lunar_birthday_ical.lunar import get_future_solar_datetime
 from lunar_birthday_ical.pastebin import pastebin_helper
 from lunar_birthday_ical.utils import deep_merge_iterative
 
@@ -50,7 +44,7 @@ def local_datetime_to_utc_datetime(
 
 
 def add_reminders_to_event(
-    event: Event, reminders: list[int | datetime.datetime], summary: str
+    event: icalendar.Event, reminders: list[int | datetime.datetime], summary: str
 ) -> None:
     # 添加提醒
     for reminder_days in reminders:
@@ -60,7 +54,7 @@ def add_reminders_to_event(
             trigger_time = datetime.timedelta(days=-reminder_days)
         else:
             continue
-        alarm = Alarm()
+        alarm = icalendar.Alarm()
         alarm.add("uid", uuid.uuid4())
         alarm.add("action", "DISPLAY")
         alarm.add("description", f"Reminder: {summary}")
@@ -68,35 +62,155 @@ def add_reminders_to_event(
         event.add_component(alarm)
 
 
-def add_attendees_to_event(event: Event, attendees: list[str]) -> None:
+def add_attendees_to_event(event: icalendar.Event, attendees: list[str]) -> None:
     # 添加与会者
     for attendee_email in attendees:
-        attendee = vCalAddress(f"mailto:{attendee_email}")
-        attendee.params["cn"] = vText(attendee_email.split("@")[0])
-        attendee.params["role"] = vText("REQ-PARTICIPANT")
+        attendee = icalendar.vCalAddress(f"mailto:{attendee_email}")
+        attendee.params["cn"] = icalendar.vText(attendee_email.split("@")[0])
+        attendee.params["role"] = icalendar.vText("REQ-PARTICIPANT")
         event.add("attendee", attendee)
 
 
 def add_event_to_calendar(
-    calendar: Calendar,
+    calendar: icalendar.Calendar,
     dtstart: datetime.datetime,
     dtend: datetime.datetime,
     summary: str,
     reminders: list[int | datetime.datetime],
     attendees: list[str],
 ) -> None:
-    event = Event()
+    event = icalendar.Event()
     event.add("uid", uuid.uuid4())
     now_utc = datetime.datetime.now(datetime.timezone.utc)
-    event.add("dtstamp", vDatetime(now_utc))
-    event.add("dtstart", vDatetime(dtstart))
-    event.add("dtend", vDatetime(dtend))
+    event.add("dtstamp", icalendar.vDatetime(now_utc))
+    event.add("dtstart", icalendar.vDatetime(dtstart))
+    event.add("dtend", icalendar.vDatetime(dtend))
     event.add("summary", summary)
 
     add_reminders_to_event(event, reminders, summary)
     add_attendees_to_event(event, attendees)
 
     calendar.add_component(event)
+
+
+def add_integer_days_event(calendar: icalendar.Calendar, item_config: dict) -> None:
+    timezone = zoneinfo.ZoneInfo(item_config.get("timezone"))
+    # YAML 似乎会自动将 YYYY-mm-dd 格式字符串转换成 datetime.date 类型
+    start_date = item_config.get("start_date")
+    event_time = item_config.get("event_time")
+    # 开始时间, 类型为 datetime.datetime
+    start_datetime = get_local_datetime(start_date, event_time, timezone)
+    # 事件持续时长
+    event_hours = datetime.timedelta(hours=item_config.get("event_hours"))
+
+    year_start = item_config.get("year_start") or datetime.date.today().year
+    year_end = item_config.get("year_end")
+
+    days_max = item_config.get("days_max")
+    days_interval = item_config.get("days_interval")
+
+    for days in range(days_interval, days_max + 1, days_interval):
+        # 整数日事件 将 start_datetime 加上间隔 days 即可
+        event_datetime = start_datetime + datetime.timedelta(days=days)
+        # 跳过在 [year_start, year_end] 之外的事件
+        if event_datetime.year < year_start or event_datetime.year > year_end:
+            continue
+
+        # iCal 中的时间都以 UTC 保存
+        dtstart = local_datetime_to_utc_datetime(event_datetime)
+        dtend = dtstart + event_hours
+        name = item_config.get("name")
+        year_average = 365.25
+        age = round(days / year_average, 2)
+        integer_days_summary = "{name} 降临地球🌏已经 {days} 天啦! (age: {age})"
+        summary = item_config.get("summary") or integer_days_summary
+        reminders_datetime = [
+            dtstart - datetime.timedelta(days=days)
+            for days in item_config.get("reminders")
+        ]
+        add_event_to_calendar(
+            calendar=calendar,
+            dtstart=dtstart,
+            dtend=dtend,
+            summary=summary.format(name=name, days=days, age=age),
+            reminders=reminders_datetime,
+            attendees=item_config.get("attendees"),
+        )
+
+
+def add_birthday_event(calendar: icalendar.Calendar, item_config: dict) -> None:
+    timezone = zoneinfo.ZoneInfo(item_config.get("timezone"))
+    # YAML 似乎会自动将 YYYY-mm-dd 格式字符串转换成 datetime.date 类型
+    start_date = item_config.get("start_date")
+    event_time = item_config.get("event_time")
+    # 开始时间, 类型为 datetime.datetime
+    start_datetime = get_local_datetime(start_date, event_time, timezone)
+    event_hours = datetime.timedelta(hours=item_config.get("event_hours"))
+
+    name = item_config.get("name")
+    year_start = item_config.get("year_start") or datetime.date.today().year
+    year_end = item_config.get("year_end")
+
+    event_keys = item_config.get("event_keys")
+    for year in range(year_start, year_end + 1):
+        for event_type in event_keys:
+            if event_type == "solar_birthday":
+                event_datetime = start_datetime.replace(year=year)
+                birthday_summary = "{name} {year} 年生日🎂快乐! (age: {age})"
+            elif event_type == "lunar_birthday":
+                event_datetime = get_future_solar_datetime(start_datetime, year)
+                birthday_summary = "{name} {year} 年农历生日🎂快乐! (age: {age})"
+            else:
+                continue
+
+            dtstart = local_datetime_to_utc_datetime(event_datetime)
+            dtend = dtstart + event_hours
+            summary = item_config.get("summary") or birthday_summary
+            reminders_datetime = [
+                dtstart - datetime.timedelta(days=days)
+                for days in item_config.get("reminders")
+            ]
+            age = year - start_datetime.year + 1
+            add_event_to_calendar(
+                calendar=calendar,
+                dtstart=dtstart,
+                dtend=dtend,
+                summary=summary.format(name=name, year=year, age=age),
+                reminders=reminders_datetime,
+                attendees=item_config.get("attendees"),
+            )
+
+
+def add_holiday_event(calendar: icalendar.Calendar, global_config: dict) -> None:
+    timezone = zoneinfo.ZoneInfo(global_config.get("timezone"))
+    event_time = global_config.get("event_time")
+    event_hours = datetime.timedelta(hours=global_config.get("event_hours"))
+
+    year_start = global_config.get("year_start")
+    year_end = global_config.get("year_end")
+    holiday_keys = global_config.get("holiday_keys")
+
+    for year in range(year_start, year_end + 1):
+        for holiday_key, holiday_value in holiday_callout.items():
+            if holiday_key not in holiday_keys:
+                continue
+
+            event_date = holiday_value.get("callout")(year)
+            event_datetime = get_local_datetime(event_date, event_time, timezone)
+            dtstart = local_datetime_to_utc_datetime(event_datetime)
+            dtend = dtstart + event_hours
+            reminders_datetime = [
+                dtstart - datetime.timedelta(days=days)
+                for days in global_config.get("reminders")
+            ]
+            add_event_to_calendar(
+                calendar=calendar,
+                dtstart=dtstart,
+                dtend=dtend,
+                summary=holiday_value.get("summary"),
+                reminders=reminders_datetime,
+                attendees=global_config.get("attendees"),
+            )
 
 
 def create_calendar(config_file: Path) -> None:
@@ -109,131 +223,26 @@ def create_calendar(config_file: Path) -> None:
         )
 
     global_config = merged_config.get("global")
-    timezone_name = global_config.get("timezone")
-    try:
-        timezone = zoneinfo.ZoneInfo(timezone_name)
-    except Exception:
-        logger.error("Invalid timezone: %s", timezone_name)
 
-    calendar = Calendar()
+    calendar = icalendar.Calendar()
     calendar_name = config_file.stem
+    timezone = zoneinfo.ZoneInfo(global_config.get("timezone"))
     calendar.add("PRODID", "-//ak1ra-lab//lunar-birthday-ical//EN")
     calendar.add("VERSION", "2.0")
     calendar.add("CALSCALE", "GREGORIAN")
     calendar.add("X-WR-CALNAME", calendar_name)
     calendar.add("X-WR-TIMEZONE", timezone)
 
-    # 跳过开始时间在 skip_days 之前的事件
-    now = datetime.datetime.now().replace(tzinfo=timezone)
-
-    for item in merged_config.get("persons"):
+    for item in merged_config.get("events"):
         item_config = deep_merge_iterative(global_config, item)
-        username = item_config.get("username")
-        # YAML 似乎会自动将 YYYY-mm-dd 格式字符串转换成 datetime.date 类型
-        startdate = item_config.get("startdate")
-        event_time = item_config.get("event_time")
-        # 开始时间, 类型为 datetime.datetime
-        start_datetime = get_local_datetime(startdate, event_time, timezone)
+        event_keys = item_config.get("event_keys")
 
-        # 事件持续时长
-        event_hours = datetime.timedelta(hours=item_config.get("event_hours"))
-        reminders = item_config.get("reminders")
-        attendees = item_config.get("attendees")
+        if "integer_days" in event_keys:
+            add_integer_days_event(calendar, item_config)
 
-        # 跳过开始时间在 skip_days 之前的事件
-        skip_days = item_config.get("skip_days")
-        skip_days_datetime = now - datetime.timedelta(days=skip_days)
+        add_birthday_event(calendar, item_config)
 
-        # 最多创建 max_events 个事件
-        max_events = item_config.get("max_events")
-
-        event_count = 0
-        max_days = item_config.get("max_days")
-        interval = item_config.get("interval")
-        # 添加 cycle days 事件
-        for days in range(interval, max_days + 1, interval):
-            # 整数日事件 将 start_datetime 加上间隔 days 即可
-            event_datetime = start_datetime + datetime.timedelta(days=days)
-            # 跳过开始时间在 skip_days 之前的事件
-            if event_datetime < skip_days_datetime:
-                continue
-            # 最多创建 max_events 个事件
-            if event_count >= max_events:
-                continue
-            # iCal 中的时间都以 UTC 保存
-            dtstart = local_datetime_to_utc_datetime(event_datetime)
-            dtend = dtstart + event_hours
-            age = round(days / 365.25, 2)
-            summary = f"{username} 降临地球🌏已经 {days} 天啦! (age: {age})"
-            reminders_datetime = [
-                dtstart - datetime.timedelta(days=days) for days in reminders
-            ]
-            add_event_to_calendar(
-                calendar=calendar,
-                dtstart=dtstart,
-                dtend=dtend,
-                summary=summary,
-                reminders=reminders_datetime,
-                attendees=attendees,
-            )
-            event_count += 1
-
-        event_count_birthday, event_count_lunar_birthday = 0, 0
-        max_ages = item_config.get("max_ages")
-        for age in range(0, max_ages + 1):
-            # 是否添加公历生日事件
-            # bool 选项不能使用 or 来确定优先级
-            if item_config.get("solar_birthday", False):
-                # 公历生日直接替换 start_datetime 的 年份 即可
-                event_datetime = start_datetime.replace(year=start_datetime.year + age)
-                # 跳过开始时间在 skip_days 之前的事件
-                if event_datetime < skip_days_datetime:
-                    continue
-                # 最多创建 max_events 个事件
-                if event_count_birthday >= max_events:
-                    continue
-                dtstart = local_datetime_to_utc_datetime(event_datetime)
-                dtend = dtstart + event_hours
-                summary = f"{username} {dtstart.year} 年生日🎂快乐! (age: {age})"
-                reminders_datetime = [
-                    dtstart - datetime.timedelta(days=days) for days in reminders
-                ]
-                add_event_to_calendar(
-                    calendar=calendar,
-                    dtstart=dtstart,
-                    dtend=dtend,
-                    summary=summary,
-                    reminders=reminders_datetime,
-                    attendees=attendees,
-                )
-                event_count_birthday += 1
-
-            # 是否添加农历生日事件
-            # bool 选项不能使用 or 来确定优先级
-            if item_config.get("lunar_birthday", False):
-                # 将给定 公历日期 转换为农历后计算对应农历月日在当前 age 的 公历日期
-                event_datetime = get_future_lunar_equivalent_date(start_datetime, age)
-                # 跳过开始时间在 skip_days 之前的事件
-                if event_datetime < skip_days_datetime:
-                    continue
-                # 最多创建 max_events 个事件
-                if event_count_lunar_birthday >= max_events:
-                    continue
-                dtstart = local_datetime_to_utc_datetime(event_datetime)
-                dtend = dtstart + event_hours
-                summary = f"{username} {dtstart.year} 年农历生日🎂快乐! (age: {age})"
-                reminders_datetime = [
-                    dtstart - datetime.timedelta(days=days) for days in reminders
-                ]
-                add_event_to_calendar(
-                    calendar=calendar,
-                    dtstart=dtstart,
-                    dtend=dtend,
-                    summary=summary,
-                    reminders=reminders_datetime,
-                    attendees=attendees,
-                )
-                event_count_lunar_birthday += 1
+    add_holiday_event(calendar, global_config)
 
     calendar_data = calendar.to_ical()
     output = config_file.with_suffix(".ics")
