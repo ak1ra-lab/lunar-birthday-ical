@@ -7,6 +7,7 @@ from pathlib import Path
 
 import icalendar
 import yaml
+from lunar_python import Solar
 
 from lunar_birthday_ical.calendar import holiday_callout
 from lunar_birthday_ical.config import default_config
@@ -124,9 +125,12 @@ def add_integer_days_event(calendar: icalendar.Calendar, item_config: dict) -> N
         name = item_config.get("name")
         year_average = 365.25
         age = round(days / year_average, 2)
-        integer_days_summary = "{name} 降临地球🌏已经 {days} 天啦! (age: {age})"
+        integer_days_summary = "{name} 降临地球🌏已经 {days} 天啦!"
+        integer_days_description = (
+            "{name} 降临地球🌏已经 {days} 天啦! (age: {age}, birthday: {birthday})"
+        )
         summary = item_config.get("summary") or integer_days_summary
-        description = item_config.get("description") or integer_days_summary
+        description = item_config.get("description") or integer_days_description
         reminders_datetime = [
             dtstart - datetime.timedelta(days=days)
             for days in item_config.get("reminders")
@@ -135,8 +139,10 @@ def add_integer_days_event(calendar: icalendar.Calendar, item_config: dict) -> N
             calendar=calendar,
             dtstart=dtstart,
             dtend=dtend,
-            summary=summary.format(name=name, days=days, age=age),
-            description=description.format(name=name, days=days, age=age),
+            summary=summary.format(name=name, days=days),
+            description=description.format(
+                name=name, days=days, age=age, birthday=start_date
+            ),
             reminders=reminders_datetime,
             attendees=item_config.get("attendees"),
         )
@@ -149,6 +155,7 @@ def add_birthday_event(calendar: icalendar.Calendar, item_config: dict) -> None:
     event_time = item_config.get("event_time")
     # 开始时间, 类型为 datetime.datetime
     start_datetime = get_local_datetime(start_date, event_time, timezone)
+    start_datetime_in_lunar = Solar.fromDate(start_datetime).getLunar()
     event_hours = datetime.timedelta(hours=item_config.get("event_hours"))
 
     name = item_config.get("name")
@@ -157,31 +164,45 @@ def add_birthday_event(calendar: icalendar.Calendar, item_config: dict) -> None:
 
     event_keys = item_config.get("event_keys")
     for year in range(year_start, year_end + 1):
+        age = year - start_datetime.year + 1
         for event_type in event_keys:
             if event_type == "solar_birthday":
                 event_datetime = start_datetime.replace(year=year)
-                birthday_summary = "{name} {year} 年生日🎂快乐! (age: {age})"
+                birthday_summary = "{name} {year} 年生日🎂快乐!"
+                birthday_description = (
+                    "{name} {year} 年生日🎂快乐! (age: {age}, birthday: {birthday})"
+                )
             elif event_type == "lunar_birthday":
                 event_datetime = get_future_solar_datetime(start_datetime, year)
-                birthday_summary = "{name} {year} 年农历生日🎂快乐! (age: {age})"
+                birthday_summary = "{name} {year} 年农历生日🎂快乐!"
+                birthday_description = (
+                    "{name} {year} 年农历生日🎂快乐! (age: {age}, birthday: {birthday})"
+                )
             else:
                 continue
 
             dtstart = local_datetime_to_utc_datetime(event_datetime)
             dtend = dtstart + event_hours
             summary = item_config.get("summary") or birthday_summary
-            description = item_config.get("description") or birthday_summary
+            description = item_config.get("description") or birthday_description
             reminders_datetime = [
                 dtstart - datetime.timedelta(days=days)
                 for days in item_config.get("reminders")
             ]
-            age = year - start_datetime.year + 1
             add_event_to_calendar(
                 calendar=calendar,
                 dtstart=dtstart,
                 dtend=dtend,
-                summary=summary.format(name=name, year=year, age=age),
-                description=description.format(name=name, year=year, age=age),
+                summary=summary.format(
+                    name=name,
+                    year=year,
+                ),
+                description=description.format(
+                    name=name,
+                    year=year,
+                    age=age,
+                    birthday=start_datetime_in_lunar,
+                ),
                 reminders=reminders_datetime,
                 attendees=item_config.get("attendees"),
             )
