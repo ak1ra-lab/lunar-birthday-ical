@@ -10,7 +10,7 @@ from lunar_birthday_ical.config import (
     tests_config,
     tests_config_overwride_global,
 )
-from lunar_birthday_ical.ical import (
+from lunar_birthday_ical.icalendar import (
     add_attendees_to_event,
     add_event_to_calendar,
     add_reminders_to_event,
