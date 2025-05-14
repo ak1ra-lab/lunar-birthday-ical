@@ -167,3 +167,4 @@ cython_debug/
 # config file
 config/*
 !config/example-lunar-birthday.yaml
+!config/not-a-public-holiday.yaml
