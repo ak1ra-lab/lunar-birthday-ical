@@ -1,27 +1,23 @@
 # All fields under global are optional.
-# Except for the `global.timezone`, all configuration items under global are configurable as person item options.
-# If a person item does not configure, this will be the default value at the configuration file level, which overrides the program default value.
 global:
   # str: iCal global timezone
   timezone: Asia/Shanghai
 
-  # int: Skip events that start before skip_days
-  skip_days: 180
-  # int: Create up to max_events events
-  max_events: 20
+  # dict: holiday_keys
+  holiday_keys: []
 
-  # int: Maximum number of days for cycle_days
-  max_days: 30000
-  # int: Interval days for cycle_days events
-  interval: 1000
-  # int: Maximum age for birthday events
-  max_ages: 80
+  # int: year_start
+  year_start: 2025
+  # int: year_end
+  year_end: 2042
 
-  # bool: true | false
-  # Configure whether startdate are the birth date
-  solar_birthday: false
-  lunar_birthday: true
+  # int: Maximum number of days for integer_days
+  days_max: 30000
+  # int: Interval days for integer_days events
+  days_interval: 1000
 
+  # list: event_keys
+  event_keys: []
   # str: Start time of VEVENT event, format are %H:%M:%S
   # Time are localtime, which will be converted to UTC in iCal
   # Note to enclose the value in double quotes to prevent YAML automatic conversion
@@ -34,9 +30,7 @@ global:
   # []str: VEVENT event attendees, value are email address
   attendees: []
 
-# All fields under `pastebin` are optional
-# When the `pastebin.enabled` option is set to `true`, you can leave `pastebin.admin_url` empty for the first run.
-# After that, set `pastebin.admin_url` url from the `.admin` field in the response from the pastebin server.
+# All fields under 'pastebin' are optional
 pastebin:
   # bool: true | false, whether to enable pastebin
   enabled: false
@@ -49,14 +43,14 @@ pastebin:
   # str: suggest_url can be used by any Calendar App
   suggest_url: ""
 
-# `username` and `startdate` are required for each person, `solar_birthday` and `lunar_birthday` are optional
-persons:
-  - username: 张三
-    startdate: 1989-06-03
-    solar_birthday: false
-    lunar_birthday: true
+events:
+  - name: 张三
+    start_date: 1989-06-03
+    event_keys:
+      - lunar_birthday
 
-  - username: 李四
-    startdate: 2006-02-01
-    solar_birthday: true
-    lunar_birthday: false
+  - name: 李四
+    start_date: 2006-02-01
+    event_keys:
+      - integer_days
+      - solar_birthday
