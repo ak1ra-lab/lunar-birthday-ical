@@ -164,16 +164,18 @@ def add_birthday_event(calendar: icalendar.Calendar, item_config: dict) -> None:
 
     event_keys = item_config.get("event_keys")
     for year in range(year_start, year_end + 1):
-        age = year - start_datetime.year + 1
+        age = year - start_datetime.year
         for event_type in event_keys:
             if event_type == "solar_birthday":
                 event_datetime = start_datetime.replace(year=year)
+                birthday = start_date
                 birthday_summary = "{name} {year} 年生日🎂快乐!"
                 birthday_description = (
                     "{name} {year} 年生日🎂快乐! (age: {age}, birthday: {birthday})"
                 )
             elif event_type == "lunar_birthday":
                 event_datetime = get_future_solar_datetime(start_datetime, year)
+                birthday = start_datetime_in_lunar
                 birthday_summary = "{name} {year} 年农历生日🎂快乐!"
                 birthday_description = (
                     "{name} {year} 年农历生日🎂快乐! (age: {age}, birthday: {birthday})"
@@ -201,7 +203,7 @@ def add_birthday_event(calendar: icalendar.Calendar, item_config: dict) -> None:
                     name=name,
                     year=year,
                     age=age,
-                    birthday=start_datetime_in_lunar,
+                    birthday=birthday,
                 ),
                 reminders=reminders_datetime,
                 attendees=item_config.get("attendees"),
