@@ -76,6 +76,7 @@ def add_event_to_calendar(
     dtstart: datetime.datetime,
     dtend: datetime.datetime,
     summary: str,
+    description: str,
     reminders: list[int | datetime.datetime],
     attendees: list[str],
 ) -> None:
@@ -86,6 +87,7 @@ def add_event_to_calendar(
     event.add("dtstart", icalendar.vDatetime(dtstart))
     event.add("dtend", icalendar.vDatetime(dtend))
     event.add("summary", summary)
+    event.add("description", description)
 
     add_reminders_to_event(event, reminders, summary)
     add_attendees_to_event(event, attendees)
@@ -124,6 +126,7 @@ def add_integer_days_event(calendar: icalendar.Calendar, item_config: dict) -> N
         age = round(days / year_average, 2)
         integer_days_summary = "{name} 降临地球🌏已经 {days} 天啦! (age: {age})"
         summary = item_config.get("summary") or integer_days_summary
+        description = item_config.get("description") or integer_days_summary
         reminders_datetime = [
             dtstart - datetime.timedelta(days=days)
             for days in item_config.get("reminders")
@@ -133,6 +136,7 @@ def add_integer_days_event(calendar: icalendar.Calendar, item_config: dict) -> N
             dtstart=dtstart,
             dtend=dtend,
             summary=summary.format(name=name, days=days, age=age),
+            description=description.format(name=name, days=days, age=age),
             reminders=reminders_datetime,
             attendees=item_config.get("attendees"),
         )
@@ -166,6 +170,7 @@ def add_birthday_event(calendar: icalendar.Calendar, item_config: dict) -> None:
             dtstart = local_datetime_to_utc_datetime(event_datetime)
             dtend = dtstart + event_hours
             summary = item_config.get("summary") or birthday_summary
+            description = item_config.get("description") or birthday_summary
             reminders_datetime = [
                 dtstart - datetime.timedelta(days=days)
                 for days in item_config.get("reminders")
@@ -176,6 +181,7 @@ def add_birthday_event(calendar: icalendar.Calendar, item_config: dict) -> None:
                 dtstart=dtstart,
                 dtend=dtend,
                 summary=summary.format(name=name, year=year, age=age),
+                description=description.format(name=name, year=year, age=age),
                 reminders=reminders_datetime,
                 attendees=item_config.get("attendees"),
             )
@@ -208,6 +214,7 @@ def add_holiday_event(calendar: icalendar.Calendar, global_config: dict) -> None
                 dtstart=dtstart,
                 dtend=dtend,
                 summary=holiday_value.get("summary"),
+                description=holiday_value.get("description"),
                 reminders=reminders_datetime,
                 attendees=global_config.get("attendees"),
             )

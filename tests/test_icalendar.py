@@ -80,9 +80,10 @@ def test_add_event_to_calendar():
     dtstart = datetime.datetime(2023, 10, 1, 12, 0, tzinfo=zoneinfo.ZoneInfo("UTC"))
     dtend = dtstart + datetime.timedelta(hours=1)
     summary = "Test Event"
+    description = "This is a test event."
     reminders = [1]
     attendees = ["test@example.com"]
-    add_event_to_calendar(calendar, dtstart, dtend, summary, reminders, attendees)
+    add_event_to_calendar(calendar, dtstart, dtend, summary, description, reminders, attendees)
     assert len(calendar.subcomponents) == 1
 
 
