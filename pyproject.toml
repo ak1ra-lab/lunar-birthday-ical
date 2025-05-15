@@ -31,6 +31,10 @@ build-backend = "pdm.backend"
 distribution = true
 
 
+[tool.pdm.build]
+includes = ["src", "tests", "config/example-lunar-birthday.yaml", "config/not-a-public-holiday.yaml"]
+
+
 [tool.pdm.version]
 source = "scm"
 
@@ -49,7 +53,7 @@ lint = [
     "ruff>=0.9.4",
 ]
 dev = [
-    "nox>=2024.10.9",
     {include-group = "tests"},
     {include-group = "lint"},
+    "nox>=2024.10.9",
 ]
