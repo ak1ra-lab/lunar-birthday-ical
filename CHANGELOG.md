@@ -1,3 +1,14 @@
+## v0.4.0 (2025-05-15)
+
+- ci: update PyPI publish workflow
+- refactor: restructure and rename icalendar module
+- tests: add and fix test cases for calendar and lunar modules
+- feature: implement new utilities and add holiday callout descriptions
+- update: enhance README.md and default configurations
+- fix: correct age calculation and improve event descriptions
+- chore: add pre-commit configuration and include example config in distribution
+- chore: reformat code and update dependencies
+
 ## v0.3.7 (2025-04-25)
 
 - logging: implement setup_logger in logging.py
