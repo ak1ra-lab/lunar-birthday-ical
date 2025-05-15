@@ -49,9 +49,9 @@ def setup_logger(
 
     Args:
         name (str): The name of the logger to create or retrieve.
-        filename (str | None, optional): The name of the log file for file-based logging. 
+        filename (str | None, optional): The name of the log file for file-based logging.
             If None, only console logging is used. Defaults to None.
-        debug (bool, optional): Whether to enable debug-level logging. 
+        debug (bool, optional): Whether to enable debug-level logging.
             Defaults to the value of the `DEBUG` environment variable, or False if not set.
 
     Returns:
