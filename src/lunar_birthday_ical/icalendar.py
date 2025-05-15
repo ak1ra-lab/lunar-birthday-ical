@@ -106,11 +106,19 @@ def add_integer_days_event(calendar: icalendar.Calendar, item_config: dict) -> N
     # 事件持续时长
     event_hours = datetime.timedelta(hours=item_config.get("event_hours"))
 
+    name = item_config.get("name")
     year_start = item_config.get("year_start") or datetime.date.today().year
     year_end = item_config.get("year_end")
 
     days_max = item_config.get("days_max")
     days_interval = item_config.get("days_interval")
+
+    integer_days_summary = "{name} 降临地球🌏已经 {days} 天啦!"
+    integer_days_description = (
+        "{name} 降临地球🌏已经 {days} 天啦! (age: {age}, birthday: {birthday})"
+    )
+    summary = item_config.get("summary") or integer_days_summary
+    description = item_config.get("description") or integer_days_description
 
     for days in range(days_interval, days_max + 1, days_interval):
         # 整数日事件 将 start_datetime 加上间隔 days 即可
@@ -122,15 +130,9 @@ def add_integer_days_event(calendar: icalendar.Calendar, item_config: dict) -> N
         # iCal 中的时间都以 UTC 保存
         dtstart = local_datetime_to_utc_datetime(event_datetime)
         dtend = dtstart + event_hours
-        name = item_config.get("name")
         year_average = 365.25
         age = round(days / year_average, 2)
-        integer_days_summary = "{name} 降临地球🌏已经 {days} 天啦!"
-        integer_days_description = (
-            "{name} 降临地球🌏已经 {days} 天啦! (age: {age}, birthday: {birthday})"
-        )
-        summary = item_config.get("summary") or integer_days_summary
-        description = item_config.get("description") or integer_days_description
+
         reminders_datetime = [
             dtstart - datetime.timedelta(days=days)
             for days in item_config.get("reminders")
@@ -162,31 +164,35 @@ def add_birthday_event(calendar: icalendar.Calendar, item_config: dict) -> None:
     year_start = item_config.get("year_start") or datetime.date.today().year
     year_end = item_config.get("year_end")
 
-    event_keys = item_config.get("event_keys")
-    for year in range(year_start, year_end + 1):
-        age = year - start_datetime.year
-        for event_type in event_keys:
-            if event_type == "solar_birthday":
+    for event_key in item_config.get("event_keys") or []:
+        if event_key not in ["solar_birthday", "lunar_birthday"]:
+            continue
+
+        if event_key == "solar_birthday":
+            birthday = start_date
+            birthday_summary = "{name} {year} 年生日🎂快乐!"
+            birthday_description = (
+                "{name} {year} 年生日🎂快乐! (age: {age}, birthday: {birthday})"
+            )
+        elif event_key == "lunar_birthday":
+            birthday = start_datetime_in_lunar
+            birthday_summary = "{name} {year} 年农历生日🎂快乐!"
+            birthday_description = (
+                "{name} {year} 年农历生日🎂快乐! (age: {age}, birthday: {birthday})"
+            )
+
+        summary = item_config.get("summary") or birthday_summary
+        description = item_config.get("description") or birthday_description
+
+        for year in range(year_start, year_end + 1):
+            age = year - start_datetime.year
+            if event_key == "solar_birthday":
                 event_datetime = start_datetime.replace(year=year)
-                birthday = start_date
-                birthday_summary = "{name} {year} 年生日🎂快乐!"
-                birthday_description = (
-                    "{name} {year} 年生日🎂快乐! (age: {age}, birthday: {birthday})"
-                )
-            elif event_type == "lunar_birthday":
+            elif event_key == "lunar_birthday":
                 event_datetime = get_future_solar_datetime(start_datetime, year)
-                birthday = start_datetime_in_lunar
-                birthday_summary = "{name} {year} 年农历生日🎂快乐!"
-                birthday_description = (
-                    "{name} {year} 年农历生日🎂快乐! (age: {age}, birthday: {birthday})"
-                )
-            else:
-                continue
 
             dtstart = local_datetime_to_utc_datetime(event_datetime)
             dtend = dtstart + event_hours
-            summary = item_config.get("summary") or birthday_summary
-            description = item_config.get("description") or birthday_description
             reminders_datetime = [
                 dtstart - datetime.timedelta(days=days)
                 for days in item_config.get("reminders")
@@ -217,13 +223,12 @@ def add_holiday_event(calendar: icalendar.Calendar, global_config: dict) -> None
 
     year_start = global_config.get("year_start")
     year_end = global_config.get("year_end")
-    holiday_keys = global_config.get("holiday_keys")
 
-    for year in range(year_start, year_end + 1):
-        for holiday_key, holiday_value in holiday_callout.items():
-            if holiday_key not in holiday_keys:
-                continue
+    for holiday_key, holiday_value in holiday_callout.items():
+        if holiday_key not in global_config.get("holiday_keys") or []:
+            continue
 
+        for year in range(year_start, year_end + 1):
             event_date = holiday_value.get("callout")(year)
             event_datetime = get_local_datetime(event_date, event_time, timezone)
             dtstart = local_datetime_to_utc_datetime(event_datetime)
