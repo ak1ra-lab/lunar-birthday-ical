@@ -56,4 +56,5 @@ dev = [
     {include-group = "tests"},
     {include-group = "lint"},
     "nox>=2024.10.9",
+    "pre-commit>=4.2.0",
 ]
