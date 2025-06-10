@@ -8,12 +8,12 @@ import time
 from pathlib import Path
 
 import argcomplete
+from chaos_utils.logging import setup_json_logger
 from lunar_python import Lunar, Solar
 
 from lunar_birthday_ical.icalendar import create_calendar
-from lunar_birthday_ical.logging import setup_logger
 
-logger = setup_logger(__name__, "messages.log")
+logger = setup_json_logger(__name__, file_logging=True)
 
 
 def main() -> None:

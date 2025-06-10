@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.0] - 2025-11-01
+
+### 🚀 Features
+
+- migrate pdm to uv and many more
+
 ## [0.4.1] - 2025-05-16
 
 ### ⚙️ Miscellaneous Tasks

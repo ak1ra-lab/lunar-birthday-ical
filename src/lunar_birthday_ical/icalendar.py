@@ -7,13 +7,13 @@ from pathlib import Path
 
 import icalendar
 import yaml
+from chaos_utils.dict_utils import deep_merge
 from lunar_python import Solar
 
 from lunar_birthday_ical.calendar import holiday_callout
 from lunar_birthday_ical.config import default_config
 from lunar_birthday_ical.lunar import get_future_solar_datetime
 from lunar_birthday_ical.pastebin import pastebin_helper
-from lunar_birthday_ical.utils import deep_merge_iterative
 
 logger = logging.getLogger(__name__)
 
@@ -251,7 +251,7 @@ def add_holiday_event(calendar: icalendar.Calendar, global_config: dict) -> None
 def create_calendar(config_file: Path) -> None:
     with open(config_file, "r") as f:
         yaml_config = yaml.safe_load(f)
-        merged_config = deep_merge_iterative(default_config, yaml_config)
+        merged_config = deep_merge(default_config, yaml_config)
         logger.debug(
             "merged_config=%s",
             json.dumps(merged_config, ensure_ascii=False, default=str),
@@ -269,7 +269,7 @@ def create_calendar(config_file: Path) -> None:
     calendar.add("X-WR-TIMEZONE", timezone)
 
     for item in merged_config.get("events"):
-        item_config = deep_merge_iterative(global_config, item)
+        item_config = deep_merge(global_config, item)
         event_keys = item_config.get("event_keys")
 
         if "integer_days" in event_keys:
