@@ -26,7 +26,7 @@ You can use the `-h` or `--help` option to view the command-line tool's help inf
 
 ```
 $ lunar-birthday-ical -h
-usage: lunar-birthday-ical [-h] [-L YYYY MM DD | -S YYYY MM DD] [-v] [config.yaml ...]
+usage: lunar-birthday-ical [-h] [-L YYYY MM DD | -S YYYY MM DD] [config.yaml ...]
 
 Generate iCal events and reminders for lunar birthday and cycle days.
 
@@ -39,7 +39,6 @@ options:
                         Convert lunar date to solar date, add minus sign before leap lunar month.
   -S YYYY MM DD, --solar-to-lunar YYYY MM DD
                         Convert solar date to lunar date.
-  -v, --verbose         Enable debug logging.
 ```
 
 Although this tool does not have many command-line options, it supports `argcomplete`. For configuration methods, refer to the [argcomplete documentation](https://kislyuk.github.io/argcomplete/).
@@ -48,30 +47,29 @@ Although this tool does not have many command-line options, it supports `argcomp
 
 It is recommended to use [`pipx`](https://github.com/pypa/pipx) to install command-line tools written in Python, including this project.
 
-```ShellSession
-$ pipx install lunar-birthday-ical
-  installed package lunar-birthday-ical v0.x.x, installed using Python 3.11.2
-  These apps are now globally available
-    - lunar-birthday-ical
-done! ✨ 🌟 ✨
+```shell
+# install from PyPI
+pipx install lunar-birthday-ical
+
+# install from Test PyPI
+pipx install lunar-birthday-ical \
+    --index-url https://test.pypi.org/simple/ \
+    --pip-args "--extra-index-url https://pypi.org/simple/"
 ```
 
 ## About `pastebin`
 
-In the YAML configuration file, you can choose whether to upload the generated `.ics` file to pastebin. This pastebin instance is a Cloudflare worker-based pastebin service ([SharzyL/pastebin-worker](https://github.com/SharzyL/pastebin-worker)) run by the repository owner.
+The YAML config lets you decide whether to upload the created .ics file to a pastebin service. This uses SharzyL's Cloudflare Workers-based pastebin ([SharzyL/pastebin-worker](https://github.com/SharzyL/pastebin-worker)), hosted by the repo owner.
 
 When the `pastebin.enabled` option is set to `true`, you can leave `pastebin.admin_url` empty for the first run. After that, set `pastebin.admin_url` url from the `.admin` field in the response from the pastebin server.
 
 The response from the pastebin server looks like this:
 
-```json
-{
-  "url": "https://komj.uk/ABCDABCDABCDABCDABCDABCD",
-  "suggestUrl": "https://komj.uk/ABCDABCDABCDABCDABCDABCD/example-lunar-birthday.ics",
-  "admin": "https://komj.uk/ABCDABCDABCDABCDABCDABCD:WXYZWXYZWXYZWXYZWXYZWXYZ",
-  "isPrivate": true,
-  "expire": 10800
-}
+```shellsession
+$ lunar-birthday-ical config/example-lunar-birthday.yaml
+iCal saved to config/example-lunar-birthday.ics
+HTTP Request: POST https://komj.uk/ "HTTP/1.1 200 OK"
+{"url": "https://komj.uk/Kree41N5W28qJC70XQU4Kj1F", "suggestUrl": "https://komj.uk/Kree41N5W28qJC70XQU4Kj1F/example-lunar-birthday.ics", "admin": "https://komj.uk/Kree41N5W28qJC70XQU4Kj1F:i9Jq1bd3KMscrEsyUzm0ksgQ", "isPrivate": true, "expire": 1800}
 ```
 
 The `.suggestUrl` can be used by any Calendar App.
