@@ -21,7 +21,7 @@ def mock_config():
     return {
         "pastebin": {
             "base_url": "http://mockbaseurl.com",
-            "admin_url": "http://mockbaseurl.com/mockname:mockpassword",
+            "manage_url": "http://mockbaseurl.com/mockname:mockpassword",
             "expiration": "7d",
         }
     }
@@ -74,7 +74,7 @@ def test_pastebin_helper_with_admin_url(
 
     pastebin_helper(mock_config, mock_file)
     mock_update.assert_called_once_with(
-        admin_url="http://mockbaseurl.com/mockname:mockpassword",
+        manage_url="http://mockbaseurl.com/mockname:mockpassword",
         file=mock_file,
         expiration="7d",
     )
@@ -89,7 +89,7 @@ def test_pastebin_helper_without_admin_url(
     mock_upload.return_value = mock_response
     mock_update.return_value = mock_response
 
-    mock_config["pastebin"]["admin_url"] = None
+    mock_config["pastebin"]["manage_url"] = None
     pastebin_helper(mock_config, mock_file)
     mock_upload.assert_called_once_with(
         base_url="http://mockbaseurl.com", file=mock_file, expiration="7d"

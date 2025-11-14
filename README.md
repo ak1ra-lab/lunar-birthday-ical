@@ -66,7 +66,7 @@ uv tool install lunar-birthday-ical \
 
 The YAML config lets you decide whether to upload the created .ics file to a pastebin service. This uses SharzyL's Cloudflare Workers-based pastebin ([SharzyL/pastebin-worker](https://github.com/SharzyL/pastebin-worker)), hosted by the repo owner.
 
-When the `pastebin.enabled` option is set to `true`, you can leave `pastebin.admin_url` empty for the first run. After that, set `pastebin.admin_url` url from the `.admin` field in the response from the pastebin server.
+When the `pastebin.enabled` option is set to `true`, you can leave `pastebin.manage_url` empty for the first run. After that, set `pastebin.manage_url` url from the `.manageUrl` field in the response from the pastebin server.
 
 The response from the pastebin server looks like this:
 
@@ -74,7 +74,7 @@ The response from the pastebin server looks like this:
 $ lunar-birthday-ical config/example-lunar-birthday.yaml
 iCal saved to config/example-lunar-birthday.ics
 HTTP Request: POST https://komj.uk/ "HTTP/1.1 200 OK"
-{"url": "https://komj.uk/Kree41N5W28qJC70XQU4Kj1F", "suggestUrl": "https://komj.uk/Kree41N5W28qJC70XQU4Kj1F/example-lunar-birthday.ics", "admin": "https://komj.uk/Kree41N5W28qJC70XQU4Kj1F:i9Jq1bd3KMscrEsyUzm0ksgQ", "isPrivate": true, "expire": 1800}
+{"url": "https://komj.uk/Kree41N5W28qJC70XQU4Kj1F", "manageUrl": "https://komj.uk/Kree41N5W28qJC70XQU4Kj1F:i9Jq1bd3KMscrEsyUzm0ksgQ", "expirationSeconds": 604800, "expireAt": "2025-11-21T03:45:46.263Z"}
 ```
 
-The `.suggestUrl` can be used by any Calendar App.
+The `.url` field can be used on any Calendar App.

@@ -38,10 +38,8 @@ pastebin:
   base_url: https://komj.uk
   # str: Supported units: s (seconds), m (minutes), h (hours), d (days), M (months).
   expiration: ""
-  # str: admin_url are not required for the first run
-  admin_url: ""
-  # str: suggest_url can be used by any Calendar App
-  suggest_url: ""
+  # str: manage_url are not required for the first run
+  manage_url: ""
 
 events:
   - name: 张三

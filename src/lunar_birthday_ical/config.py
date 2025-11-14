@@ -16,8 +16,7 @@ default_config = {
         "enabled": False,
         "base_url": "https://komj.uk",
         "expiration": "",
-        "admin_url": "",
-        "suggest_url": "",
+        "manage_url": "",
     },
     "events": [],
 }

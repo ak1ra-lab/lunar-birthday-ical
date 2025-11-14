@@ -23,7 +23,7 @@ def pastebin_upload(
 
 
 def pastebin_update(
-    admin_url: str,
+    manage_url: str,
     file: Path,
     expiration: int | str = 0,
 ) -> httpx.Response:
@@ -32,15 +32,15 @@ def pastebin_update(
     if expiration:
         data["e"] = expiration
 
-    response = httpx.put(admin_url, data=data, files=files)
+    response = httpx.put(manage_url, data=data, files=files)
     return response
 
 
 def pastebin_helper(config: dict, file: Path) -> None:
     base_url = config.get("pastebin").get("base_url")
-    admin_url = config.get("pastebin").get("admin_url")
+    manage_url = config.get("pastebin").get("manage_url")
     expiration = config.get("pastebin").get("expiration")
-    if not admin_url:
+    if not manage_url:
         response = pastebin_upload(
             base_url=base_url,
             file=file,
@@ -48,7 +48,7 @@ def pastebin_helper(config: dict, file: Path) -> None:
         )
     else:
         response = pastebin_update(
-            admin_url=admin_url,
+            manage_url=manage_url,
             file=file,
             expiration=expiration,
         )
