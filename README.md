@@ -1,5 +1,10 @@
 # lunar-birthday-ical
 
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/ak1ra-lab/lunar-birthday-ical/.github%2Fworkflows%2Fpublish-to-pypi.yaml)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/lunar-birthday-ical)
+![PyPI - Version](https://img.shields.io/pypi/v/lunar-birthday-ical)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/ak1ra-lab/lunar-birthday-ical)
+
 ## What is this?
 
 A command line tool written in Python 3 for creating lunar birthday events.
@@ -45,16 +50,16 @@ Although this tool does not have many command-line options, it supports `argcomp
 
 ## Installation
 
-It is recommended to use [`pipx`](https://github.com/pypa/pipx) to install command-line tools written in Python, including this project.
+It is recommended to use [`uv tool`](https://docs.astral.sh/uv/getting-started/installation/) to install command-line tools written in Python, including this project.
 
 ```shell
 # install from PyPI
-pipx install lunar-birthday-ical
+uv tool install lunar-birthday-ical
 
 # install from Test PyPI
-pipx install lunar-birthday-ical \
-    --index-url https://test.pypi.org/simple/ \
-    --pip-args "--extra-index-url https://pypi.org/simple/"
+uv tool install lunar-birthday-ical \
+    --index https://test.pypi.org/simple \
+    --default-index https://pypi.org/simple
 ```
 
 ## About `pastebin`
