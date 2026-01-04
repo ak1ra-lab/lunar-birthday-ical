@@ -1,6 +1,29 @@
 import datetime
+import zoneinfo
 
-from lunar_birthday_ical.lunar import get_future_solar_datetime
+from lunar_birthday_ical.utils import (
+    get_future_solar_datetime,
+    get_local_datetime,
+    local_datetime_to_utc_datetime,
+)
+
+
+def test_get_local_datetime():
+    local_date = "2023-10-01"
+    local_time = "12:00:00"
+    timezone = zoneinfo.ZoneInfo("UTC")
+    result = get_local_datetime(local_date, local_time, timezone)
+    expected = datetime.datetime(2023, 10, 1, 12, 0, tzinfo=timezone)
+    assert result == expected
+
+
+def test_local_datetime_to_utc_datetime():
+    local_datetime = datetime.datetime(
+        2023, 10, 1, 12, 0, tzinfo=zoneinfo.ZoneInfo("Asia/Shanghai")
+    )
+    result = local_datetime_to_utc_datetime(local_datetime)
+    expected = datetime.datetime(2023, 10, 1, 4, 0, tzinfo=zoneinfo.ZoneInfo("UTC"))
+    assert result == expected
 
 
 def test_first_day_of_gregorian_year():

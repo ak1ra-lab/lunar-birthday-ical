@@ -41,6 +41,21 @@ pastebin:
   # str: manage_url are not required for the first run
   manage_url: ""
 
+# All fields under 'github_gist' are optional
+github_gist:
+  # bool: true | false, whether to enable GitHub Gist upload
+  enabled: false
+  # str: GitHub personal access token with gist scope (required if enabled)
+  # Create token at: https://github.com/settings/tokens/new?scopes=gist
+  token: ""
+  # str: Gist ID for updating existing gist (leave empty for first upload)
+  # After first upload, add the gist_id returned in the log to update the same gist
+  gist_id: ""
+  # str: Description for the gist
+  description: "Lunar Birthday iCalendar"
+  # bool: Whether the gist should be public (default: false for secret gist)
+  public: false
+
 events:
   - name: 张三
     start_date: 1989-06-03

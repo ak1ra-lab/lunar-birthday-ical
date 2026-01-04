@@ -18,6 +18,13 @@ default_config = {
         "expiration": "",
         "manage_url": "",
     },
+    "github_gist": {
+        "enabled": False,
+        "token": "",
+        "gist_id": "",
+        "description": "Lunar Birthday iCalendar",
+        "public": False,
+    },
     "events": [],
 }
 
