@@ -164,6 +164,12 @@ cython_debug/
 # VS Code
 .vscode/
 
+# GitHub Copilot
+.github/prompts/*
+.github/instructions/*
+.github/template.sh
+.github/copilot-instructions.md
+
 # config file
 config/*
 !config/example-lunar-birthday.yaml
