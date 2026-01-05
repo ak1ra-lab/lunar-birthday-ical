@@ -234,16 +234,6 @@ export function EventForm({initialData, onSave, onCancel}: EventFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="summary">Summary Template (Optional)</Label>
-            <Input id="summary" {...register('summary')} placeholder="{name} {year} Lunar Birthday" />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="description">Description Template (Optional)</Label>
-            <Textarea id="description" {...register('description')} placeholder="Details..." />
-          </div>
-
-          <div className="space-y-2">
             <Label htmlFor="reminders">Reminders (Days before, comma separated)</Label>
             <Input
               id="reminders"
