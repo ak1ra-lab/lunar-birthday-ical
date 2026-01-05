@@ -85,11 +85,11 @@ function App() {
     <div className="min-h-screen bg-slate-100 p-4 md:p-8">
       <div className="max-w-4xl mx-auto space-y-6">
         <header className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <div>
+          <div className="flex-1 min-w-0">
             <h1 className="text-3xl font-bold text-slate-900">{t('app.title')}</h1>
             <p className="text-slate-500">{t('app.subtitle')}</p>
           </div>
-          <div className="flex flex-wrap gap-2 items-center">
+          <div className="flex flex-wrap md:flex-nowrap gap-2 items-center shrink-0">
             <Button variant="ghost" size="sm" onClick={() => window.open('https://github.com/ak1ra-lab/lunar-birthday-ical', '_blank')}>
               <Github className="mr-2 h-4 w-4" /> {t('app.github')}
             </Button>
