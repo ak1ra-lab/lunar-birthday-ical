@@ -1,4 +1,5 @@
 import {useState, useEffect} from 'react';
+import {useTranslation} from 'react-i18next';
 import {AppConfig, DEFAULT_CONFIG, EventConfig, GlobalConfig} from '@/types';
 import {ConfigForm} from '@/components/ConfigForm';
 import {EventList} from '@/components/EventList';
@@ -7,10 +8,11 @@ import {generateICal} from '@/lib/ical';
 import {Button} from '@/components/ui/button';
 import {Textarea} from '@/components/ui/textarea';
 import {saveAs} from 'file-saver';
-import {Download, Upload, Save} from 'lucide-react';
+import {Download, Upload, Save, Github} from 'lucide-react';
 import {format} from 'date-fns';
 
 function App() {
+  const {t, i18n} = useTranslation();
   const [config, setConfig] = useState<AppConfig>(() => {
     const saved = localStorage.getItem('lunar-birthday-config');
     return saved ? JSON.parse(saved) : DEFAULT_CONFIG;
@@ -22,8 +24,8 @@ function App() {
 
   useEffect(() => {
     localStorage.setItem('lunar-birthday-config', JSON.stringify(config));
-    generateICal(config).then(setIcalOutput).catch(console.error);
-  }, [config]);
+    generateICal(config, t).then(setIcalOutput).catch(console.error);
+  }, [config, t]);
 
   const handleGlobalSave = (global: GlobalConfig) => {
     setConfig((prev) => ({...prev, global}));
@@ -82,11 +84,20 @@ function App() {
   return (
     <div className="min-h-screen bg-slate-100 p-4 md:p-8">
       <div className="max-w-4xl mx-auto space-y-6">
-        <header className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-slate-900">Lunar Birthday iCal Generator</h1>
-          <div className="flex space-x-2">
-            <Button variant="outline" onClick={handleExportConfig}>
-              <Save className="mr-2 h-4 w-4" /> Export Config
+        <header className="flex flex-col md:flex-row justify-between items-center gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-900">{t('app.title')}</h1>
+            <p className="text-slate-500">{t('app.subtitle')}</p>
+          </div>
+          <div className="flex flex-wrap gap-2 items-center">
+            <Button variant="ghost" size="sm" onClick={() => window.open('https://github.com/ak1ra-lab/lunar-birthday-ical', '_blank')}>
+              <Github className="mr-2 h-4 w-4" /> {t('app.github')}
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => i18n.changeLanguage(i18n.language === 'zh' ? 'en' : 'zh')}>
+              {i18n.language === 'zh' ? 'English' : '中文'}
+            </Button>
+            <Button variant="outline" size="sm" onClick={handleExportConfig}>
+              <Save className="mr-2 h-4 w-4" /> {t('common.export')}
             </Button>
             <div className="relative">
               <input
@@ -95,8 +106,8 @@ function App() {
                 onChange={handleImportConfig}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               />
-              <Button variant="outline">
-                <Upload className="mr-2 h-4 w-4" /> Import Config
+              <Button variant="outline" size="sm">
+                <Upload className="mr-2 h-4 w-4" /> {t('common.import')}
               </Button>
             </div>
           </div>
@@ -127,24 +138,21 @@ function App() {
 
           <div className="space-y-6">
             <div className="bg-white p-4 rounded-lg shadow border border-slate-200">
-              <h3 className="font-semibold mb-2">Generated iCal</h3>
+              <h3 className="font-semibold mb-2">{t('app.generatedIcal')}</h3>
               <Textarea
                 value={icalOutput}
                 readOnly
                 className="h-64 font-mono text-xs mb-4"
               />
               <Button onClick={handleDownload} className="w-full">
-                <Download className="mr-2 h-4 w-4" /> Download .ics
+                <Download className="mr-2 h-4 w-4" /> {t('app.downloadIcs')}
               </Button>
             </div>
 
             <div className="bg-white p-4 rounded-lg shadow border border-slate-200">
-              <h3 className="font-semibold mb-2">About</h3>
+              <h3 className="font-semibold mb-2">{t('app.about')}</h3>
               <p className="text-sm text-slate-600">
-                 This tool generates an iCalendar (.ics) file containing lunar birthdays, solar birthdays,
-                 and integer day anniversaries (e.g. 10,000 days old).
-                <br/><br/>
-                 All data is processed locally in your browser.
+                 {t('app.aboutText')}
               </p>
             </div>
           </div>

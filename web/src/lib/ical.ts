@@ -3,6 +3,7 @@ import {AppConfig, EventConfig, GlobalConfig} from '../types';
 import {getFutureSolarDate} from './lunar';
 import {HOLIDAYS} from './holidays';
 import {addDays, parseISO} from 'date-fns';
+import {TFunction} from 'i18next';
 
 // Helper to merge config
 function mergeConfig(global: GlobalConfig, event: EventConfig) {
@@ -34,7 +35,7 @@ function formatDescription(template: string, data: Record<string, string | numbe
   });
 }
 
-export async function generateICal(config: AppConfig): Promise<string> {
+export async function generateICal(config: AppConfig, t: TFunction): Promise<string> {
   const events: ics.EventAttributes[] = [];
   const {global} = config;
 
@@ -59,8 +60,8 @@ export async function generateICal(config: AppConfig): Promise<string> {
 
         const age = (days / 365.25).toFixed(2);
 
-        const defaultSummary = '{name} 降临地球🌏已经 {days} 天啦!';
-        const defaultDesc = '{name} 降临地球🌏已经 {days} 天啦! (age: {age}, birthday: {birthday})';
+        const defaultSummary = t('ical.integerDaysSummary');
+        const defaultDesc = t('ical.integerDaysDescription');
 
         const data = {
           name: cfg.name,
@@ -113,11 +114,11 @@ export async function generateICal(config: AppConfig): Promise<string> {
         let defaultDesc = '';
 
         if (type === 'solar_birthday') {
-          defaultSummary = '{name} {year} 年生日🎂快乐!';
-          defaultDesc = '{name} {year} 年生日🎂快乐! (age: {age}, birthday: {birthday})';
+          defaultSummary = t('ical.solarBirthdaySummary');
+          defaultDesc = t('ical.solarBirthdayDescription');
         } else {
-          defaultSummary = '{name} {year} 年农历生日🎂快乐!';
-          defaultDesc = '{name} {year} 年农历生日🎂快乐! (age: {age}, birthday: {birthday})';
+          defaultSummary = t('ical.lunarBirthdaySummary');
+          defaultDesc = t('ical.lunarBirthdayDescription');
         }
 
         const data = {
@@ -154,8 +155,8 @@ export async function generateICal(config: AppConfig): Promise<string> {
         events.push({
           start,
           duration: {hours: global.event_hours},
-          title: holiday.summary,
-          description: holiday.description,
+          title: t(`holidays.${key}`),
+          description: t(`holidays.${key}`),
           alarms: global.reminders.map((r) => ({
             action: 'display',
             trigger: {before: true, days: r, minutes: 0},

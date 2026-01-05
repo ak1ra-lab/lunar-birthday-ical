@@ -1,5 +1,6 @@
 import {useState, useEffect} from 'react';
 import {useForm} from 'react-hook-form';
+import {useTranslation} from 'react-i18next';
 import {EventConfig} from '@/types';
 import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
 import {Input} from '@/components/ui/input';
@@ -32,6 +33,7 @@ interface EventFormProps {
 }
 
 export function EventForm({initialData, onSave, onCancel}: EventFormProps) {
+  const {t} = useTranslation();
   const {register, handleSubmit, watch, setValue} = useForm<EventConfig>({
     defaultValues: initialData || {
       id: crypto.randomUUID(),
@@ -86,7 +88,7 @@ export function EventForm({initialData, onSave, onCancel}: EventFormProps) {
       setValue('start_date', solarDate);
     } catch (e) {
       console.error(e);
-      setError("无效的农历日期，请检查年份或闰月设置");
+      setError(t('eventForm.errorInvalidDate'));
       setValue('start_date', '');
     }
   };
@@ -111,32 +113,32 @@ export function EventForm({initialData, onSave, onCancel}: EventFormProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{initialData ? 'Edit Event' : 'Add New Event'}</CardTitle>
+        <CardTitle>{initialData ? t('eventForm.titleEdit') : t('eventForm.titleAdd')}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Name</Label>
-            <Input id="name" {...register('name', {required: true})} placeholder="Name (e.g. Zhang San)" />
+            <Label htmlFor="name">{t('eventForm.name')}</Label>
+            <Input id="name" {...register('name', {required: true})} placeholder={t('eventForm.namePlaceholder')} />
           </div>
 
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <Label>Start Date (Birthday)</Label>
+              <Label>{t('eventForm.startDate')}</Label>
               <div className="flex space-x-2 text-xs">
                 <button
                   type="button"
                   onClick={() => setInputMethod('solar')}
                   className={cn('px-2 py-1 rounded', inputMethod === 'solar' ? 'bg-slate-900 text-white' : 'bg-slate-100')}
                 >
-                        Solar Input
+                        {t('eventForm.solarInput')}
                 </button>
                 <button
                   type="button"
                   onClick={() => setInputMethod('lunar')}
                   className={cn('px-2 py-1 rounded', inputMethod === 'lunar' ? 'bg-slate-900 text-white' : 'bg-slate-100')}
                 >
-                        Lunar Input
+                        {t('eventForm.lunarInput')}
                 </button>
               </div>
             </div>
@@ -147,7 +149,7 @@ export function EventForm({initialData, onSave, onCancel}: EventFormProps) {
                 <div className="p-4 border rounded-md bg-slate-50 space-y-3">
                   <div className="grid grid-cols-2 gap-2">
                     <div className="col-span-2 sm:col-span-1">
-                      <Label className="text-xs">Year</Label>
+                      <Label className="text-xs">{t('eventForm.year')}</Label>
                       <div className="flex items-center gap-2">
                         <Input
                           type="number"
@@ -159,7 +161,7 @@ export function EventForm({initialData, onSave, onCancel}: EventFormProps) {
                       </div>
                     </div>
                     <div>
-                      <Label className="text-xs">Month</Label>
+                      <Label className="text-xs">{t('eventForm.month')}</Label>
                       <select
                         className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm"
                         value={lunarMonth}
@@ -171,7 +173,7 @@ export function EventForm({initialData, onSave, onCancel}: EventFormProps) {
                       </select>
                     </div>
                     <div>
-                      <Label className="text-xs">Day</Label>
+                      <Label className="text-xs">{t('eventForm.day')}</Label>
                       <select
                         className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm"
                         value={lunarDay}
@@ -190,12 +192,12 @@ export function EventForm({initialData, onSave, onCancel}: EventFormProps) {
                           onChange={(e) => setIsLeap(e.target.checked)}
                           className="h-4 w-4 rounded border-gray-300"
                         />
-                        <span className="text-sm">Leap Month (闰月)</span>
+                        <span className="text-sm">{t('eventForm.leapMonth')}</span>
                       </label>
                     </div>
                   </div>
                   <div className="text-xs text-muted-foreground">
-                        Converted Solar Date: {startDate || '...'}
+                        {t('eventForm.convertedSolar')}: {startDate || '...'}
                   </div>
                   {error && (
                     <div className="text-xs text-red-500 font-medium">
@@ -211,51 +213,51 @@ export function EventForm({initialData, onSave, onCancel}: EventFormProps) {
             )}
 
             {startDate && inputMethod === 'solar' && (
-              <p className="text-sm text-muted-foreground">Lunar Date: {lunarDate}</p>
+              <p className="text-sm text-muted-foreground">{t('eventForm.lunarDate')}: {lunarDate}</p>
             )}
           </div>
 
           <div className="space-y-2">
-            <Label>Event Types</Label>
+            <Label>{t('eventForm.eventTypes')}</Label>
             <div className="flex flex-col space-y-2">
               <label className="flex items-center space-x-2">
                 <input type="checkbox" value="lunar_birthday" {...register('event_keys')} />
-                <span>Lunar Birthday</span>
+                <span>{t('eventForm.lunarBirthday')}</span>
               </label>
               <label className="flex items-center space-x-2">
                 <input type="checkbox" value="solar_birthday" {...register('event_keys')} />
-                <span>Solar Birthday</span>
+                <span>{t('eventForm.solarBirthday')}</span>
               </label>
               <label className="flex items-center space-x-2">
                 <input type="checkbox" value="integer_days" {...register('event_keys')} />
-                <span>Integer Days (e.g. 10000 days)</span>
+                <span>{t('eventForm.integerDays')}</span>
               </label>
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="reminders">Reminders (Days before, comma separated)</Label>
+            <Label htmlFor="reminders">{t('eventForm.reminders')}</Label>
             <Input
               id="reminders"
               value={remindersStr}
               onChange={(e) => setRemindersStr(e.target.value)}
-              placeholder="e.g. 1, 3 (Leave empty to use global settings)"
+              placeholder={t('eventForm.remindersPlaceholder')}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="attendees">Attendees (Emails, comma separated)</Label>
+            <Label htmlFor="attendees">{t('eventForm.attendees')}</Label>
             <Textarea
               id="attendees"
               value={attendeesStr}
               onChange={(e) => setAttendeesStr(e.target.value)}
-              placeholder="e.g. a@b.com, c@d.com (Leave empty to use global settings)"
+              placeholder={t('eventForm.attendeesPlaceholder')}
             />
           </div>
 
           <div className="flex justify-end space-x-2">
-            <Button type="button" variant="outline" onClick={onCancel}>Cancel</Button>
-            <Button type="submit">Save Event</Button>
+            <Button type="button" variant="outline" onClick={onCancel}>{t('common.cancel')}</Button>
+            <Button type="submit">{t('common.save')}</Button>
           </div>
         </form>
       </CardContent>

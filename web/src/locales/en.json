@@ -1,0 +1,72 @@
+{
+  "app": {
+    "title": "Lunar Birthday iCal Generator",
+    "subtitle": "Generate iCal events for lunar birthdays and anniversaries",
+    "github": "GitHub",
+    "generatedIcal": "Generated iCal",
+    "downloadIcs": "Download .ics",
+    "about": "About",
+    "aboutText": "This tool generates an iCalendar (.ics) file containing lunar birthdays, solar birthdays, and integer day anniversaries (e.g. 10,000 days old). All data is processed locally in your browser."
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add",
+    "export": "Export Config",
+    "import": "Import Config",
+    "generate": "Generate iCal"
+  },
+  "eventList": {
+    "title": "Events",
+    "addEvent": "Add Event",
+    "noEvents": "No events added yet."
+  },
+  "ical": {
+    "integerDaysSummary": "{name} has been on Earth 🌏 for {days} days!",
+    "integerDaysDescription": "{name} has been on Earth 🌏 for {days} days! (age: {age}, birthday: {birthday})",
+    "solarBirthdaySummary": "Happy {year} Birthday 🎂 to {name}!",
+    "solarBirthdayDescription": "Happy {year} Birthday 🎂 to {name}! (age: {age}, birthday: {birthday})",
+    "lunarBirthdaySummary": "Happy {year} Lunar Birthday 🎂 to {name}!",
+    "lunarBirthdayDescription": "Happy {year} Lunar Birthday 🎂 to {name}! (age: {age}, birthday: {birthday})"
+  },
+  "eventForm": {
+    "titleAdd": "Add New Event",
+    "titleEdit": "Edit Event",
+    "name": "Name",
+    "namePlaceholder": "Name (e.g. Zhang San)",
+    "startDate": "Start Date (Birthday)",
+    "solarInput": "Solar Input",
+    "lunarInput": "Lunar Input",
+    "year": "Year",
+    "month": "Month",
+    "day": "Day",
+    "leapMonth": "Leap Month (闰月)",
+    "convertedSolar": "Converted Solar Date",
+    "lunarDate": "Lunar Date",
+    "eventTypes": "Event Types",
+    "lunarBirthday": "Lunar Birthday",
+    "solarBirthday": "Solar Birthday",
+    "integerDays": "Integer Days (e.g. 10000 days)",
+    "reminders": "Reminders (Days before, comma separated)",
+    "remindersPlaceholder": "e.g. 1, 3 (Leave empty to use global settings)",
+    "attendees": "Attendees (Emails, comma separated)",
+    "attendeesPlaceholder": "e.g. a@b.com, c@d.com (Leave empty to use global settings)",
+    "errorInvalidDate": "Invalid lunar date, please check year or leap month settings"
+  },
+  "configForm": {
+    "globalSettings": "Global Settings",
+    "timezone": "Timezone",
+    "yearRange": "Year Range",
+    "to": "to",
+    "eventTime": "Event Time",
+    "duration": "Duration (Hours)",
+    "holidays": "Public Holidays"
+  },
+  "holidays": {
+    "mothers_day": "Mother's Day (2nd Sunday in May)",
+    "fathers_day": "Father's Day (3rd Sunday in June)",
+    "thanksgiving_day": "Thanksgiving Day (4th Thursday in November)"
+  }
+}

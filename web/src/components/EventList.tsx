@@ -2,6 +2,7 @@ import {EventConfig} from '@/types';
 import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
 import {Trash2, Edit} from 'lucide-react';
+import {useTranslation} from 'react-i18next';
 
 interface EventListProps {
   events: EventConfig[];
@@ -11,15 +12,17 @@ interface EventListProps {
 }
 
 export function EventList({events, onEdit, onDelete, onAdd}: EventListProps) {
+  const {t} = useTranslation();
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>Events</CardTitle>
-        <Button onClick={onAdd}>Add Event</Button>
+        <CardTitle>{t('eventList.title')}</CardTitle>
+        <Button onClick={onAdd}>{t('eventList.addEvent')}</Button>
       </CardHeader>
       <CardContent>
         {events.length === 0 ? (
-          <p className="text-center text-muted-foreground py-4">No events added yet.</p>
+          <p className="text-center text-muted-foreground py-4">{t('eventList.noEvents')}</p>
         ) : (
           <div className="space-y-2">
             {events.map((event) => (
