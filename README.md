@@ -1,8 +1,8 @@
 # lunar-birthday-ical
 
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/ak1ra-lab/lunar-birthday-ical/.github%2Fworkflows%2Fpublish-to-pypi.yaml)
-![PyPI - Downloads](https://img.shields.io/pypi/dm/lunar-birthday-ical)
-![PyPI - Version](https://img.shields.io/pypi/v/lunar-birthday-ical)
+[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/ak1ra-lab/lunar-birthday-ical/.github%2Fworkflows%2Fpublish-to-pypi.yaml)](https://github.com/ak1ra-lab/lunar-birthday-ical/actions/workflows/publish-to-pypi.yaml)
+[![PyPI - Version](https://img.shields.io/pypi/v/lunar-birthday-ical)](https://pypi.org/project/lunar-birthday-ical/)
+[![PyPI - Version](https://img.shields.io/pypi/v/lunar-birthday-ical?label=test-pypi&pypiBaseUrl=https%3A%2F%2Ftest.pypi.org)](https://test.pypi.org/project/lunar-birthday-ical/)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/ak1ra-lab/lunar-birthday-ical)
 
 ## What is this?
