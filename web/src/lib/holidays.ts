@@ -34,3 +34,35 @@ export function getThanksgivingDay(year: number): Date {
   const fourthThursdayDate = firstThursdayDate + 21;
   return new Date(year, 10, fourthThursdayDate);
 }
+
+export interface HolidayInfo {
+  key: string;
+  label: string;
+  summary: string;
+  description: string;
+  getDate: (year: number) => Date;
+}
+
+export const HOLIDAYS: Record<string, HolidayInfo> = {
+  mothers_day: {
+    key: 'mothers_day',
+    label: "Mother's Day (2nd Sunday in May)",
+    summary: "Mother's Day",
+    description: "Mother's Day is a celebration honoring the mother of the family or individual, as well as motherhood, maternal bonds, and the influence of mothers in society. It is celebrated on different days in many parts of the world, most commonly in the months of March or May.",
+    getDate: getMothersDay,
+  },
+  fathers_day: {
+    key: 'fathers_day',
+    label: "Father's Day (3rd Sunday in June)",
+    summary: "Father's Day",
+    description: "Father's Day is a holiday of honoring fatherhood and paternal bonds, as well as the influence of fathers in society. In Catholic countries of Europe, it has been celebrated on March 19 as Saint Joseph's Day since the Middle Ages. In the United States, Father's Day was founded by Sonora Smart Dodd, and celebrated on the third Sunday of June for the first time in 1910.",
+    getDate: getFathersDay,
+  },
+  thanksgiving_day: {
+    key: 'thanksgiving_day',
+    label: "Thanksgiving Day (4th Thursday in November)",
+    summary: "Thanksgiving Day",
+    description: "Thanksgiving is a national holiday celebrated on various dates in the United States, Canada, Grenada, Saint Lucia, and Liberia. It began as a day of giving thanks for the blessing of the harvest and of the preceding year.",
+    getDate: getThanksgivingDay,
+  },
+};

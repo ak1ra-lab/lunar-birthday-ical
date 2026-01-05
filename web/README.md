@@ -37,4 +37,4 @@ This is a web-based version of the Lunar Birthday iCal generator, built with Rea
 
 ## Deployment
 
-This project is configured to deploy to GitHub Pages automatically via GitHub Actions when changes are pushed to the `main` branch.
+This project is configured to deploy to GitHub Pages automatically via GitHub Actions when changes are pushed to the `master` branch.

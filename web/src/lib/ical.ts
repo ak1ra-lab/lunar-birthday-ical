@@ -1,7 +1,7 @@
 import * as ics from 'ics';
 import {AppConfig, EventConfig, GlobalConfig} from '../types';
 import {getFutureSolarDate} from './lunar';
-import {getMothersDay, getFathersDay, getThanksgivingDay} from './holidays';
+import {HOLIDAYS} from './holidays';
 import {addDays, parseISO} from 'date-fns';
 
 // Helper to merge config
@@ -10,8 +10,9 @@ function mergeConfig(global: GlobalConfig, event: EventConfig) {
     timezone: event.timezone || global.timezone,
     event_time: event.event_time || global.event_time,
     event_hours: event.event_hours || global.event_hours,
-    reminders: event.reminders || global.reminders,
-    attendees: event.attendees || global.attendees,
+    // Treat empty array as "inherit from global" because UI defaults to empty
+    reminders: (event.reminders && event.reminders.length > 0) ? event.reminders : global.reminders,
+    attendees: (event.attendees && event.attendees.length > 0) ? event.attendees : global.attendees,
     ...event,
   };
 }
@@ -144,42 +145,17 @@ export async function generateICal(config: AppConfig): Promise<string> {
   // Process Holidays
   if (global.holiday_keys && global.holiday_keys.length > 0) {
     for (let year = global.year_start; year <= global.year_end; year++) {
-      if (global.holiday_keys.includes('mothers_day')) {
-        const date = getMothersDay(year);
+      for (const key of global.holiday_keys) {
+        const holiday = HOLIDAYS[key];
+        if (!holiday) continue;
+
+        const date = holiday.getDate(year);
         const start = createDateArray(date, global.event_time);
         events.push({
           start,
           duration: {hours: global.event_hours},
-          title: 'Mother\'s Day',
-          description: 'Mother\'s Day',
-          alarms: global.reminders.map((r) => ({
-            action: 'display',
-            trigger: {before: true, days: r, minutes: 0},
-          })),
-        });
-      }
-      if (global.holiday_keys.includes('fathers_day')) {
-        const date = getFathersDay(year);
-        const start = createDateArray(date, global.event_time);
-        events.push({
-          start,
-          duration: {hours: global.event_hours},
-          title: 'Father\'s Day',
-          description: 'Father\'s Day',
-          alarms: global.reminders.map((r) => ({
-            action: 'display',
-            trigger: {before: true, days: r, minutes: 0},
-          })),
-        });
-      }
-      if (global.holiday_keys.includes('thanksgiving_day')) {
-        const date = getThanksgivingDay(year);
-        const start = createDateArray(date, global.event_time);
-        events.push({
-          start,
-          duration: {hours: global.event_hours},
-          title: 'Thanksgiving Day',
-          description: 'Thanksgiving Day',
+          title: holiday.summary,
+          description: holiday.description,
           alarms: global.reminders.map((r) => ({
             action: 'display',
             trigger: {before: true, days: r, minutes: 0},

@@ -9,6 +9,22 @@ import {Textarea} from '@/components/ui/textarea';
 import {solarToLunar, lunarToSolar} from '@/lib/lunar';
 import {cn} from '@/lib/utils';
 
+const LUNAR_MONTHS = [
+  '正月', '二月', '三月', '四月', '五月', '六月',
+  '七月', '八月', '九月', '十月', '冬月', '腊月'
+];
+
+const LUNAR_DAYS = [
+  '初一', '初二', '初三', '初四', '初五', '初六', '初七', '初八', '初九', '初十',
+  '十一', '十二', '十三', '十四', '十五', '十六', '十七', '十八', '十九', '二十',
+  '廿一', '廿二', '廿三', '廿四', '廿五', '廿六', '廿七', '廿八', '廿九', '三十'
+];
+
+const CHINESE_NUMBERS = ['〇', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
+function toChineseYear(year: number): string {
+  return year.toString().split('').map(d => CHINESE_NUMBERS[parseInt(d)] || d).join('');
+}
+
 interface EventFormProps {
   initialData?: EventConfig;
   onSave: (event: EventConfig) => void;
@@ -38,6 +54,20 @@ export function EventForm({initialData, onSave, onCancel}: EventFormProps) {
   const [lunarMonth, setLunarMonth] = useState<number>(1);
   const [lunarDay, setLunarDay] = useState<number>(1);
   const [isLeap, setIsLeap] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const [remindersStr, setRemindersStr] = useState(initialData?.reminders?.join(', ') || '');
+  const [attendeesStr, setAttendeesStr] = useState(initialData?.attendees?.join(', ') || '');
+
+  useEffect(() => {
+      const r = remindersStr.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n));
+      setValue('reminders', r);
+  }, [remindersStr, setValue]);
+
+  useEffect(() => {
+      const a = attendeesStr.split(',').map(s => s.trim()).filter(s => s);
+      setValue('attendees', a);
+  }, [attendeesStr, setValue]);
 
   useEffect(() => {
     if (startDate) {
@@ -50,12 +80,14 @@ export function EventForm({initialData, onSave, onCancel}: EventFormProps) {
   }, [startDate]);
 
   const handleLunarConvert = () => {
+    setError(null);
     try {
       const solarDate = lunarToSolar(lunarYear, lunarMonth, lunarDay, isLeap);
       setValue('start_date', solarDate);
     } catch (e) {
       console.error(e);
-      // alert("Invalid Lunar Date"); // Avoid alert in render loop
+      setError("无效的农历日期，请检查年份或闰月设置");
+      setValue('start_date', '');
     }
   };
 
@@ -114,13 +146,17 @@ export function EventForm({initialData, onSave, onCancel}: EventFormProps) {
             ) : (
                 <div className="p-4 border rounded-md bg-slate-50 space-y-3">
                   <div className="grid grid-cols-2 gap-2">
-                    <div>
+                    <div className="col-span-2 sm:col-span-1">
                       <Label className="text-xs">Year</Label>
-                      <Input
-                        type="number"
-                        value={lunarYear}
-                        onChange={(e) => setLunarYear(Number(e.target.value))}
-                      />
+                      <div className="flex items-center gap-2">
+                        <Input
+                          type="number"
+                          value={lunarYear}
+                          onChange={(e) => setLunarYear(Number(e.target.value))}
+                          className="w-24"
+                        />
+                        <span className="text-sm text-muted-foreground whitespace-nowrap">{toChineseYear(lunarYear)}年</span>
+                      </div>
                     </div>
                     <div>
                       <Label className="text-xs">Month</Label>
@@ -129,8 +165,8 @@ export function EventForm({initialData, onSave, onCancel}: EventFormProps) {
                         value={lunarMonth}
                         onChange={(e) => setLunarMonth(Number(e.target.value))}
                       >
-                        {Array.from({length: 12}, (_, i) => i + 1).map((m) => (
-                          <option key={m} value={m}>{m}月</option>
+                        {LUNAR_MONTHS.map((name, i) => (
+                          <option key={i + 1} value={i + 1}>{name}</option>
                         ))}
                       </select>
                     </div>
@@ -141,8 +177,8 @@ export function EventForm({initialData, onSave, onCancel}: EventFormProps) {
                         value={lunarDay}
                         onChange={(e) => setLunarDay(Number(e.target.value))}
                       >
-                        {Array.from({length: 30}, (_, i) => i + 1).map((d) => (
-                          <option key={d} value={d}>{d}</option>
+                        {LUNAR_DAYS.map((name, i) => (
+                          <option key={i + 1} value={i + 1}>{name}</option>
                         ))}
                       </select>
                     </div>
@@ -161,6 +197,11 @@ export function EventForm({initialData, onSave, onCancel}: EventFormProps) {
                   <div className="text-xs text-muted-foreground">
                         Converted Solar Date: {startDate || '...'}
                   </div>
+                  {error && (
+                    <div className="text-xs text-red-500 font-medium">
+                      {error}
+                    </div>
+                  )}
                 </div>
             )}
 
@@ -200,6 +241,26 @@ export function EventForm({initialData, onSave, onCancel}: EventFormProps) {
           <div className="space-y-2">
             <Label htmlFor="description">Description Template (Optional)</Label>
             <Textarea id="description" {...register('description')} placeholder="Details..." />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="reminders">Reminders (Days before, comma separated)</Label>
+            <Input
+              id="reminders"
+              value={remindersStr}
+              onChange={(e) => setRemindersStr(e.target.value)}
+              placeholder="e.g. 1, 3 (Leave empty to use global settings)"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="attendees">Attendees (Emails, comma separated)</Label>
+            <Textarea
+              id="attendees"
+              value={attendeesStr}
+              onChange={(e) => setAttendeesStr(e.target.value)}
+              placeholder="e.g. a@b.com, c@d.com (Leave empty to use global settings)"
+            />
           </div>
 
           <div className="flex justify-end space-x-2">
