@@ -2,12 +2,9 @@ on:
   push:
     branches:
       - dev
-    paths-ignore:
-      - "docs/**"
-      - "**.md"
-      - "**.toml"
-      - "**.yaml"
-      - "**.yml"
+    paths:
+      - "src/**"
+      - ".github/workflows/publish-to-test-pypi.yaml"
   workflow_dispatch: ~
 
 jobs:
