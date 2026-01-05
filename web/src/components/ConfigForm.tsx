@@ -26,7 +26,7 @@ export function ConfigForm({config, onSave}: ConfigFormProps) {
       days_max: Number(data.days_max),
       days_interval: Number(data.days_interval),
       event_hours: Number(data.event_hours),
-      reminders: Array.isArray(data.reminders) ? data.reminders : String(data.reminders).split(',').map(Number),
+      reminders: Array.isArray(data.reminders) ? data.reminders : String(data.reminders).split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n)),
       attendees: Array.isArray(data.attendees) ? data.attendees : String(data.attendees).split(',').map((s) => s.trim()).filter(Boolean),
       holiday_keys: data.holiday_keys || [],
     };

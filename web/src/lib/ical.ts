@@ -8,13 +8,13 @@ import {TFunction} from 'i18next';
 // Helper to merge config
 function mergeConfig(global: GlobalConfig, event: EventConfig) {
   return {
+    ...event,
     timezone: event.timezone || global.timezone,
     event_time: event.event_time || global.event_time,
     event_hours: event.event_hours || global.event_hours,
     // Treat empty array as "inherit from global" because UI defaults to empty
     reminders: (event.reminders && event.reminders.length > 0) ? event.reminders : global.reminders,
     attendees: (event.attendees && event.attendees.length > 0) ? event.attendees : global.attendees,
-    ...event,
   };
 }
 
@@ -70,16 +70,20 @@ export async function generateICal(config: AppConfig, t: TFunction): Promise<str
           birthday: cfg.start_date,
         };
 
+        const title = formatDescription(cfg.summary || defaultSummary, data);
+        const description = formatDescription(cfg.description || defaultDesc, data);
+
         events.push({
           start,
           duration,
-          title: formatDescription(cfg.summary || defaultSummary, data),
-          description: formatDescription(cfg.description || defaultDesc, data),
+          title,
+          description,
           alarms: cfg.reminders.map((r) => ({
             action: 'display',
+            description: `Reminder: ${title}`,
             trigger: {before: true, days: r, minutes: 0},
           })),
-          attendees: cfg.attendees.map((email) => ({name: email.split('@')[0], email, rsvp: true})),
+          attendees: cfg.attendees.map((email) => ({name: email.split('@')[0], email, rsvp: true, role: 'REQ-PARTICIPANT'})),
           calName: 'Lunar Birthday Calendar',
         });
       }
@@ -128,16 +132,20 @@ export async function generateICal(config: AppConfig, t: TFunction): Promise<str
           birthday: cfg.start_date,
         };
 
+        const title = formatDescription(cfg.summary || defaultSummary, data);
+        const description = formatDescription(cfg.description || defaultDesc, data);
+
         events.push({
           start,
           duration,
-          title: formatDescription(cfg.summary || defaultSummary, data),
-          description: formatDescription(cfg.description || defaultDesc, data),
+          title,
+          description,
           alarms: cfg.reminders.map((r) => ({
             action: 'display',
+            description: `Reminder: ${title}`,
             trigger: {before: true, days: r, minutes: 0},
           })),
-          attendees: cfg.attendees.map((email) => ({name: email.split('@')[0], email, rsvp: true})),
+          attendees: cfg.attendees.map((email) => ({name: email.split('@')[0], email, rsvp: true, role: 'REQ-PARTICIPANT'})),
         });
       }
     }
@@ -152,13 +160,15 @@ export async function generateICal(config: AppConfig, t: TFunction): Promise<str
 
         const date = holiday.getDate(year);
         const start = createDateArray(date, global.event_time);
+        const title = t(`holidays.${key}`);
         events.push({
           start,
           duration: {hours: global.event_hours},
-          title: t(`holidays.${key}`),
-          description: t(`holidays.${key}`),
+          title,
+          description: title,
           alarms: global.reminders.map((r) => ({
             action: 'display',
+            description: `Reminder: ${title}`,
             trigger: {before: true, days: r, minutes: 0},
           })),
         });
