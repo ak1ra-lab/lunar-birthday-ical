@@ -33,10 +33,10 @@ You can use the `-h` or `--help` option to view the command-line tool's help inf
 $ lunar-birthday-ical -h
 usage: lunar-birthday-ical [-h] [-L YYYY MM DD | -S YYYY MM DD] [config.yaml ...]
 
-Generate iCal events and reminders for lunar birthday and cycle days.
+Generate iCalendar events and reminders for lunar birthday and cycle days.
 
 positional arguments:
-  config.yaml           config file for iCal, checkout config/example-lunar-birthday.yaml for example.
+  config.yaml           config file for iCalendar, checkout config/example-lunar-birthday.yaml for example.
 
 options:
   -h, --help            show this help message and exit
@@ -72,7 +72,7 @@ The response from the pastebin server looks like this:
 
 ```shellsession
 $ lunar-birthday-ical config/example-lunar-birthday.yaml
-iCal saved to config/example-lunar-birthday.ics
+iCalendar saved to config/example-lunar-birthday.ics
 HTTP Request: POST https://komj.uk/ "HTTP/1.1 200 OK"
 {"url": "https://komj.uk/Kree41N5W28qJC70XQU4Kj1F", "manageUrl": "https://komj.uk/Kree41N5W28qJC70XQU4Kj1F:i9Jq1bd3KMscrEsyUzm0ksgQ", "expirationSeconds": 604800, "expireAt": "2025-11-21T03:45:46.263Z"}
 ```

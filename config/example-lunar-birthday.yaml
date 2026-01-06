@@ -1,6 +1,6 @@
 # All fields under global are optional.
 global:
-  # str: iCal global timezone
+  # str: iCalendar global timezone
   timezone: Asia/Shanghai
 
   # dict: holiday_keys
@@ -19,7 +19,7 @@ global:
   # list: event_keys
   event_keys: []
   # str: Start time of VEVENT event, format are %H:%M:%S
-  # Time are localtime, which will be converted to UTC in iCal
+  # Time are localtime, which will be converted to UTC in iCalendar
   # Note to enclose the value in double quotes to prevent YAML automatic conversion
   event_time: "10:00:00"
   # int: Duration of VEVENT event, in hours

@@ -1,9 +1,9 @@
 {
   "app": {
-    "title": "Lunar Birthday iCal Generator",
-    "subtitle": "Generate iCal events for lunar birthdays and anniversaries",
+    "title": "Lunar Birthday iCalendar Generator",
+    "subtitle": "Generate iCalendar events for lunar birthdays and anniversaries",
     "github": "GitHub",
-    "generatedIcal": "Generated iCal",
+    "generatedIcal": "Generated iCalendar",
     "downloadIcs": "Download .ics",
     "about": "About",
     "aboutText": "This tool generates an iCalendar (.ics) file containing lunar birthdays, solar birthdays, and integer day anniversaries (e.g. 10,000 days old). All data is processed locally in your browser."
@@ -16,7 +16,7 @@
     "add": "Add",
     "export": "Export Config",
     "import": "Import Config",
-    "generate": "Generate iCal"
+    "generate": "Generate iCalendar"
   },
   "eventList": {
     "title": "Events",

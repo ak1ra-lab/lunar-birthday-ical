@@ -69,7 +69,7 @@ class LunarCalendarApp:
         output = self.config_path.with_suffix(".ics")
         with output.open("wb") as f:
             f.write(calendar_data)
-        logger.info("iCal saved to %s", output)
+        logger.info("iCalendar saved to %s", output)
         return output
 
     def upload(self, file_path: Path) -> None:

@@ -1,6 +1,6 @@
 # All fields under global are optional.
 global:
-  # str: iCal global timezone
+  # str: iCalendar global timezone
   timezone: Asia/Shanghai
 
   # dict: holiday_keys

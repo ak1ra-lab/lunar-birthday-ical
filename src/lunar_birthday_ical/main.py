@@ -23,14 +23,14 @@ def create_parser() -> argparse.ArgumentParser:
         Configured ArgumentParser instance.
     """
     parser = argparse.ArgumentParser(
-        description="Generate iCal events and reminders for lunar birthday and cycle days."
+        description="Generate iCalendar events and reminders for lunar birthday and cycle days."
     )
     parser.add_argument(
         "config_files",
         type=Path,
         nargs="*",
         metavar="config.yaml",
-        help="config file for iCal, checkout config/example-lunar-birthday.yaml for example.",
+        help="config file for iCalendar, checkout config/example-lunar-birthday.yaml for example.",
     )
 
     group = parser.add_mutually_exclusive_group()
@@ -92,7 +92,7 @@ def process_config_files(config_files: list[Path]) -> None:
         app.upload(output_file)
 
         elapsed = time.perf_counter() - start
-        logger.debug("iCal generation elapsed at %.6fs for %s", elapsed, config_path)
+        logger.debug("iCalendar generation elapsed at %.6fs for %s", elapsed, config_path)
 
 
 def main() -> None:

@@ -1,9 +1,9 @@
 {
   "app": {
-    "title": "农历生日 iCal 生成器",
-    "subtitle": "生成农历生日和纪念日的 iCal 日历文件",
+    "title": "农历生日 iCalendar 生成器",
+    "subtitle": "生成农历生日和纪念日的 iCalendar 日历文件",
     "github": "GitHub",
-    "generatedIcal": "生成的 iCal",
+    "generatedIcal": "生成的 iCalendar",
     "downloadIcs": "下载 .ics 文件",
     "about": "关于",
     "aboutText": "本工具生成包含农历生日、公历生日和整数天纪念日（如 10,000 天）的 iCalendar (.ics) 文件。所有数据均在您的浏览器本地处理。"
@@ -16,7 +16,7 @@
     "add": "添加",
     "export": "导出配置",
     "import": "导入配置",
-    "generate": "生成 iCal"
+    "generate": "生成 iCalendar"
   },
   "eventList": {
     "title": "事件列表",
