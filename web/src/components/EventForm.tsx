@@ -1,12 +1,13 @@
 import {useState, useEffect} from 'react';
-import {useForm} from 'react-hook-form';
+import {useForm, Controller} from 'react-hook-form';
 import {useTranslation} from 'react-i18next';
 import {EventConfig} from '@/types';
+import {COMMON_TIMEZONES} from '@/lib/constants';
 import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {Button} from '@/components/ui/button';
-import {Textarea} from '@/components/ui/textarea';
+import {TagInput} from '@/components/ui/tag-input';
 import {solarToLunar, lunarToSolar} from '@/lib/lunar';
 import {cn} from '@/lib/utils';
 
@@ -34,7 +35,7 @@ interface EventFormProps {
 
 export function EventForm({initialData, onSave, onCancel}: EventFormProps) {
   const {t} = useTranslation();
-  const {register, handleSubmit, watch, setValue} = useForm<EventConfig>({
+  const {register, handleSubmit, watch, setValue, control} = useForm<EventConfig>({
     defaultValues: initialData || {
       id: crypto.randomUUID(),
       name: '',
@@ -57,19 +58,6 @@ export function EventForm({initialData, onSave, onCancel}: EventFormProps) {
   const [lunarDay, setLunarDay] = useState<number>(1);
   const [isLeap, setIsLeap] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-
-  const [remindersStr, setRemindersStr] = useState(initialData?.reminders?.join(', ') || '');
-  const [attendeesStr, setAttendeesStr] = useState(initialData?.attendees?.join(', ') || '');
-
-  useEffect(() => {
-      const r = remindersStr.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n));
-      setValue('reminders', r);
-  }, [remindersStr, setValue]);
-
-  useEffect(() => {
-      const a = attendeesStr.split(',').map(s => s.trim()).filter(s => s);
-      setValue('attendees', a);
-  }, [attendeesStr, setValue]);
 
   useEffect(() => {
     if (startDate) {
@@ -106,8 +94,17 @@ export function EventForm({initialData, onSave, onCancel}: EventFormProps) {
     const processedData = {
       ...data,
       event_keys: Array.isArray(data.event_keys) ? data.event_keys : (data.event_keys ? [data.event_keys] : []),
+      reminders: data.reminders?.map(Number).filter(n => !isNaN(n)) || [],
     };
     onSave(processedData);
+  };
+
+  const validateEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const validateReminder = (reminder: string) => {
+    return !isNaN(Number(reminder));
   };
 
   return (
@@ -218,6 +215,30 @@ export function EventForm({initialData, onSave, onCancel}: EventFormProps) {
           </div>
 
           <div className="space-y-2">
+            <Label>{t('configForm.eventTime')} (HH:MM:SS)</Label>
+            <Input 
+              type="time" 
+              step="1"
+              {...register('event_time')} 
+              placeholder={t('configForm.eventTime')}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label>{t('configForm.timezone')}</Label>
+            <Input 
+              list="timezones" 
+              {...register('timezone')} 
+              placeholder="Select or type timezone"
+            />
+            <datalist id="timezones">
+              {COMMON_TIMEZONES.map(tz => (
+                <option key={tz} value={tz} />
+              ))}
+            </datalist>
+          </div>
+
+          <div className="space-y-2">
             <Label>{t('eventForm.eventTypes')}</Label>
             <div className="flex flex-col space-y-2">
               <label className="flex items-center space-x-2">
@@ -237,21 +258,35 @@ export function EventForm({initialData, onSave, onCancel}: EventFormProps) {
 
           <div className="space-y-2">
             <Label htmlFor="reminders">{t('eventForm.reminders')}</Label>
-            <Input
-              id="reminders"
-              value={remindersStr}
-              onChange={(e) => setRemindersStr(e.target.value)}
-              placeholder={t('eventForm.remindersPlaceholder')}
+            <Controller
+              control={control}
+              name="reminders" // Ensure 'reminders' is initialized as [] in your defaultValues
+              render={({field}) => (
+                <TagInput
+                  value={(field.value || []).map(String)}
+                  onChange={(tags) => field.onChange(tags.map(Number))}
+                  validate={validateReminder}
+                  placeholder={t('eventForm.remindersPlaceholder')}
+                  errorMessage="Must be a number"
+                />
+              )}
             />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="attendees">{t('eventForm.attendees')}</Label>
-            <Textarea
-              id="attendees"
-              value={attendeesStr}
-              onChange={(e) => setAttendeesStr(e.target.value)}
-              placeholder={t('eventForm.attendeesPlaceholder')}
+            <Controller
+              control={control}
+              name="attendees" // Ensure 'attendees' is initialized as [] in your defaultValues
+              render={({field}) => (
+                <TagInput
+                  value={field.value || []}
+                  onChange={field.onChange}
+                  validate={validateEmail}
+                  placeholder={t('eventForm.attendeesPlaceholder')}
+                  errorMessage="Invalid email address"
+                />
+              )}
             />
           </div>
 

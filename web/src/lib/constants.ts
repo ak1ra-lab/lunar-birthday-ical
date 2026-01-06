@@ -1,0 +1,17 @@
+export const COMMON_TIMEZONES = [
+  'Asia/Shanghai',
+  'Asia/Tokyo',
+  'Asia/Hong_Kong',
+  'Asia/Taipei',
+  'Asia/Singapore',
+  'Australia/Sydney',
+  'Europe/London',
+  'Europe/Paris',
+  'Europe/Berlin',
+  'America/New_York',
+  'America/Los_Angeles',
+  'America/Chicago',
+  'America/Toronto',
+  'America/Vancouver',
+  'UTC'
+];

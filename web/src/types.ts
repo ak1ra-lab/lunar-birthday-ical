@@ -26,9 +26,22 @@ export interface EventConfig {
   event_hours?: number;
 }
 
+export interface ObservanceConfig {
+  id: string;
+  name: string;
+  month: number; // 1-12
+  week: number; // 1-5 (5 could denote Last, or handle separately. For now, 1-4 supported as specific Nth)
+  weekday: number; // 0 (Sun) - 6 (Sat)
+  summary?: string;
+  description?: string;
+  reminders?: number[];
+  attendees?: string[];
+}
+
 export interface AppConfig {
   global: GlobalConfig;
   events: EventConfig[];
+  observances: ObservanceConfig[];
 }
 
 export const DEFAULT_CONFIG: AppConfig = {
@@ -45,10 +58,5 @@ export const DEFAULT_CONFIG: AppConfig = {
     holiday_keys: [],
   },
   events: [],
+  observances: [],
 };
-
-export const AVAILABLE_HOLIDAYS = [
-  {key: 'mothers_day', label: 'Mother\'s Day (2nd Sunday in May)'},
-  {key: 'fathers_day', label: 'Father\'s Day (3rd Sunday in June)'},
-  {key: 'thanksgiving_day', label: 'Thanksgiving Day (4th Thursday in November)'},
-];

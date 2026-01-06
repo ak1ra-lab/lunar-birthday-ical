@@ -1,7 +1,7 @@
 import * as ics from 'ics';
 import {AppConfig, EventConfig, GlobalConfig} from '../types';
 import {getFutureSolarDate} from './lunar';
-import {HOLIDAYS} from './holidays';
+import {getNthWeekdayOfMonth} from './holidays';
 import {addDays, parseISO} from 'date-fns';
 import {TFunction} from 'i18next';
 
@@ -151,26 +151,34 @@ export async function generateICal(config: AppConfig, t: TFunction): Promise<str
     }
   }
 
-  // Process Holidays
-  if (global.holiday_keys && global.holiday_keys.length > 0) {
-    for (let year = global.year_start; year <= global.year_end; year++) {
-      for (const key of global.holiday_keys) {
-        const holiday = HOLIDAYS[key];
-        if (!holiday) continue;
+  // Observances
+  if (config.observances && config.observances.length > 0) {
+    for (const obs of config.observances) {
+      for (let year = global.year_start; year <= global.year_end; year++) {
+         const date = getNthWeekdayOfMonth(year, obs.month, obs.week, obs.weekday);
+         
+         const start = createDateArray(date, global.event_time);
+         const duration = {hours: global.event_hours};
+         
+         // Use translated title if it matches a key, otherwise use name
+         // Actually, let's just use the name from config, allowing user to edit it.
+         const title = obs.summary || obs.name;
+         const description = obs.description || obs.name;
 
-        const date = holiday.getDate(year);
-        const start = createDateArray(date, global.event_time);
-        const title = t(`holidays.${key}`);
-        events.push({
-          start,
-          duration: {hours: global.event_hours},
-          title,
-          description: title,
-          alarms: global.reminders.map((r) => ({
-            action: 'display',
-            description: `Reminder: ${title}`,
-            trigger: {before: true, days: r, minutes: 0},
-          })),
+         const reminders = (obs.reminders && obs.reminders.length > 0) ? obs.reminders : global.reminders;
+         const attendees = (obs.attendees && obs.attendees.length > 0) ? obs.attendees : global.attendees;
+
+         events.push({
+            start,
+            duration,
+            title,
+            description,
+            alarms: reminders.map((r) => ({
+              action: 'display',
+              description: `Reminder: ${title}`,
+              trigger: {before: true, days: r, minutes: 0},
+            })),
+            attendees: attendees.map((email) => ({name: email.split('@')[0], email, rsvp: true, role: 'REQ-PARTICIPANT'})),
         });
       }
     }

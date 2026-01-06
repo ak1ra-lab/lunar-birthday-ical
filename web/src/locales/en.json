@@ -1,6 +1,6 @@
 {
   "app": {
-    "title": "Lunar Birthday iCalendar Generator",
+    "title": "iCalendar Generator",
     "subtitle": "Generate iCalendar events for lunar birthdays and anniversaries",
     "github": "GitHub",
     "generatedIcal": "Generated iCalendar",
@@ -49,9 +49,9 @@
     "lunarBirthday": "Lunar Birthday",
     "solarBirthday": "Solar Birthday",
     "integerDays": "Integer Days (e.g. 10000 days)",
-    "reminders": "Reminders (Days before, comma separated)",
+    "reminders": "Reminders (Days before)",
     "remindersPlaceholder": "e.g. 1, 3 (Leave empty to use global settings)",
-    "attendees": "Attendees (Emails, comma separated)",
+    "attendees": "Attendees (Emails)",
     "attendeesPlaceholder": "e.g. a@b.com, c@d.com (Leave empty to use global settings)",
     "errorInvalidDate": "Invalid lunar date, please check year or leap month settings"
   },
@@ -62,11 +62,67 @@
     "to": "to",
     "eventTime": "Event Time",
     "duration": "Duration (Hours)",
+    "observances": "Observances (Floating Holidays)",
     "holidays": "Public Holidays"
   },
   "holidays": {
     "mothers_day": "Mother's Day (2nd Sunday in May)",
     "fathers_day": "Father's Day (3rd Sunday in June)",
     "thanksgiving_day": "Thanksgiving Day (4th Thursday in November)"
+  },
+  "observanceForm": {
+      "loadPreset": "Load Preset (Optional)",
+      "selectPreset": "Select a preset...",
+      "week": "Week",
+      "weekday": "Weekday",
+      "month": "Month",
+      "weeks": {
+        "1": "First",
+        "2": "Second",
+        "3": "Third",
+        "4": "Fourth"
+      },
+      "weekdays": {
+        "0": "Sunday",
+        "1": "Monday",
+        "2": "Tuesday",
+        "3": "Wednesday",
+        "4": "Thursday",
+        "5": "Friday",
+        "6": "Saturday"
+      },
+      "months": {
+        "1": "January",
+        "2": "February",
+        "3": "March",
+        "4": "April",
+        "5": "May",
+        "6": "June",
+        "7": "July",
+        "8": "August",
+        "9": "September",
+        "10": "October",
+        "11": "November",
+        "12": "December"
+      }
+  },
+  "faq": {
+    "title": "FAQ & Help",
+    "whatIsICal": {
+      "title": "What is iCalendar?",
+      "content": "iCalendar (.ics) is a standard file format used for calendar data exchange. It allows you to import calendar events into applications like Google Calendar, Apple Calendar, and Outlook."
+    },
+    "howToUse": {
+      "title": "How do I use the generated file?",
+      "content": "You can download the .ics file and import it directly into your calendar app. However, we recommend 'subscribing' to a calendar URL for easier updates. You can host the generated content on GitHub Gist or any Pastebin service."
+    },
+    "subscription": {
+      "title": "Why Subscribe instead of Import?",
+      "content": "Subscribing via URL allows you to update the calendar events remotely. If you import the file, the events are static and hard to batch delete or update later."
+    },
+    "importAdvice": {
+      "title": "Importing Advice",
+      "content": "If you choose to import the .ics file directly, we strongly suggest creating a separate new calendar (e.g., 'Lunar Birthdays') instead of importing into your main/personal calendar. This keeps your main calendar clean and allows you to easily delete the entire calendar if something goes wrong."
+    }
   }
 }

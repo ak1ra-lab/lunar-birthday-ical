@@ -1,6 +1,6 @@
 {
   "app": {
-    "title": "农历生日 iCalendar 生成器",
+    "title": "iCalendar 生成器",
     "subtitle": "生成农历生日和纪念日的 iCalendar 日历文件",
     "github": "GitHub",
     "generatedIcal": "生成的 iCalendar",
@@ -49,9 +49,9 @@
     "lunarBirthday": "农历生日",
     "solarBirthday": "公历生日",
     "integerDays": "整数天纪念日 (如 10000 天)",
-    "reminders": "提醒 (提前天数, 逗号分隔)",
+    "reminders": "提醒 (提前天数)",
     "remindersPlaceholder": "例如: 1, 3 (留空使用全局设置)",
-    "attendees": "参与者 (邮箱, 逗号分隔)",
+    "attendees": "参与者 (邮箱)",
     "attendeesPlaceholder": "例如: a@b.com (留空使用全局设置)",
     "errorInvalidDate": "无效的农历日期，请检查年份或闰月设置"
   },
@@ -62,11 +62,67 @@
     "to": "至",
     "eventTime": "事件时间",
     "duration": "持续时间 (小时)",
+    "observances": "纪念日 (浮动假期)",
     "holidays": "公共节假日"
   },
   "holidays": {
     "mothers_day": "母亲节 (五月的第二个星期日)",
     "fathers_day": "父亲节 (六月的第三个星期日)",
     "thanksgiving_day": "感恩节 (十一月的第四个星期四)"
+  },
+  "observanceForm": {
+      "loadPreset": "使用预设 (可选)",
+      "selectPreset": "选择一个预设...",
+      "week": "第几周",
+      "weekday": "星期几",
+      "month": "月份",
+      "weeks": {
+        "1": "第一个",
+        "2": "第二个",
+        "3": "第三个",
+        "4": "第四个"
+      },
+      "weekdays": {
+        "0": "星期日",
+        "1": "星期一",
+        "2": "星期二",
+        "3": "星期三",
+        "4": "星期四",
+        "5": "星期五",
+        "6": "星期六"
+      },
+      "months": {
+        "1": "一月",
+        "2": "二月",
+        "3": "三月",
+        "4": "四月",
+        "5": "五月",
+        "6": "六月",
+        "7": "七月",
+        "8": "八月",
+        "9": "九月",
+        "10": "十月",
+        "11": "十一月",
+        "12": "十二月"
+      }
+  },
+  "faq": {
+    "title": "常见问题与帮助",
+    "whatIsICal": {
+      "title": "什么是 iCalendar?",
+      "content": "iCalendar (.ics) 是一种用于日历数据交换的标准文件格式。它允许您将日历事件导入到 Google Calendar、Apple Calendar 和 Outlook 等应用程序中。"
+    },
+    "howToUse": {
+      "title": "如何使用生成的文件?",
+      "content": "您可以下载 .ics 文件并直接导入到您的日历应用中。但是，我们建议通过 URL '订阅' 日历以便于后续更新。您可以将生成的内容托管在 GitHub Gist 或任何 Pastebin 服务上。"
+    },
+    "subscription": {
+      "title": "为什么选择订阅而不是导入?",
+      "content": "通过 URL 订阅允许您远程更新日历事件。如果您直接导入文件，事件将是静态的，稍后难以批量删除或更新。"
+    },
+    "importAdvice": {
+      "title": "导入建议",
+      "content": "如果您选择直接导入 .ics 文件，我们强烈建议您创建一个单独的新日历（例如 '农历生日'），而不是导入到您的主/个人日历中。这样可以保持主日历整洁，并且如果出现问题，您可以轻松删除整个日历。"
+    }
   }
 }
