@@ -109,6 +109,7 @@
   "configForm": {
     "globalSettings": "Global Settings",
     "timezone": "Timezone",
+    "calendarName": "Calendar Name (X-WR-CALNAME)",
     "yearRange": "Year Range",
     "to": "to",
     "eventTime": "Event Time",

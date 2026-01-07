@@ -114,7 +114,7 @@ export async function generateICal(config: AppConfig, t: TFunction): Promise<str
             rsvp: true,
             role: 'REQ-PARTICIPANT',
           })),
-          calName: 'Lunar Birthday Calendar',
+          calName: global.calendar_name || 'Lunar Birthday Calendar',
         });
       }
     }
@@ -182,6 +182,7 @@ export async function generateICal(config: AppConfig, t: TFunction): Promise<str
             rsvp: true,
             role: 'REQ-PARTICIPANT',
           })),
+          calName: global.calendar_name || 'Lunar Birthday Calendar',
         });
       }
     }
@@ -221,6 +222,7 @@ export async function generateICal(config: AppConfig, t: TFunction): Promise<str
             rsvp: true,
             role: 'REQ-PARTICIPANT',
           })),
+          calName: global.calendar_name || 'Lunar Birthday Calendar',
         });
       }
     }

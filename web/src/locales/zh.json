@@ -109,6 +109,7 @@
   "configForm": {
     "globalSettings": "全局设置",
     "timezone": "时区",
+    "calendarName": "日历名称 (X-WR-CALNAME)",
     "yearRange": "年份范围",
     "to": "至",
     "eventTime": "事件时间",

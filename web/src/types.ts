@@ -9,6 +9,7 @@ export interface GlobalConfig {
   reminders: number[];
   attendees: string[];
   holiday_keys: string[];
+  calendar_name?: string;
 }
 
 export interface EventConfig {
@@ -56,6 +57,7 @@ export const DEFAULT_CONFIG: AppConfig = {
     reminders: [1, 3],
     attendees: [],
     holiday_keys: [],
+    calendar_name: 'Lunar Birthday Calendar',
   },
   events: [],
   observances: [],

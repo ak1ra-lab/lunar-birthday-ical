@@ -87,11 +87,13 @@ function App() {
 
   const handleDownload = () => {
     const blob = new Blob([icalOutput], { type: 'text/calendar;charset=utf-8' });
-    let filename = 'lunar-birthday.ics';
+    const baseName = 'lunar-birthday';
+    const date = format(new Date(), 'yyyy-MM-dd');
+    let filename = `${date}-${baseName}.ics`;
     if (config.events.length > 0) {
-      const name = config.events[0].name.replace(/\s+/g, '_'); // Replace spaces with underscores
-      const date = format(new Date(), 'yyyyMMdd');
-      filename = `lunar-birthday-${name}-${date}.ics`;
+      // Replace spaces with underscores
+      const name = config.events[0].name.replace(/\s+/g, '_');
+      filename = `${date}-${baseName}-${name}.ics`;
     }
     saveAs(blob, filename);
   };
