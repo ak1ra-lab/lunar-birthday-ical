@@ -101,7 +101,7 @@ export function ObservanceForm({ initialData, onSave, onCancel }: ObservanceForm
           )}
           <div className='space-y-2'>
             <Label htmlFor='name'>{t('eventForm.name')}</Label>
-            <Input id='name' {...register('name', { required: true })} placeholder='Name' />
+            <Input id='name' {...register('name', { required: true })} placeholder={t('eventForm.namePlaceholder')} />
           </div>
 
           <div className='grid grid-cols-3 gap-4'>
@@ -145,7 +145,7 @@ export function ObservanceForm({ initialData, onSave, onCancel }: ObservanceForm
               </select>
             </div>
           </div>
-          <div className='text-xs text-muted-foreground'>e.g. 2nd Sunday of May (Mother&apos;s Day)</div>
+          <div className='text-xs text-muted-foreground'>{t('observanceForm.example')}</div>
 
           <div className='space-y-2'>
             <Label htmlFor='reminders'>{t('eventForm.reminders')}</Label>
@@ -158,7 +158,7 @@ export function ObservanceForm({ initialData, onSave, onCancel }: ObservanceForm
                   onChange={(tags) => field.onChange(tags.map(Number))}
                   validate={validateReminder}
                   placeholder={t('eventForm.remindersPlaceholder')}
-                  errorMessage='Must be a number'
+                  errorMessage={t('common.errorMustBeNumber')}
                 />
               )}
             />
@@ -175,7 +175,7 @@ export function ObservanceForm({ initialData, onSave, onCancel }: ObservanceForm
                   onChange={field.onChange}
                   validate={validateEmail}
                   placeholder={t('eventForm.attendeesPlaceholder')}
-                  errorMessage='Invalid email address'
+                  errorMessage={t('common.errorInvalidEmail')}
                 />
               )}
             />

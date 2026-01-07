@@ -12,41 +12,6 @@ import { lunarToSolar, solarToLunar } from '@/lib/lunar';
 import { cn } from '@/lib/utils';
 import { EventConfig } from '@/types';
 
-const LUNAR_MONTHS = ['正月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '冬月', '腊月'];
-
-const LUNAR_DAYS = [
-  '初一',
-  '初二',
-  '初三',
-  '初四',
-  '初五',
-  '初六',
-  '初七',
-  '初八',
-  '初九',
-  '初十',
-  '十一',
-  '十二',
-  '十三',
-  '十四',
-  '十五',
-  '十六',
-  '十七',
-  '十八',
-  '十九',
-  '二十',
-  '廿一',
-  '廿二',
-  '廿三',
-  '廿四',
-  '廿五',
-  '廿六',
-  '廿七',
-  '廿八',
-  '廿九',
-  '三十',
-];
-
 const CHINESE_NUMBERS = ['〇', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
 function toChineseYear(year: number): string {
   return year
@@ -63,7 +28,7 @@ interface EventFormProps {
 }
 
 export function EventForm({ initialData, onSave, onCancel }: EventFormProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { register, handleSubmit, watch, setValue, control } = useForm<EventConfig>({
     defaultValues: initialData || {
       id: crypto.randomUUID(),
@@ -189,7 +154,8 @@ export function EventForm({ initialData, onSave, onCancel }: EventFormProps) {
                         className='w-24'
                       />
                       <span className='text-sm text-muted-foreground whitespace-nowrap'>
-                        {toChineseYear(lunarYear)}年
+                        {i18n.language.startsWith('zh') ? toChineseYear(lunarYear) : ''}
+                        {t('eventForm.yearSuffix')}
                       </span>
                     </div>
                   </div>
@@ -200,9 +166,9 @@ export function EventForm({ initialData, onSave, onCancel }: EventFormProps) {
                       value={lunarMonth}
                       onChange={(e) => setLunarMonth(Number(e.target.value))}
                     >
-                      {LUNAR_MONTHS.map((name, i) => (
-                        <option key={i + 1} value={i + 1}>
-                          {name}
+                      {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
+                        <option key={m} value={m}>
+                          {t(`eventForm.lunarMonthNames.${m}`)}
                         </option>
                       ))}
                     </select>
@@ -214,9 +180,9 @@ export function EventForm({ initialData, onSave, onCancel }: EventFormProps) {
                       value={lunarDay}
                       onChange={(e) => setLunarDay(Number(e.target.value))}
                     >
-                      {LUNAR_DAYS.map((name, i) => (
-                        <option key={i + 1} value={i + 1}>
-                          {name}
+                      {Array.from({ length: 30 }, (_, i) => i + 1).map((d) => (
+                        <option key={d} value={d}>
+                          {t(`eventForm.lunarDayNames.${d}`)}
                         </option>
                       ))}
                     </select>
@@ -294,7 +260,7 @@ export function EventForm({ initialData, onSave, onCancel }: EventFormProps) {
                   onChange={(tags) => field.onChange(tags.map(Number))}
                   validate={validateReminder}
                   placeholder={t('eventForm.remindersPlaceholder')}
-                  errorMessage='Must be a number'
+                  errorMessage={t('common.errorMustBeNumber')}
                 />
               )}
             />
@@ -311,7 +277,7 @@ export function EventForm({ initialData, onSave, onCancel }: EventFormProps) {
                   onChange={field.onChange}
                   validate={validateEmail}
                   placeholder={t('eventForm.attendeesPlaceholder')}
-                  errorMessage='Invalid email address'
+                  errorMessage={t('common.errorInvalidEmail')}
                 />
               )}
             />
