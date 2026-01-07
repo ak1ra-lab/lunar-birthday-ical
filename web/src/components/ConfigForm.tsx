@@ -108,7 +108,7 @@ export function ConfigForm({ config, onSave }: ConfigFormProps) {
                     onChange={(tags) => field.onChange(tags.map(Number))}
                     validate={validateReminder}
                     placeholder={t('eventForm.remindersPlaceholder')}
-                    errorMessage='Must be a number'
+                    errorMessage={t('common.errorMustBeNumber')}
                   />
                 )}
               />
@@ -124,7 +124,7 @@ export function ConfigForm({ config, onSave }: ConfigFormProps) {
                     onChange={field.onChange}
                     validate={validateEmail}
                     placeholder={t('eventForm.attendeesPlaceholder')}
-                    errorMessage='Invalid email address'
+                    errorMessage={t('common.errorInvalidEmail')}
                   />
                 )}
               />

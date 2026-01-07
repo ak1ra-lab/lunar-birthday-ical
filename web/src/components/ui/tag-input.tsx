@@ -2,6 +2,7 @@ import { X } from 'lucide-react';
 import { KeyboardEvent, useState } from 'react';
 
 import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 
 interface TagInputProps {
   placeholder?: string;
@@ -20,8 +21,8 @@ export function TagInput({ placeholder, value, onChange, validate, errorMessage 
       e.preventDefault();
       addTag();
     } else if (e.key === 'Backspace' && !inputValue && value.length > 0) {
-      // Optional: remove last tag on backspace if input is empty
-      // onChange(value.slice(0, -1));
+      // Remove last tag on backspace if input is empty
+      onChange(value.slice(0, -1));
     }
   };
 
@@ -50,11 +51,16 @@ export function TagInput({ placeholder, value, onChange, validate, errorMessage 
 
   return (
     <div className='space-y-2'>
-      <div className='flex flex-wrap gap-2 mb-2'>
+      <div
+        className={cn(
+          'flex min-h-[2.5rem] w-full flex-wrap items-center gap-2 rounded-md border border-slate-200 bg-white px-3 py-1 text-sm ring-offset-white focus-within:ring-2 focus-within:ring-slate-950 focus-within:ring-offset-2',
+          error ? 'border-destructive' : '',
+        )}
+      >
         {value.map((tag) => (
           <span
             key={tag}
-            className='flex items-center gap-1 bg-secondary text-secondary-foreground px-2 py-1 rounded-md text-sm'
+            className='flex items-center gap-1 bg-secondary text-secondary-foreground px-2 py-1 rounded-md text-xs'
           >
             {tag}
             <button
@@ -66,8 +72,6 @@ export function TagInput({ placeholder, value, onChange, validate, errorMessage 
             </button>
           </span>
         ))}
-      </div>
-      <div className='flex gap-2'>
         <Input
           value={inputValue}
           onChange={(e) => {
@@ -76,11 +80,12 @@ export function TagInput({ placeholder, value, onChange, validate, errorMessage 
           }}
           onKeyDown={handleKeyDown}
           onBlur={addTag}
-          placeholder={placeholder}
-          className={error ? 'border-destructive' : ''}
+          placeholder={value.length === 0 ? placeholder : ''}
+          className='flex-1 border-0 bg-transparent px-1 py-0 text-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 h-8 shadow-none min-w-[120px]'
+          autoComplete='off'
         />
       </div>
-      {error && <span className='text-xs text-destructive'>{error}</span>}
+      {error && <p className='text-xs font-medium text-destructive'>{error}</p>}
     </div>
   );
 }
