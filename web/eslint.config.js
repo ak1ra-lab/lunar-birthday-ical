@@ -16,21 +16,17 @@ export default defineConfig(
       js.configs.recommended,
       ...tseslint.configs.strict,
       ...tseslint.configs.stylistic,
+      react.configs.flat.recommended,
+      react.configs.flat['jsx-runtime'],
     ],
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-        },
-      },
     },
     plugins: {
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
-      react,
       'simple-import-sort': simpleImportSort,
       prettier: prettierPlugin,
     },
@@ -40,16 +36,12 @@ export default defineConfig(
         'warn',
         { allowConstantExport: true },
       ],
-      ...react.configs.recommended.rules,
-      'react/react-in-jsx-scope': 'off',
-      'react/jsx-uses-react': 'off',
-      'react/prop-types': 'off',
-
-      // 强制 import 排序
+      
+      // Simple Import Sort
       'simple-import-sort/imports': 'error',
       'simple-import-sort/exports': 'error',
 
-      // Prettier 整合 (将 Prettier 格式问题视为 ESLint 错误)
+      // Prettier
       'prettier/prettier': 'error',
     },
     settings: {
@@ -58,6 +50,5 @@ export default defineConfig(
       },
     },
   },
-  // 放于最后以覆盖可能与 Prettier 冲突的格式化规则
   eslintConfigPrettier,
 );
