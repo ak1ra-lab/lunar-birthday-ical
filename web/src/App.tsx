@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 import { saveAs } from 'file-saver';
-import { Download, Github, HelpCircle, RotateCcw, Save, Upload } from 'lucide-react';
+import { Download, HelpCircle, RotateCcw, Save, Upload } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -8,6 +8,7 @@ import { ConfigForm } from '@/components/ConfigForm';
 import { EventForm } from '@/components/EventForm';
 import { EventList } from '@/components/EventList';
 import { FAQModal } from '@/components/FAQModal';
+import { GithubIcon } from '@/components/icons';
 import { ObservanceForm } from '@/components/ObservanceForm';
 import { ObservanceList } from '@/components/ObservanceList';
 import { Button } from '@/components/ui/button';
@@ -231,7 +232,7 @@ function App() {
             size='sm'
             onClick={() => window.open('https://github.com/ak1ra-lab/lunar-birthday-ical', '_blank')}
           >
-            <Github className='mr-2 h-4 w-4' /> {t('app.github')}
+            <GithubIcon className='mr-2 h-4 w-4' /> {t('app.github')}
           </Button>
           <Button variant='ghost' size='sm' onClick={() => setIsFaqOpen(true)}>
             <HelpCircle className='mr-2 h-4 w-4' /> FAQ
