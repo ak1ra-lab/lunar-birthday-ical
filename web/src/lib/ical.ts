@@ -3,6 +3,7 @@ import {AppConfig, EventConfig, GlobalConfig} from '../types';
 import {getFutureSolarDate} from './lunar';
 import {getNthWeekdayOfMonth} from './holidays';
 import {addDays, parseISO} from 'date-fns';
+import {fromZonedTime} from 'date-fns-tz';
 import {TFunction} from 'i18next';
 
 // Helper to merge config
@@ -18,14 +19,36 @@ function mergeConfig(global: GlobalConfig, event: EventConfig) {
   };
 }
 
-function createDateArray(date: Date, timeStr: string): [number, number, number, number, number] {
+function createUtcStartArray(date: Date, timeStr: string, timezone?: string): [number, number, number, number, number] {
   const [hours, minutes] = timeStr.split(':').map(Number);
+  
+  let utcDate: Date;
+  if (timezone) {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    const hh = String(hours).padStart(2, '0');
+    const mm = String(minutes).padStart(2, '0');
+    const isoStr = `${y}-${m}-${d}T${hh}:${mm}:00`;
+    try {
+      utcDate = fromZonedTime(isoStr, timezone);
+    } catch (e) {
+      console.warn('Invalid timezone:', timezone);
+      utcDate = new Date(date);
+      utcDate.setHours(hours, minutes, 0, 0);
+      console.error(e);
+    }
+  } else {
+    utcDate = new Date(date);
+    utcDate.setHours(hours, minutes, 0, 0);
+  }
+
   return [
-    date.getFullYear(),
-    date.getMonth() + 1,
-    date.getDate(),
-    hours,
-    minutes,
+    utcDate.getUTCFullYear(),
+    utcDate.getUTCMonth() + 1,
+    utcDate.getUTCDate(),
+    utcDate.getUTCHours(),
+    utcDate.getUTCMinutes(),
   ];
 }
 
@@ -55,7 +78,7 @@ export async function generateICal(config: AppConfig, t: TFunction): Promise<str
 
         if (year < global.year_start || year > global.year_end) continue;
 
-        const start = createDateArray(eventDate, cfg.event_time);
+        const start = createUtcStartArray(eventDate, cfg.event_time, cfg.timezone);
         const duration = {hours: cfg.event_hours};
 
         const age = (days / 365.25).toFixed(2);
@@ -75,6 +98,7 @@ export async function generateICal(config: AppConfig, t: TFunction): Promise<str
 
         events.push({
           start,
+          startInputType: 'utc',
           duration,
           title,
           description,
@@ -110,7 +134,7 @@ export async function generateICal(config: AppConfig, t: TFunction): Promise<str
           }
         }
 
-        const start = createDateArray(eventDate, cfg.event_time);
+        const start = createUtcStartArray(eventDate, cfg.event_time, cfg.timezone);
         const duration = {hours: cfg.event_hours};
         const age = year - startDate.getFullYear();
 
@@ -137,6 +161,7 @@ export async function generateICal(config: AppConfig, t: TFunction): Promise<str
 
         events.push({
           start,
+          startInputType: 'utc',
           duration,
           title,
           description,
@@ -157,7 +182,7 @@ export async function generateICal(config: AppConfig, t: TFunction): Promise<str
       for (let year = global.year_start; year <= global.year_end; year++) {
          const date = getNthWeekdayOfMonth(year, obs.month, obs.week, obs.weekday);
          
-         const start = createDateArray(date, global.event_time);
+         const start = createUtcStartArray(date, global.event_time, global.timezone);
          const duration = {hours: global.event_hours};
          
          // Use translated title if it matches a key, otherwise use name
@@ -170,6 +195,7 @@ export async function generateICal(config: AppConfig, t: TFunction): Promise<str
 
          events.push({
             start,
+            startInputType: 'utc',
             duration,
             title,
             description,
