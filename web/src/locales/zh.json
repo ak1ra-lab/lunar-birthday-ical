@@ -16,6 +16,8 @@
     "add": "添加",
     "export": "导出配置",
     "import": "导入配置",
+    "reset": "重置配置",
+    "resetConfirm": "确定要重置所有配置吗？此操作无法撤销。",
     "generate": "生成 iCalendar"
   },
   "eventList": {

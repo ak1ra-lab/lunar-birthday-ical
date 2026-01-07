@@ -16,6 +16,8 @@
     "add": "Add",
     "export": "Export Config",
     "import": "Import Config",
+    "reset": "Reset Config",
+    "resetConfirm": "Are you sure you want to reset all configurations? This action cannot be undone.",
     "generate": "Generate iCalendar"
   },
   "eventList": {

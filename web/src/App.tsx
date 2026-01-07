@@ -11,7 +11,7 @@ import {generateICal} from '@/lib/ical';
 import {Button} from '@/components/ui/button';
 import {Textarea} from '@/components/ui/textarea';
 import {saveAs} from 'file-saver';
-import {Download, Upload, Save, Github, HelpCircle} from 'lucide-react';
+import {Download, Upload, Save, Github, HelpCircle, RotateCcw} from 'lucide-react';
 import {format} from 'date-fns';
 
 function App() {
@@ -116,6 +116,17 @@ function App() {
     }
   };
 
+  const handleResetConfig = () => {
+    if (confirm(t('common.resetConfirm'))) {
+      localStorage.removeItem('lunar-birthday-config');
+      setConfig(DEFAULT_CONFIG);
+      setEditingEvent(null);
+      setIsAddingEvent(false);
+      setEditingObservance(null);
+      setIsAddingObservance(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-100 p-4 md:p-8">
       <div className="max-w-4xl mx-auto space-y-6">
@@ -142,6 +153,9 @@ function App() {
                 <Upload className="mr-2 h-4 w-4" /> {t('common.import')}
               </Button>
             </div>
+            <Button variant="outline" size="sm" onClick={handleResetConfig} className="text-red-500 hover:text-red-600 hover:bg-red-50">
+              <RotateCcw className="mr-2 h-4 w-4" /> {t('common.reset')}
+            </Button>
           </div>
         </header>
 
