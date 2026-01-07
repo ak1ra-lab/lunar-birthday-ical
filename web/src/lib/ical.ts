@@ -1,10 +1,11 @@
+import { addDays, parseISO } from 'date-fns';
+import { fromZonedTime } from 'date-fns-tz';
+import { TFunction } from 'i18next';
 import * as ics from 'ics';
-import {AppConfig, EventConfig, GlobalConfig} from '../types';
-import {getFutureSolarDate} from './lunar';
-import {getNthWeekdayOfMonth} from './holidays';
-import {addDays, parseISO} from 'date-fns';
-import {fromZonedTime} from 'date-fns-tz';
-import {TFunction} from 'i18next';
+
+import { AppConfig, EventConfig, GlobalConfig } from '../types';
+import { getNthWeekdayOfMonth } from './holidays';
+import { getFutureSolarDate } from './lunar';
 
 // Helper to merge config
 function mergeConfig(global: GlobalConfig, event: EventConfig) {
@@ -14,14 +15,14 @@ function mergeConfig(global: GlobalConfig, event: EventConfig) {
     event_time: event.event_time || global.event_time,
     event_hours: event.event_hours || global.event_hours,
     // Treat empty array as "inherit from global" because UI defaults to empty
-    reminders: (event.reminders && event.reminders.length > 0) ? event.reminders : global.reminders,
-    attendees: (event.attendees && event.attendees.length > 0) ? event.attendees : global.attendees,
+    reminders: event.reminders && event.reminders.length > 0 ? event.reminders : global.reminders,
+    attendees: event.attendees && event.attendees.length > 0 ? event.attendees : global.attendees,
   };
 }
 
 function createUtcStartArray(date: Date, timeStr: string, timezone?: string): [number, number, number, number, number] {
   const [hours, minutes] = timeStr.split(':').map(Number);
-  
+
   let utcDate: Date;
   if (timezone) {
     const y = date.getFullYear();
@@ -60,7 +61,7 @@ function formatDescription(template: string, data: Record<string, string | numbe
 
 export async function generateICal(config: AppConfig, t: TFunction): Promise<string> {
   const events: ics.EventAttributes[] = [];
-  const {global} = config;
+  const { global } = config;
 
   // Process Events
   for (const eventConfig of config.events) {
@@ -79,7 +80,7 @@ export async function generateICal(config: AppConfig, t: TFunction): Promise<str
         if (year < global.year_start || year > global.year_end) continue;
 
         const start = createUtcStartArray(eventDate, cfg.event_time, cfg.timezone);
-        const duration = {hours: cfg.event_hours};
+        const duration = { hours: cfg.event_hours };
 
         const age = (days / 365.25).toFixed(2);
 
@@ -105,9 +106,14 @@ export async function generateICal(config: AppConfig, t: TFunction): Promise<str
           alarms: cfg.reminders.map((r) => ({
             action: 'display',
             description: `Reminder: ${title}`,
-            trigger: {before: true, days: r, minutes: 0},
+            trigger: { before: true, days: r, minutes: 0 },
           })),
-          attendees: cfg.attendees.map((email) => ({name: email.split('@')[0], email, rsvp: true, role: 'REQ-PARTICIPANT'})),
+          attendees: cfg.attendees.map((email) => ({
+            name: email.split('@')[0],
+            email,
+            rsvp: true,
+            role: 'REQ-PARTICIPANT',
+          })),
           calName: 'Lunar Birthday Calendar',
         });
       }
@@ -135,7 +141,7 @@ export async function generateICal(config: AppConfig, t: TFunction): Promise<str
         }
 
         const start = createUtcStartArray(eventDate, cfg.event_time, cfg.timezone);
-        const duration = {hours: cfg.event_hours};
+        const duration = { hours: cfg.event_hours };
         const age = year - startDate.getFullYear();
 
         let defaultSummary = '';
@@ -168,9 +174,14 @@ export async function generateICal(config: AppConfig, t: TFunction): Promise<str
           alarms: cfg.reminders.map((r) => ({
             action: 'display',
             description: `Reminder: ${title}`,
-            trigger: {before: true, days: r, minutes: 0},
+            trigger: { before: true, days: r, minutes: 0 },
           })),
-          attendees: cfg.attendees.map((email) => ({name: email.split('@')[0], email, rsvp: true, role: 'REQ-PARTICIPANT'})),
+          attendees: cfg.attendees.map((email) => ({
+            name: email.split('@')[0],
+            email,
+            rsvp: true,
+            role: 'REQ-PARTICIPANT',
+          })),
         });
       }
     }
@@ -180,31 +191,36 @@ export async function generateICal(config: AppConfig, t: TFunction): Promise<str
   if (config.observances && config.observances.length > 0) {
     for (const obs of config.observances) {
       for (let year = global.year_start; year <= global.year_end; year++) {
-         const date = getNthWeekdayOfMonth(year, obs.month, obs.week, obs.weekday);
-         
-         const start = createUtcStartArray(date, global.event_time, global.timezone);
-         const duration = {hours: global.event_hours};
-         
-         // Use translated title if it matches a key, otherwise use name
-         // Actually, let's just use the name from config, allowing user to edit it.
-         const title = obs.summary || obs.name;
-         const description = obs.description || obs.name;
+        const date = getNthWeekdayOfMonth(year, obs.month, obs.week, obs.weekday);
 
-         const reminders = (obs.reminders && obs.reminders.length > 0) ? obs.reminders : global.reminders;
-         const attendees = (obs.attendees && obs.attendees.length > 0) ? obs.attendees : global.attendees;
+        const start = createUtcStartArray(date, global.event_time, global.timezone);
+        const duration = { hours: global.event_hours };
 
-         events.push({
-            start,
-            startInputType: 'utc',
-            duration,
-            title,
-            description,
-            alarms: reminders.map((r) => ({
-              action: 'display',
-              description: `Reminder: ${title}`,
-              trigger: {before: true, days: r, minutes: 0},
-            })),
-            attendees: attendees.map((email) => ({name: email.split('@')[0], email, rsvp: true, role: 'REQ-PARTICIPANT'})),
+        // Use translated title if it matches a key, otherwise use name
+        // Actually, let's just use the name from config, allowing user to edit it.
+        const title = obs.summary || obs.name;
+        const description = obs.description || obs.name;
+
+        const reminders = obs.reminders && obs.reminders.length > 0 ? obs.reminders : global.reminders;
+        const attendees = obs.attendees && obs.attendees.length > 0 ? obs.attendees : global.attendees;
+
+        events.push({
+          start,
+          startInputType: 'utc',
+          duration,
+          title,
+          description,
+          alarms: reminders.map((r) => ({
+            action: 'display',
+            description: `Reminder: ${title}`,
+            trigger: { before: true, days: r, minutes: 0 },
+          })),
+          attendees: attendees.map((email) => ({
+            name: email.split('@')[0],
+            email,
+            rsvp: true,
+            role: 'REQ-PARTICIPANT',
+          })),
         });
       }
     }

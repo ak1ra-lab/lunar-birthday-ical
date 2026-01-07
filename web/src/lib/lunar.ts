@@ -1,4 +1,4 @@
-import {Solar, Lunar, LunarYear} from 'lunar-typescript';
+import { Lunar, LunarYear, Solar } from 'lunar-typescript';
 
 export function getFutureSolarDate(solarDateStr: string, targetYear: number): Date {
   // solarDateStr is YYYY-MM-DD
@@ -59,4 +59,3 @@ export function lunarToSolar(year: number, month: number, day: number, isLeap: b
   const solar = lunar.getSolar();
   return solar.toYmd();
 }
-

@@ -13,5 +13,5 @@ export const COMMON_TIMEZONES = [
   'America/Chicago',
   'America/Toronto',
   'America/Vancouver',
-  'UTC'
+  'UTC',
 ];

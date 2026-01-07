@@ -1,21 +1,22 @@
-import {useForm, Controller} from 'react-hook-form';
-import {useTranslation} from 'react-i18next';
-import {GlobalConfig} from '@/types';
-import {COMMON_TIMEZONES} from '@/lib/constants';
-import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
-import {Input} from '@/components/ui/input';
-import {Label} from '@/components/ui/label';
-import {Button} from '@/components/ui/button';
-import {TagInput} from '@/components/ui/tag-input';
+import { Controller, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { TagInput } from '@/components/ui/tag-input';
+import { COMMON_TIMEZONES } from '@/lib/constants';
+import { GlobalConfig } from '@/types';
 
 interface ConfigFormProps {
   config: GlobalConfig;
   onSave: (config: GlobalConfig) => void;
 }
 
-export function ConfigForm({config, onSave}: ConfigFormProps) {
-  const {t} = useTranslation();
-  const {register, handleSubmit, control} = useForm<GlobalConfig>({
+export function ConfigForm({ config, onSave }: ConfigFormProps) {
+  const { t } = useTranslation();
+  const { register, handleSubmit, control } = useForm<GlobalConfig>({
     defaultValues: config,
   });
 
@@ -29,7 +30,7 @@ export function ConfigForm({config, onSave}: ConfigFormProps) {
       days_interval: Number(data.days_interval),
       event_hours: Number(data.event_hours),
       // Reminders and attendees are already arrays via TagInput and Controller
-      reminders: data.reminders.map(Number).filter(n => !isNaN(n)),
+      reminders: data.reminders.map(Number).filter((n) => !isNaN(n)),
       attendees: data.attendees,
       holiday_keys: data.holiday_keys || [],
     };
@@ -50,87 +51,83 @@ export function ConfigForm({config, onSave}: ConfigFormProps) {
         <CardTitle>{t('configForm.globalSettings')}</CardTitle>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="timezone">{t('configForm.timezone')}</Label>
-              <Input 
-                id="timezone" 
-                list="timezones" 
-                {...register('timezone', {required: true})} 
-                placeholder="Select or type timezone"
+        <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+            <div className='space-y-2'>
+              <Label htmlFor='timezone'>{t('configForm.timezone')}</Label>
+              <Input
+                id='timezone'
+                list='timezones'
+                {...register('timezone', { required: true })}
+                placeholder='Select or type timezone'
               />
-              <datalist id="timezones">
-                {COMMON_TIMEZONES.map(tz => (
+              <datalist id='timezones'>
+                {COMMON_TIMEZONES.map((tz) => (
                   <option key={tz} value={tz} />
                 ))}
               </datalist>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="event_time">{t('configForm.eventTime')} (HH:MM:SS)</Label>
-              <Input 
-                id="event_time" 
-                type="time" 
-                step="1"
-                {...register('event_time', {required: true})} 
-              />
+            <div className='space-y-2'>
+              <Label htmlFor='event_time'>{t('configForm.eventTime')} (HH:MM:SS)</Label>
+              <Input id='event_time' type='time' step='1' {...register('event_time', { required: true })} />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="year_start">{t('configForm.yearRange')} ({t('eventForm.year')})</Label>
-              <div className="flex items-center space-x-2">
-                <Input type="number" id="year_start" {...register('year_start', {required: true})} />
+            <div className='space-y-2'>
+              <Label htmlFor='year_start'>
+                {t('configForm.yearRange')} ({t('eventForm.year')})
+              </Label>
+              <div className='flex items-center space-x-2'>
+                <Input type='number' id='year_start' {...register('year_start', { required: true })} />
                 <span>{t('configForm.to')}</span>
-                <Input type="number" id="year_end" {...register('year_end', {required: true})} />
+                <Input type='number' id='year_end' {...register('year_end', { required: true })} />
               </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="days_max">{t('eventForm.integerDays')} (Max)</Label>
-              <Input type="number" id="days_max" {...register('days_max')} />
+            <div className='space-y-2'>
+              <Label htmlFor='days_max'>{t('eventForm.integerDays')} (Max)</Label>
+              <Input type='number' id='days_max' {...register('days_max')} />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="days_interval">{t('eventForm.integerDays')} (Interval)</Label>
-              <Input type="number" id="days_interval" {...register('days_interval')} />
+            <div className='space-y-2'>
+              <Label htmlFor='days_interval'>{t('eventForm.integerDays')} (Interval)</Label>
+              <Input type='number' id='days_interval' {...register('days_interval')} />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="event_hours">{t('configForm.duration')}</Label>
-              <Input type="number" id="event_hours" {...register('event_hours')} />
+            <div className='space-y-2'>
+              <Label htmlFor='event_hours'>{t('configForm.duration')}</Label>
+              <Input type='number' id='event_hours' {...register('event_hours')} />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="reminders">{t('eventForm.reminders')}</Label>
+            <div className='space-y-2'>
+              <Label htmlFor='reminders'>{t('eventForm.reminders')}</Label>
               <Controller
                 control={control}
-                name="reminders"
-                render={({field}) => (
+                name='reminders'
+                render={({ field }) => (
                   <TagInput
                     value={field.value.map(String)}
                     onChange={(tags) => field.onChange(tags.map(Number))}
                     validate={validateReminder}
                     placeholder={t('eventForm.remindersPlaceholder')}
-                    errorMessage="Must be a number"
+                    errorMessage='Must be a number'
                   />
                 )}
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="attendees">{t('eventForm.attendees')}</Label>
-               <Controller
+            <div className='space-y-2'>
+              <Label htmlFor='attendees'>{t('eventForm.attendees')}</Label>
+              <Controller
                 control={control}
-                name="attendees"
-                render={({field}) => (
+                name='attendees'
+                render={({ field }) => (
                   <TagInput
                     value={field.value}
                     onChange={field.onChange}
                     validate={validateEmail}
                     placeholder={t('eventForm.attendeesPlaceholder')}
-                    errorMessage="Invalid email address"
+                    errorMessage='Invalid email address'
                   />
                 )}
               />
             </div>
           </div>
 
-
-          <Button type="submit">{t('common.save')}</Button>
+          <Button type='submit'>{t('common.save')}</Button>
         </form>
       </CardContent>
     </Card>
