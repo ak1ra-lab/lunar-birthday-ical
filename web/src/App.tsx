@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 import { saveAs } from 'file-saver';
-import { Download, HelpCircle, RotateCcw, Save, Upload } from 'lucide-react';
+import { Download, HelpCircle, Languages, RotateCcw, Save, Upload } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -142,13 +142,21 @@ function App() {
           <div className='flex flex-wrap md:flex-nowrap gap-2 items-center shrink-0 justify-center'>
             <Button
               variant='outline'
-              size='sm'
+              size='icon'
+              className='h-9 w-9'
               onClick={() => i18n.changeLanguage(i18n.language === 'zh' ? 'en' : 'zh')}
+              title={i18n.language === 'zh' ? 'Switch to English' : '切换到中文'}
             >
-              {i18n.language === 'zh' ? 'English' : '中文'}
+              <Languages className='h-4 w-4' />
             </Button>
-            <Button variant='outline' size='sm' onClick={handleExportConfig}>
-              <Save className='mr-2 h-4 w-4' /> {t('common.export')}
+            <Button
+              variant='outline'
+              size='icon'
+              className='h-9 w-9'
+              onClick={handleExportConfig}
+              title={t('common.export')}
+            >
+              <Save className='h-4 w-4' />
             </Button>
             <div className='relative'>
               <input
@@ -156,18 +164,20 @@ function App() {
                 accept='.json'
                 onChange={handleImportConfig}
                 className='absolute inset-0 w-full h-full opacity-0 cursor-pointer'
+                title={t('common.import')}
               />
-              <Button variant='outline' size='sm'>
-                <Upload className='mr-2 h-4 w-4' /> {t('common.import')}
+              <Button variant='outline' size='icon' className='h-9 w-9'>
+                <Upload className='h-4 w-4' />
               </Button>
             </div>
             <Button
               variant='outline'
-              size='sm'
+              size='icon'
+              className='h-9 w-9 text-red-500 hover:text-red-600 hover:bg-red-50'
               onClick={handleResetConfig}
-              className='text-red-500 hover:text-red-600 hover:bg-red-50'
+              title={t('common.reset')}
             >
-              <RotateCcw className='mr-2 h-4 w-4' /> {t('common.reset')}
+              <RotateCcw className='h-4 w-4' />
             </Button>
           </div>
         </header>
