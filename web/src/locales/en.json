@@ -99,7 +99,9 @@
     "eventTypes": "Event Types",
     "lunarBirthday": "Lunar Birthday",
     "solarBirthday": "Solar Birthday",
-    "integerDays": "Integer Days (e.g. 10000 days)",
+    "integerDays": "Integer Days",
+    "integerDaysMax": "Integer Days Max (days)",
+    "integerDaysInterval": "Integer Days Interval (days)",
     "reminders": "Reminders (Days before)",
     "remindersPlaceholder": "e.g. 1, 3 (Leave empty to use global settings)",
     "attendees": "Attendees (Emails)",
@@ -112,9 +114,9 @@
     "calendarName": "Calendar Name (X-WR-CALNAME)",
     "yearRange": "Year Range",
     "to": "to",
-    "eventTime": "Event Time",
+    "eventTime": "Event Start Time (HH:MM:SS)",
     "duration": "Duration (Hours)",
-    "observances": "Observances (Floating Holidays)",
+    "observances": "Floating Holidays",
     "holidays": "Public Holidays"
   },
   "holidays": {

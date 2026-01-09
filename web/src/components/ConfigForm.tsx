@@ -57,6 +57,7 @@ export function ConfigForm({ config, onSave }: ConfigFormProps) {
               <Label htmlFor='calendar_name'>{t('configForm.calendarName')}</Label>
               <Input id='calendar_name' {...register('calendar_name')} placeholder='Lunar Birthday Calendar' />
             </div>
+
             <div className='space-y-2'>
               <Label htmlFor='timezone'>{t('configForm.timezone')}</Label>
               <Input
@@ -71,10 +72,7 @@ export function ConfigForm({ config, onSave }: ConfigFormProps) {
                 ))}
               </datalist>
             </div>
-            <div className='space-y-2'>
-              <Label htmlFor='event_time'>{t('configForm.eventTime')} (HH:MM:SS)</Label>
-              <Input id='event_time' type='time' step='1' {...register('event_time', { required: true })} />
-            </div>
+
             <div className='space-y-2'>
               <Label htmlFor='year_start'>
                 {t('configForm.yearRange')} ({t('eventForm.year')})
@@ -85,18 +83,27 @@ export function ConfigForm({ config, onSave }: ConfigFormProps) {
                 <Input type='number' id='year_end' {...register('year_end', { required: true })} />
               </div>
             </div>
+
             <div className='space-y-2'>
-              <Label htmlFor='days_max'>{t('eventForm.integerDays')} (Max)</Label>
-              <Input type='number' id='days_max' {...register('days_max')} />
+              <Label htmlFor='event_time'>{t('configForm.eventTime')}</Label>
+              <Input id='event_time' type='time' step='1' {...register('event_time', { required: true })} />
             </div>
-            <div className='space-y-2'>
-              <Label htmlFor='days_interval'>{t('eventForm.integerDays')} (Interval)</Label>
-              <Input type='number' id='days_interval' {...register('days_interval')} />
-            </div>
+
             <div className='space-y-2'>
               <Label htmlFor='event_hours'>{t('configForm.duration')}</Label>
               <Input type='number' id='event_hours' {...register('event_hours')} />
             </div>
+
+            <div className='space-y-2'>
+              <Label htmlFor='days_max'>{t('eventForm.integerDaysMax')}</Label>
+              <Input type='number' id='days_max' {...register('days_max')} />
+            </div>
+
+            <div className='space-y-2'>
+              <Label htmlFor='days_interval'>{t('eventForm.integerDaysInterval')}</Label>
+              <Input type='number' id='days_interval' {...register('days_interval')} />
+            </div>
+
             <div className='space-y-2'>
               <Label htmlFor='reminders'>{t('eventForm.reminders')}</Label>
               <Controller
@@ -113,6 +120,7 @@ export function ConfigForm({ config, onSave }: ConfigFormProps) {
                 )}
               />
             </div>
+
             <div className='space-y-2'>
               <Label htmlFor='attendees'>{t('eventForm.attendees')}</Label>
               <Controller

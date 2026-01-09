@@ -7,7 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { TagInput } from '@/components/ui/tag-input';
-import { COMMON_TIMEZONES } from '@/lib/constants';
 import { lunarToSolar, solarToLunar } from '@/lib/lunar';
 import { cn } from '@/lib/utils';
 import { EventConfig } from '@/types';
@@ -219,16 +218,6 @@ export function EventForm({ initialData, onSave, onCancel }: EventFormProps) {
           <div className='space-y-2'>
             <Label>{t('configForm.eventTime')} (HH:MM:SS)</Label>
             <Input type='time' step='1' {...register('event_time')} placeholder={t('configForm.eventTime')} />
-          </div>
-
-          <div className='space-y-2'>
-            <Label>{t('configForm.timezone')}</Label>
-            <Input list='timezones' {...register('timezone')} placeholder='Select or type timezone' />
-            <datalist id='timezones'>
-              {COMMON_TIMEZONES.map((tz) => (
-                <option key={tz} value={tz} />
-              ))}
-            </datalist>
           </div>
 
           <div className='space-y-2'>
