@@ -26,7 +26,7 @@ export function ObservanceForm({ initialData, onSave, onCancel }: ObservanceForm
   const { register, handleSubmit, control, setValue } = useForm<ObservanceConfig>({
     defaultValues: initialData || {
       id: crypto.randomUUID(),
-      name: '',
+      title: '',
       month: 1,
       week: 1,
       weekday: 0,
@@ -48,7 +48,7 @@ export function ObservanceForm({ initialData, onSave, onCancel }: ObservanceForm
       // If we use translation, switching language might be weird if name is saved.
       // But 'name' is just a string. Let's use the translated holiday name (without date info).
       const translatedName = t(`holidays.${preset.key}`).split('(')[0].trim();
-      setValue('name', translatedName);
+      setValue('title', translatedName);
       setValue('week', preset.week);
       setValue('weekday', preset.weekday);
       setValue('month', preset.month);
@@ -100,10 +100,10 @@ export function ObservanceForm({ initialData, onSave, onCancel }: ObservanceForm
             </div>
           )}
           <div className='space-y-2'>
-            <Label htmlFor='name'>{t('observanceForm.title')}</Label>
+            <Label htmlFor='title'>{t('observanceForm.title')}</Label>
             <Input
-              id='name'
-              {...register('name', { required: true })}
+              id='title'
+              {...register('title', { required: true })}
               placeholder={t('observanceForm.titlePlaceholder')}
             />
           </div>

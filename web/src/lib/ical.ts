@@ -199,8 +199,8 @@ export async function generateICal(config: AppConfig, t: TFunction): Promise<str
 
         // Use translated title if it matches a key, otherwise use name
         // Actually, let's just use the name from config, allowing user to edit it.
-        const title = obs.summary || obs.name;
-        const description = obs.description || obs.name;
+        const title = obs.summary || obs.title;
+        const description = obs.description || obs.title;
 
         const reminders = obs.reminders && obs.reminders.length > 0 ? obs.reminders : global.reminders;
         const attendees = obs.attendees && obs.attendees.length > 0 ? obs.attendees : global.attendees;

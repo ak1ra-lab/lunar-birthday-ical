@@ -49,7 +49,7 @@ export function ObservanceList({ observances, onEdit, onDelete, onAdd }: Observa
             {observances.map((obs) => (
               <div key={obs.id} className='flex items-center justify-between p-4 border rounded-lg bg-white shadow-sm'>
                 <div>
-                  <h3 className='font-medium text-slate-900'>{obs.name}</h3>
+                  <h3 className='font-medium text-slate-900'>{obs.title}</h3>
                   <p className='text-sm text-slate-500'>
                     {getWeekLabel(obs.week)} {getWeekdayLabel(obs.weekday)} of {getMonthLabel(obs.month)}
                   </p>

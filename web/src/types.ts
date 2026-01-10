@@ -29,7 +29,7 @@ export interface EventConfig {
 
 export interface ObservanceConfig {
   id: string;
-  name: string;
+  title: string;
   month: number; // 1-12
   week: number; // 1-5 (5 could denote Last, or handle separately. For now, 1-4 supported as specific Nth)
   weekday: number; // 0 (Sun) - 6 (Sat)
