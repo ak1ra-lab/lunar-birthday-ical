@@ -55,7 +55,7 @@ export function ConfigForm({ config, onSave }: ConfigFormProps) {
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
             <div className='space-y-2'>
               <Label htmlFor='calendar_name'>{t('configForm.calendarName')}</Label>
-              <Input id='calendar_name' {...register('calendar_name')} placeholder='Lunar Birthday Calendar' />
+              <Input id='calendar_name' {...register('calendar_name')} placeholder='Lunar Birthday iCalendar' />
             </div>
 
             <div className='space-y-2'>

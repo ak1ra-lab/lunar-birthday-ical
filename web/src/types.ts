@@ -57,7 +57,7 @@ export const DEFAULT_CONFIG: AppConfig = {
     reminders: [1, 3],
     attendees: [],
     holiday_keys: [],
-    calendar_name: 'Lunar Birthday Calendar',
+    calendar_name: 'Lunar Birthday iCalendar',
   },
   events: [],
   observances: [],

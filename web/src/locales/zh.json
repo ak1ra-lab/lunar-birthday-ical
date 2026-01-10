@@ -1,12 +1,12 @@
 {
   "app": {
-    "title": "iCalendar 生成器",
-    "subtitle": "生成农历生日和纪念日的 iCalendar 日历文件",
+    "title": "Lunar Birthday iCalendar",
+    "subtitle": "生成生日和纪念日的 iCalendar 日历事件",
     "github": "GitHub",
     "generatedIcal": "生成的 iCalendar",
     "downloadIcs": "下载 .ics 文件",
     "about": "关于",
-    "aboutText": "本工具生成包含农历生日、公历生日和整数天纪念日（如 10,000 天）的 iCalendar (.ics) 文件。所有数据均在您的浏览器本地处理。"
+    "aboutText": "本工具可用于生成包含农历生日, 公历生日和整数日纪念日的 iCalendar (.ics) 文件. 所有数据均在您的浏览器本地处理."
   },
   "common": {
     "save": "保存",
@@ -25,7 +25,7 @@
   "eventList": {
     "title": "事件列表",
     "addEvent": "添加事件",
-    "noEvents": "暂无事件。"
+    "noEvents": "暂无事件."
   },
   "ical": {
     "integerDaysSummary": "{name} 降临地球🌏已经 {days} 天啦!",
@@ -100,13 +100,13 @@
     "lunarBirthday": "农历生日",
     "solarBirthday": "公历生日",
     "integerDays": "整数天纪念日",
-    "integerDaysMax": "最大整数天纪念日 (天)",
+    "integerDaysMax": "最大整数日纪念日 (天)",
     "integerDaysInterval": "整数日纪念日间隔 (天)",
     "reminders": "提醒 (提前天数)",
     "remindersPlaceholder": "例如: 1, 3 (留空使用全局设置)",
     "attendees": "参与者 (邮箱)",
     "attendeesPlaceholder": "例如: a@b.com (留空使用全局设置)",
-    "errorInvalidDate": "无效的农历日期，请检查年份或闰月设置"
+    "errorInvalidDate": "无效的农历日期, 请检查年份或闰月设置"
   },
   "configForm": {
     "globalSettings": "全局设置",
@@ -116,7 +116,7 @@
     "to": "至",
     "eventTime": "事件开始时间 (HH:MM:SS)",
     "duration": "事件持续时间 (小时)",
-    "observances": "浮动假期",
+    "observances": "浮动纪念日",
     "holidays": "公共节假日"
   },
   "holidays": {
@@ -165,19 +165,19 @@
     "title": "常见问题与帮助",
     "whatIsICal": {
       "title": "什么是 iCalendar?",
-      "content": "iCalendar (.ics) 是一种用于日历数据交换的标准文件格式。它允许您将日历事件导入到 Google Calendar、Apple Calendar 和 Outlook 等应用程序中。"
+      "content": "iCalendar (.ics) 是一种用于日历数据交换的标准文件格式. 它允许您将日历事件导入到 Google Calendar, Apple Calendar 和 Outlook 等应用程序中."
     },
     "howToUse": {
       "title": "如何使用生成的文件?",
-      "content": "您可以下载 .ics 文件并直接导入到您的日历应用中。但是，我们建议通过 URL '订阅' 日历以便于后续更新。您可以将生成的内容托管在 GitHub Gist 或任何 Pastebin 服务上。"
+      "content": "您可以下载 .ics 文件并直接导入到您的日历应用中. 但是, 我们建议通过 URL '订阅' 日历以便于后续更新. 您可以将生成的内容托管在 GitHub Gist 或任何 Pastebin 服务上."
     },
     "subscription": {
       "title": "为什么选择订阅而不是导入?",
-      "content": "通过 URL 订阅允许您远程更新日历事件。如果您直接导入文件，事件将是静态的，稍后难以批量删除或更新。"
+      "content": "通过 URL 订阅允许您远程更新日历事件. 如果您直接导入文件, 事件将是静态的, 稍后难以批量删除或更新."
     },
     "importAdvice": {
       "title": "导入建议",
-      "content": "如果您选择直接导入 .ics 文件，我们强烈建议您创建一个单独的新日历（例如 '农历生日'），而不是导入到您的主/个人日历中。这样可以保持主日历整洁，并且如果出现问题，您可以轻松删除整个日历。"
+      "content": "如果您选择直接导入 .ics 文件, 我们强烈建议您创建一个单独的新日历 (例如 '农历生日'), 而不是导入到您的主/个人日历中. 这样可以保持主日历整洁, 并且如果出现问题, 您可以轻松删除整个日历."
     }
   }
 }

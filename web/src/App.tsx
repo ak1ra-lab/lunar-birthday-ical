@@ -19,7 +19,7 @@ import { AppConfig, DEFAULT_CONFIG, EventConfig, GlobalConfig, ObservanceConfig 
 function App() {
   const { t, i18n } = useTranslation();
   const [config, setConfig] = useState<AppConfig>(() => {
-    const saved = localStorage.getItem('lunar-birthday-config');
+    const saved = localStorage.getItem('lunar-birthday-ical-config');
     if (saved) {
       const parsed = JSON.parse(saved);
       // Migration: Ensure observances exists if loading old config
@@ -41,7 +41,7 @@ function App() {
   const [icalOutput, setIcalOutput] = useState('');
 
   useEffect(() => {
-    localStorage.setItem('lunar-birthday-config', JSON.stringify(config));
+    localStorage.setItem('lunar-birthday-ical-config', JSON.stringify(config));
     generateICal(config, t).then(setIcalOutput).catch(console.error);
   }, [config, t]);
 
@@ -87,7 +87,7 @@ function App() {
 
   const handleDownload = () => {
     const blob = new Blob([icalOutput], { type: 'text/calendar;charset=utf-8' });
-    const baseName = 'lunar-birthday';
+    const baseName = 'lunar-birthday-ical';
     const date = format(new Date(), 'yyyy-MM-dd');
     let filename = `${date}-${baseName}.ics`;
     if (config.events.length > 0) {
@@ -100,7 +100,7 @@ function App() {
 
   const handleExportConfig = () => {
     const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
-    saveAs(blob, 'lunar-birthday-config.json');
+    saveAs(blob, 'lunar-birthday-ical-config.json');
   };
 
   const handleImportConfig = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -122,7 +122,7 @@ function App() {
 
   const handleResetConfig = () => {
     if (confirm(t('common.resetConfirm'))) {
-      localStorage.removeItem('lunar-birthday-config');
+      localStorage.removeItem('lunar-birthday-ical-config');
       setConfig(DEFAULT_CONFIG);
       setEditingEvent(null);
       setIsAddingEvent(false);
