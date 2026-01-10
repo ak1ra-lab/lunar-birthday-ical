@@ -100,8 +100,12 @@ export function ObservanceForm({ initialData, onSave, onCancel }: ObservanceForm
             </div>
           )}
           <div className='space-y-2'>
-            <Label htmlFor='name'>{t('eventForm.name')}</Label>
-            <Input id='name' {...register('name', { required: true })} placeholder={t('eventForm.namePlaceholder')} />
+            <Label htmlFor='name'>{t('observanceForm.title')}</Label>
+            <Input
+              id='name'
+              {...register('name', { required: true })}
+              placeholder={t('observanceForm.titlePlaceholder')}
+            />
           </div>
 
           <div className='grid grid-cols-3 gap-4'>

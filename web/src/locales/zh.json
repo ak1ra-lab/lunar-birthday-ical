@@ -125,6 +125,8 @@
     "thanksgiving_day": "感恩节 (十一月的第四个星期四)"
   },
   "observanceForm": {
+      "title": "标题",
+      "titlePlaceholder": "标题 (例如: 母亲节)",
       "loadPreset": "使用预设 (可选)",
       "example": "例如: 五月的第二个星期日 (母亲节)",
       "selectPreset": "选择一个预设...",

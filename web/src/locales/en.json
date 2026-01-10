@@ -125,6 +125,8 @@
     "thanksgiving_day": "Thanksgiving Day (4th Thursday in November)"
   },
   "observanceForm": {
+      "title": "Title",
+      "titlePlaceholder": "Title (e.g. Mother's Day)",
       "loadPreset": "Load Preset (Optional)",
       "example": "e.g. 2nd Sunday of May (Mother's Day)",
       "selectPreset": "Select a preset...",
